@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" viewBox="0 0 192 192" fill="none">
+  <!-- Sheng Siong | 192x192 | 64-grid modular tileset -->
+  <rect x="8.00" y="136.00" width="176.00" height="48.00" rx="10" ry="10" fill="#E6E9EE"/>
+  <ellipse cx="92.00" cy="116.00" rx="50.40" ry="6.00" fill="#3A4A3828"/>
+  <rect x="28.00" y="20.00" width="120.00" height="90.00" rx="8" ry="8" fill="#FFFEFB"/>
+  <path d="M148.0,23.0 L148.0,110.0 L168.0,98.0 L168.0,11.0 Z" fill="#F0EBE3"/>
+  <path d="M32.0,20.0 L148.0,20.0 L168.0,8.0 L52.0,8.0 Z" fill="#00A651"/>
+  <rect x="28.00" y="20.00" width="120.00" height="5.00" rx="3.2" ry="3.2" fill="#008C44"/>
+  <rect x="28.00" y="40.00" width="120.00" height="22.00" rx="4" ry="4" fill="#00A651"/>
+  <rect x="78.00" y="44.00" width="10.00" height="14.00" rx="3" ry="3" fill="#FFFEFB"/>
+  <rect x="92.00" y="44.00" width="10.00" height="14.00" rx="3" ry="3" fill="#FFFEFB"/>
+  <rect x="80.00" y="48.00" width="5.00" height="3.00" rx="1" ry="1" fill="#00A651"/>
+  <rect x="94.00" y="52.00" width="5.00" height="3.00" rx="1" ry="1" fill="#00A651"/>
+  <rect x="40.00" y="75.00" width="40.00" height="30.00" rx="5" ry="5" fill="#8EC4E8"/>
+  <rect x="96.00" y="75.00" width="40.00" height="30.00" rx="5" ry="5" fill="#8EC4E8"/>
+  <rect x="78.00" y="80.00" width="16.00" height="28.00" rx="4" ry="4" fill="#5A6270"/>
+</svg>

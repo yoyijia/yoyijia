@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" viewBox="0 0 192 192" fill="none">
+  <!-- Polyclinic | 192x192 | 64-grid modular tileset -->
+  <rect x="8.00" y="144.00" width="176.00" height="40.00" rx="10" ry="10" fill="#E6E9EE"/>
+  <ellipse cx="93.50" cy="122.10" rx="54.60" ry="6.00" fill="#3A4A3828"/>
+  <rect x="24.00" y="16.10" width="130.00" height="100.00" rx="8" ry="8" fill="#FFFEFB"/>
+  <path d="M154.0,19.1 L154.0,116.1 L176.5,102.6 L176.5,5.6 Z" fill="#F0EBE3"/>
+  <path d="M28.0,16.1 L154.0,16.1 L176.5,2.6 L50.5,2.6 Z" fill="#5B9FD4"/>
+  <rect x="24.00" y="16.10" width="130.00" height="5.00" rx="3.2" ry="3.2" fill="#4788BB"/>
+  <rect x="24.00" y="36.00" width="130.00" height="18.00" rx="3" ry="3" fill="#5B9FD4"/>
+  <rect x="82.00" y="39.00" width="6.00" height="12.00" rx="1.5" ry="1.5" fill="#FFFEFB"/>
+  <rect x="76.00" y="44.00" width="18.00" height="6.00" rx="1.5" ry="1.5" fill="#FFFEFB"/>
+  <rect x="36.00" y="68.00" width="18.00" height="18.00" rx="3" ry="3" fill="#8EC4E8"/>
+  <rect x="64.00" y="68.00" width="18.00" height="18.00" rx="3" ry="3" fill="#8EC4E8"/>
+  <rect x="92.00" y="68.00" width="18.00" height="18.00" rx="3" ry="3" fill="#8EC4E8"/>
+  <rect x="120.00" y="68.00" width="18.00" height="18.00" rx="3" ry="3" fill="#8EC4E8"/>
+  <rect x="36.00" y="96.00" width="18.00" height="18.00" rx="3" ry="3" fill="#8EC4E8"/>
+  <rect x="64.00" y="96.00" width="18.00" height="18.00" rx="3" ry="3" fill="#8EC4E8"/>
+  <rect x="92.00" y="96.00" width="18.00" height="18.00" rx="3" ry="3" fill="#8EC4E8"/>
+  <rect x="120.00" y="96.00" width="18.00" height="18.00" rx="3" ry="3" fill="#8EC4E8"/>
+  <rect x="78.00" y="118.00" width="20.00" height="28.00" rx="5" ry="5" fill="#5A6270"/>
+</svg>

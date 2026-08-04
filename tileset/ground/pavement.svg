@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" fill="none">
+  <!-- Pavement | 64x64 | 64-grid modular tileset -->
+  <rect x="0.00" y="0.00" width="64.00" height="64.00" rx="0" ry="0" fill="#E6E9EE"/>
+  <rect x="0.00" y="31.00" width="64.00" height="1.50" rx="0" ry="0" fill="#D2D7DF" opacity="0.45"/>
+  <rect x="31.00" y="0.00" width="1.50" height="64.00" rx="0" ry="0" fill="#D2D7DF" opacity="0.45"/>
+</svg>

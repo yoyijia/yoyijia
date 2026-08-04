@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" fill="none">
+  <!-- MRT Entrance | 64x64 | 64-grid modular tileset -->
+  <ellipse cx="32.00" cy="56.00" rx="20.00" ry="4.00" fill="#3A4A3828"/>
+  <rect x="10.00" y="44.00" width="44.00" height="14.00" rx="5" ry="5" fill="#E6E9EE"/>
+  <rect x="14.00" y="12.00" width="36.00" height="16.00" rx="5" ry="5" fill="#009645"/>
+  <rect x="16.00" y="24.00" width="32.00" height="6.00" rx="2" ry="2" fill="#007A38"/>
+  <rect x="20.00" y="30.00" width="24.00" height="6.00" rx="2" ry="2" fill="#5A6270"/>
+  <rect x="22.00" y="35.00" width="20.00" height="6.00" rx="2" ry="2" fill="#3D4450"/>
+  <rect x="24.00" y="40.00" width="16.00" height="6.00" rx="2" ry="2" fill="#5A6270"/>
+  <circle cx="32.00" cy="18.00" r="5.00" fill="#FFFEFB"/>
+  <circle cx="32.00" cy="18.00" r="3.00" fill="#D42E12"/>
+</svg>

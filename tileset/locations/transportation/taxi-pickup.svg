@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="64" viewBox="0 0 128 64" fill="none">
+  <!-- Taxi Pick-up | 128x64 | 64-grid modular tileset -->
+  <ellipse cx="64.00" cy="56.00" rx="42.00" ry="5.00" fill="#3A4A3828"/>
+  <rect x="6.00" y="36.00" width="116.00" height="24.00" rx="6" ry="6" fill="#E6E9EE"/>
+  <rect x="14.00" y="40.00" width="100.00" height="16.00" rx="5" ry="5" fill="#B7BEC8"/>
+  <rect x="22.00" y="45.00" width="16.00" height="5.00" rx="2" ry="2" fill="#F5D56A"/>
+  <rect x="48.00" y="45.00" width="16.00" height="5.00" rx="2" ry="2" fill="#F5D56A"/>
+  <rect x="74.00" y="45.00" width="16.00" height="5.00" rx="2" ry="2" fill="#F5D56A"/>
+  <rect x="58.00" y="4.00" width="6.00" height="36.00" rx="2" ry="2" fill="#5A6270"/>
+  <rect x="44.00" y="2.00" width="34.00" height="18.00" rx="5" ry="5" fill="#F5D56A"/>
+  <rect x="50.00" y="7.00" width="22.00" height="6.00" rx="2" ry="2" fill="#3D4450"/>
+  <rect x="28.00" y="24.00" width="72.00" height="10.00" rx="4" ry="4" fill="#5B9FD4"/>
+</svg>

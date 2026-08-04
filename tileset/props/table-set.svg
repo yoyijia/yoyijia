@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" fill="none">
+  <!-- Table Set | 64x64 | 64-grid modular tileset -->
+  <ellipse cx="32.00" cy="48.00" rx="18.00" ry="5.00" fill="#3A4A3828"/>
+  <ellipse cx="32.00" cy="34.00" rx="14.00" ry="8.00" fill="#F8E28C"/>
+  <ellipse cx="32.00" cy="36.00" rx="14.00" ry="6.00" fill="#E0C050"/>
+  <ellipse cx="16.00" cy="40.00" rx="5.00" ry="3.50" fill="#E57373"/>
+  <ellipse cx="48.00" cy="40.00" rx="5.00" ry="3.50" fill="#6BA8D9"/>
+  <ellipse cx="24.00" cy="48.00" rx="5.00" ry="3.50" fill="#6BA8D9"/>
+  <ellipse cx="40.00" cy="24.00" rx="5.00" ry="3.50" fill="#E57373"/>
+</svg>

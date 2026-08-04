@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" viewBox="0 0 192 192" fill="none">
+  <!-- MRT Station | 192x192 | 64-grid modular tileset -->
+  <rect x="8.00" y="128.00" width="176.00" height="56.00" rx="10" ry="10" fill="#E6E9EE"/>
+  <ellipse cx="89.50" cy="109.10" rx="46.20" ry="6.00" fill="#3A4A3828"/>
+  <rect x="30.00" y="18.10" width="110.00" height="85.00" rx="8" ry="8" fill="#FFFEFB"/>
+  <path d="M140.0,21.1 L140.0,103.1 L162.5,89.6 L162.5,7.6 Z" fill="#F0EBE3"/>
+  <path d="M34.0,18.1 L140.0,18.1 L162.5,4.6 L56.5,4.6 Z" fill="#009645"/>
+  <rect x="30.00" y="18.10" width="110.00" height="5.00" rx="3.2" ry="3.2" fill="#007A38"/>
+  <rect x="30.00" y="38.00" width="110.00" height="18.00" rx="3" ry="3" fill="#009645"/>
+  <circle cx="85.00" cy="47.00" r="8.00" fill="#FFFEFB"/>
+  <circle cx="85.00" cy="47.00" r="5.00" fill="#D42E12"/>
+  <circle cx="85.00" cy="47.00" r="2.50" fill="#FFFEFB"/>
+  <rect x="42.00" y="68.00" width="32.00" height="26.00" rx="5" ry="5" fill="#8EC4E8"/>
+  <rect x="96.00" y="68.00" width="32.00" height="26.00" rx="5" ry="5" fill="#8EC4E8"/>
+  <rect x="76.00" y="72.00" width="14.00" height="24.00" rx="4" ry="4" fill="#3D4450"/>
+  <rect x="60.00" y="118.00" width="50.00" height="12.00" rx="4" ry="4" fill="#5A6270"/>
+  <rect x="64.00" y="122.00" width="42.00" height="5.00" rx="2" ry="2" fill="#009645"/>
+  <rect x="20.00" y="140.00" width="150.00" height="20.00" rx="6" ry="6" fill="#B7BEC8"/>
+  <rect x="28.00" y="146.00" width="16.00" height="6.00" rx="2" ry="2" fill="#F5D56A"/>
+  <rect x="56.00" y="146.00" width="16.00" height="6.00" rx="2" ry="2" fill="#F5D56A"/>
+  <rect x="84.00" y="146.00" width="16.00" height="6.00" rx="2" ry="2" fill="#F5D56A"/>
+  <rect x="112.00" y="146.00" width="16.00" height="6.00" rx="2" ry="2" fill="#F5D56A"/>
+  <rect x="140.00" y="146.00" width="16.00" height="6.00" rx="2" ry="2" fill="#F5D56A"/>
+</svg>

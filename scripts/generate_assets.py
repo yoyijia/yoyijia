@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """
-Singapore Neighbourhood Modular Asset Pack Generator
-Clean Nintendo-like vector style: no outlines, soft pastels, dimetric 3/4 view.
+Singapore Neighbourhood 64×64 Modular Tileset
+Clean Nintendo-like vector style matching the reference:
+soft pastels, no outlines, minimal two-tone shading, rounded corners,
+dimetric 3/4 view, soft coloured shadows (not black).
 """
 
 from __future__ import annotations
@@ -11,213 +13,119 @@ import math
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-ASSETS = ROOT / "assets"
-TILE = 256  # standard tile size (px)
-BUILDING = 512  # larger location tiles
+TILESET = ROOT / "tileset"
+T = 64  # base tile size
 
 # ---------------------------------------------------------------------------
-# Palette — soft pastel-plus tones matching the reference
+# Palette — soft pastel-plus from reference
 # ---------------------------------------------------------------------------
 C = {
-    "cream": "#F7F4EE",
-    "cream_side": "#E8E2D6",
-    "cream_dark": "#D9D2C4",
+    "cream": "#F5F1E8",
+    "cream_side": "#E6E0D4",
+    "cream_dark": "#D4CDC0",
     "white": "#FFFEFB",
-    "white_side": "#F0EDE6",
-    "road": "#B8BFC8",
-    "road_dark": "#A5ADB8",
-    "road_line": "#F5F7FA",
-    "pavement": "#E8EBEF",
-    "pavement_edge": "#D4D9E0",
-    "grass": "#7BC47F",
-    "grass_light": "#91D494",
-    "grass_dark": "#5FA864",
-    "bush": "#5EAA62",
-    "bush_dark": "#4A8F4E",
-    "tree_canopy": "#6BB86F",
-    "tree_canopy_dark": "#549A58",
-    "trunk": "#8B6B4A",
-    "trunk_dark": "#6F5338",
-    "red": "#E57373",
-    "red_dark": "#C75A5A",
-    "red_roof": "#E88B7A",
-    "red_roof_side": "#D47262",
-    "orange_roof": "#E8A06A",
+    "white_side": "#F0EBE3",
+    "road": "#B7BEC8",
+    "road_dark": "#A4ACB8",
+    "road_line": "#F2F5F8",
+    "pavement": "#E6E9EE",
+    "pavement_edge": "#D2D7DF",
+    "grass": "#7BC96F",
+    "grass_light": "#93D988",
+    "grass_dark": "#5FAF55",
+    "grass_shadow": "#4E9A45",
+    "bush": "#4F9A4A",
+    "bush_dark": "#3E7D3A",
+    "bush_light": "#6BB366",
+    "tree": "#5AAA54",
+    "tree_dark": "#478B42",
+    "tree_light": "#78C072",
+    "trunk": "#8B6848",
+    "trunk_dark": "#6E5238",
+    "red": "#E56B6B",
+    "red_dark": "#C95555",
+    "red_roof": "#E88778",
+    "red_roof_side": "#D06E60",
+    "orange_roof": "#E9A06A",
     "orange_roof_side": "#D48852",
-    "orange_tile": "#F0B07A",
-    "blue": "#6BA3D9",
-    "blue_dark": "#5489BE",
-    "blue_awning": "#5B9BD5",
-    "blue_awning_side": "#4A87BE",
-    "blue_window": "#7EB3E0",
-    "yellow": "#F5D76E",
-    "yellow_dark": "#E0C255",
-    "lemon": "#F7E08A",
-    "green_dark": "#4A9B6E",
+    "orange_tile": "#F0B47C",
+    "orange_tile_line": "#E09860",
+    "blue": "#5B9FD4",
+    "blue_dark": "#4788BB",
+    "blue_light": "#7BB5E0",
+    "blue_window": "#8EC4E8",
+    "yellow": "#F5D56A",
+    "yellow_dark": "#E0C050",
+    "lemon": "#F8E28C",
+    "stool_red": "#E57373",
+    "stool_blue": "#6BA8D9",
     "sg_red": "#ED2939",
     "sg_red_dark": "#C41E2A",
     "mrt_green": "#009645",
     "mrt_green_dark": "#007A38",
     "mrt_red": "#D42E12",
-    "fairprice_red": "#E31C23",
-    "fairprice_red_dark": "#C0151B",
-    "sheng_green": "#00A651",
-    "sheng_green_dark": "#008C44",
-    "guardian_green": "#00A19A",
-    "guardian_green_dark": "#008780",
-    "watsons_blue": "#0077C8",
-    "watsons_blue_dark": "#0060A3",
-    "unity_orange": "#F36C00",
-    "unity_orange_dark": "#D45E00",
-    "singpost_red": "#ED1C24",
-    "bank_blue": "#003DA5",
-    "bank_blue_dark": "#002E7A",
-    "shadow": "#00000018",
-    "soft_shadow": "#00000010",
-    "dark_grey": "#5A6270",
-    "dark_grey_side": "#4A5160",
+    "fairprice": "#E31C23",
+    "fairprice_dark": "#C0151B",
+    "sheng": "#00A651",
+    "sheng_dark": "#008C44",
+    "guardian": "#00A19A",
+    "guardian_dark": "#008780",
+    "watsons": "#0077C8",
+    "watsons_dark": "#0060A3",
+    "unity": "#F36C00",
+    "unity_dark": "#D45E00",
+    "singpost": "#ED1C24",
+    "bank": "#003DA5",
+    "bank_dark": "#002E7A",
     "notice": "#4A5160",
-    "stool_red": "#E57373",
-    "stool_blue": "#6BA3D9",
-    "fan": "#F5F5F5",
-    "black": "#2C2C2C",
     "charcoal": "#3D4450",
+    "dark": "#5A6270",
+    "black": "#2C3238",
+    "court": "#6BB86A",
+    "court_key": "#E57373",
+    "shadow": "#3A4A3828",       # soft coloured shadow
+    "shadow_soft": "#3A4A3818",
 }
 
 
-def svg_open(w: int, h: int, name: str = "") -> str:
+def svg(w: int, h: int, name: str, body: str) -> str:
     return (
         f'<?xml version="1.0" encoding="UTF-8"?>\n'
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="{h}" '
         f'viewBox="0 0 {w} {h}" fill="none">\n'
-        f'  <!-- {name} | tile {w}x{h} | dimetric vector | transparent bg -->\n'
+        f'  <!-- {name} | {w}x{h} | 64-grid modular tileset -->\n'
+        f"{body}</svg>\n"
     )
 
 
-def svg_close() -> str:
-    return "</svg>\n"
-
-
-def round_rect(x, y, w, h, r, fill, opacity=1.0) -> str:
-    op = f' opacity="{opacity}"' if opacity < 1 else ""
+def rr(x, y, w, h, r, fill, op=1.0) -> str:
+    o = f' opacity="{op}"' if op < 1 else ""
     return (
-        f'  <rect x="{x:.1f}" y="{y:.1f}" width="{w:.1f}" height="{h:.1f}" '
-        f'rx="{r}" ry="{r}" fill="{fill}"{op}/>\n'
+        f'  <rect x="{x:.2f}" y="{y:.2f}" width="{w:.2f}" height="{h:.2f}" '
+        f'rx="{r}" ry="{r}" fill="{fill}"{o}/>\n'
     )
 
 
-def ellipse(cx, cy, rx, ry, fill, opacity=1.0) -> str:
-    op = f' opacity="{opacity}"' if opacity < 1 else ""
+def el(cx, cy, rx, ry, fill, op=1.0) -> str:
+    o = f' opacity="{op}"' if op < 1 else ""
     return (
-        f'  <ellipse cx="{cx:.1f}" cy="{cy:.1f}" rx="{rx:.1f}" ry="{ry:.1f}" '
-        f'fill="{fill}"{op}/>\n'
+        f'  <ellipse cx="{cx:.2f}" cy="{cy:.2f}" rx="{rx:.2f}" ry="{ry:.2f}" '
+        f'fill="{fill}"{o}/>\n'
     )
 
 
-def circle(cx, cy, r, fill, opacity=1.0) -> str:
-    op = f' opacity="{opacity}"' if opacity < 1 else ""
-    return f'  <circle cx="{cx:.1f}" cy="{cy:.1f}" r="{r:.1f}" fill="{fill}"{op}/>\n'
+def cir(cx, cy, r, fill, op=1.0) -> str:
+    o = f' opacity="{op}"' if op < 1 else ""
+    return f'  <circle cx="{cx:.2f}" cy="{cy:.2f}" r="{r:.2f}" fill="{fill}"{o}/>\n'
 
 
-def path(d: str, fill: str, opacity=1.0) -> str:
-    op = f' opacity="{opacity}"' if opacity < 1 else ""
-    return f'  <path d="{d}" fill="{fill}"{op}/>\n'
+def pth(d, fill, op=1.0) -> str:
+    o = f' opacity="{op}"' if op < 1 else ""
+    return f'  <path d="{d}" fill="{fill}"{o}/>\n'
 
 
-def soft_shadow(cx, cy, rx, ry) -> str:
-    return ellipse(cx, cy, rx, ry, C["shadow"], 1.0)
-
-
-# ---------------------------------------------------------------------------
-# Dimetric building primitives (cabinet / 3/4 top-down)
-# Front face, right side (darker), roof top
-# ---------------------------------------------------------------------------
-
-def building_block(
-    ox: float,
-    oy: float,
-    bw: float,
-    bd: float,
-    bh: float,
-    front: str,
-    side: str,
-    roof: str,
-    roof_side: str | None = None,
-    corner: float = 12,
-) -> str:
-    """
-    Draw a dimetric building block (3/4 top-down).
-    ox,oy = origin; bw = front width; bd = depth; bh = wall height.
-    """
-    if roof_side is None:
-        roof_side = roof
-    dx = bd * 0.55
-    dy = bd * 0.32
-    roof_h = max(14, bd * 0.2)
-
-    s = soft_shadow(ox + bw / 2 + dx * 0.25, oy + bh + dy * 0.35 + roof_h + 12, bw * 0.5 + dx * 0.15, 14)
-
-    # Front wall
-    s += round_rect(ox, oy + roof_h, bw, bh, corner, front)
-
-    # Right side face
-    s += path(
-        f"M{ox+bw:.1f},{oy+roof_h+4:.1f} "
-        f"L{ox+bw:.1f},{oy+roof_h+bh:.1f} "
-        f"L{ox+bw+dx:.1f},{oy+roof_h+bh-dy:.1f} "
-        f"L{ox+bw+dx:.1f},{oy+roof_h-dy+4:.1f} Z",
-        side,
-    )
-
-    # Roof top parallelogram
-    s += path(
-        f"M{ox+6:.1f},{oy+roof_h:.1f} "
-        f"L{ox+bw:.1f},{oy+roof_h:.1f} "
-        f"L{ox+bw+dx:.1f},{oy+roof_h-dy:.1f} "
-        f"L{ox+dx+6:.1f},{oy+roof_h-dy:.1f} Z",
-        roof,
-    )
-
-    # Roof front lip
-    lip = max(8, min(16, bh * 0.1))
-    s += round_rect(ox, oy + roof_h, bw, lip, corner * 0.35, roof_side)
-
-    return s
-
-
-def plaza(ox, oy, w, h, r=24) -> str:
-    """Integrated ground pad under a location tile."""
-    return round_rect(ox, oy, w, h, r, C["pavement"]) + soft_shadow(ox + w / 2, oy + h - 4, w * 0.42, 14)
-
-
-def windows_row(ox, oy, count, w=18, h=22, gap=12, color=None, r=4) -> str:
-    color = color or C["blue_window"]
-    s = ""
-    for i in range(count):
-        s += round_rect(ox + i * (w + gap), oy, w, h, r, color)
-    return s
-
-
-def door(ox, oy, w=28, h=40, fill=None, r=6) -> str:
-    fill = fill or C["dark_grey"]
-    return round_rect(ox, oy, w, h, r, fill)
-
-
-def awning(ox, oy, w, h=18, fill=None, side_fill=None) -> str:
-    fill = fill or C["blue_awning"]
-    side_fill = side_fill or C["blue_awning_side"]
-    s = round_rect(ox, oy, w, h, 6, fill)
-    # slight underside
-    s += round_rect(ox + 2, oy + h - 4, w - 4, 5, 3, side_fill)
-    return s
-
-
-def grass_base(ox, oy, w, h, r=18) -> str:
-    s = round_rect(ox, oy, w, h, r, C["grass"])
-    # subtle lighter dots (flowers/tufts)
-    for px, py in [(ox + 20, oy + 18), (ox + w - 28, oy + h - 22), (ox + w * 0.45, oy + h * 0.4)]:
-        s += circle(px, py, 3, C["grass_light"])
-    return s
+def shadow(cx, cy, rx, ry, soft=False) -> str:
+    return el(cx, cy, rx, ry, C["shadow_soft"] if soft else C["shadow"])
 
 
 def write(path: Path, content: str):
@@ -226,1026 +134,842 @@ def write(path: Path, content: str):
     print(f"  ✓ {path.relative_to(ROOT)}")
 
 
-# ---------------------------------------------------------------------------
-# FOOD & RETAIL
-# ---------------------------------------------------------------------------
+# ===========================================================================
+# GROUND — seamless 64×64 (edge-to-edge, tileable)
+# ===========================================================================
 
-def make_hawker():
-    w = h = BUILDING
-    s = svg_open(w, h, "Hawker Centre / Kopitiam")
-    s += plaza(36, 70, 440, 400, 28)
-
-    # Multi-tier orange tiled roof building
-    s += building_block(70, 50, 300, 100, 150, C["cream"], C["cream_side"], C["orange_roof"], C["orange_roof_side"], 14)
-    # Mid / top roof tiers
-    s += path("M100,42 L350,42 L390,18 L140,18 Z", C["orange_tile"])
-    s += round_rect(100, 42, 250, 10, 4, C["orange_roof_side"])
-    s += path("M145,28 L320,28 L345,10 L170,10 Z", C["orange_roof"])
-
-    # Food stalls
-    stall_colors = [C["red"], C["blue"], C["yellow"], C["green_dark"], C["sg_red"]]
-    for i, col in enumerate(stall_colors):
-        x = 95 + i * 52
-        s += round_rect(x, 155, 44, 55, 8, C["white"])
-        s += round_rect(x + 5, 161, 34, 12, 4, col)
-        s += round_rect(x + 10, 181, 24, 20, 4, C["cream_dark"])
-
-    # Ceiling fans (cross blades)
-    for fx in (140, 230, 320):
-        s += ellipse(fx, 140, 16, 5, C["fan"])
-        s += ellipse(fx, 140, 5, 14, C["fan"])
-        s += circle(fx, 140, 4, C["dark_grey"])
-
-    # Outdoor tables on plaza
-    for tx, ty in [(100, 320), (200, 350), (310, 325), (400, 355)]:
-        s += soft_shadow(tx, ty + 16, 26, 7)
-        s += ellipse(tx, ty, 24, 13, C["lemon"])
-        s += ellipse(tx, ty + 3, 24, 9, C["yellow_dark"])
-        for sx, sy, sc in [
-            (tx - 26, ty + 8, C["stool_red"]),
-            (tx + 26, ty + 8, C["stool_blue"]),
-            (tx - 8, ty + 20, C["stool_red"]),
-            (tx + 10, ty - 14, C["stool_blue"]),
-        ]:
-            s += ellipse(sx, sy, 7, 5, sc)
-
-    # Tray return + dustbin
-    s += round_rect(420, 280, 34, 48, 8, C["blue"])
-    s += round_rect(426, 288, 22, 9, 3, C["white"])
-    s += round_rect(426, 302, 22, 9, 3, C["white"])
-    s += soft_shadow(445, 360, 14, 5)
-    s += round_rect(434, 340, 24, 30, 10, C["bush"])
-    s += round_rect(438, 345, 16, 10, 4, C["yellow"])
-
-    s += svg_close()
-    write(ASSETS / "food-retail" / "hawker-centre.svg", s)
+def ground_grass():
+    b = rr(0, 0, T, T, 0, C["grass"])
+    # subtle leaf / tuft dots (stay inside so seams stay clean)
+    for x, y in [(12, 14), (28, 40), (48, 18), (18, 50), (44, 46), (36, 10)]:
+        b += cir(x, y, 1.6, C["grass_light"])
+    for x, y in [(22, 28), (50, 34)]:
+        b += cir(x, y, 1.2, C["yellow"])
+    write(TILESET / "ground" / "grass.svg", svg(T, T, "Grass", b))
 
 
-def make_wet_market():
-    w = h = BUILDING
-    s = svg_open(w, h, "Wet Market")
-    s += plaza(48, 80, 416, 380, 24)
-
-    s += building_block(80, 70, 280, 100, 140, C["cream"], C["cream_side"], C["blue"], C["blue_dark"], 12)
-    s += round_rect(60, 200, 100, 28, 8, C["blue_awning"])
-    s += round_rect(290, 200, 100, 28, 8, C["blue_awning"])
-
-    produce = [C["red"], C["yellow"], C["grass"], C["orange_roof"], C["blue"], C["sg_red"]]
-    for i, col in enumerate(produce):
-        x = 100 + (i % 3) * 80
-        y = 230 + (i // 3) * 55
-        s += round_rect(x, y, 68, 40, 8, C["white_side"])
-        s += round_rect(x + 8, y + 8, 52, 18, 6, col)
-        s += circle(x + 20, y + 30, 5, col)
-        s += circle(x + 36, y + 30, 5, C["yellow"] if col != C["yellow"] else C["red"])
-
-    s += round_rect(110, 360, 280, 40, 10, "#A8C8E0", 0.25)
-    s += svg_close()
-    write(ASSETS / "food-retail" / "wet-market.svg", s)
+def ground_pavement():
+    b = rr(0, 0, T, T, 0, C["pavement"])
+    # subtle slab lines (not crossing edges harshly)
+    b += rr(0, 31, T, 1.5, 0, C["pavement_edge"], 0.45)
+    b += rr(31, 0, 1.5, T, 0, C["pavement_edge"], 0.45)
+    write(TILESET / "ground" / "pavement.svg", svg(T, T, "Pavement", b))
 
 
-def make_fairprice():
-    w = h = BUILDING
-    s = svg_open(w, h, "NTUC FairPrice")
-    s += plaza(60, 300, 360, 140, 24)
-    s += building_block(90, 70, 280, 85, 200, C["white"], C["white_side"], C["fairprice_red"], C["fairprice_red_dark"], 14)
-
-    s += round_rect(90, 110, 280, 48, 8, C["fairprice_red"])
-    # Shopping cart icon
-    s += round_rect(200, 122, 36, 22, 4, C["white"])
-    s += path("M198,120 L190,120 L186,128 L198,128 Z", C["white"])
-    s += circle(208, 148, 5, C["white"])
-    s += circle(228, 148, 5, C["white"])
-    s += round_rect(232, 118, 4, 18, 2, C["white"])
-
-    s += round_rect(110, 185, 100, 70, 10, C["blue_window"])
-    s += round_rect(250, 185, 100, 70, 10, C["blue_window"])
-    s += door(200, 200, 36, 55, C["dark_grey"], 8)
-    s += round_rect(160, 340, 140, 14, 5, C["road_line"])
-    s += svg_close()
-    write(ASSETS / "food-retail" / "ntuc-fairprice.svg", s)
+def _road_base():
+    return rr(0, 0, T, T, 0, C["road"])
 
 
-def make_sheng_siong():
-    w = h = BUILDING
-    s = svg_open(w, h, "Sheng Siong")
-    s += plaza(60, 300, 360, 140, 24)
-    s += building_block(90, 70, 280, 85, 200, C["white"], C["white_side"], C["sheng_green"], C["sheng_green_dark"], 14)
-
-    s += round_rect(90, 110, 280, 48, 8, C["sheng_green"])
-    s += round_rect(200, 122, 18, 24, 5, C["white"])
-    s += round_rect(226, 122, 18, 24, 5, C["white"])
-    s += round_rect(205, 128, 8, 6, 2, C["sheng_green"])
-    s += round_rect(231, 134, 8, 6, 2, C["sheng_green"])
-
-    s += round_rect(110, 185, 100, 70, 10, C["blue_window"])
-    s += round_rect(250, 185, 100, 70, 10, C["blue_window"])
-    s += door(200, 200, 36, 55, C["dark_grey"], 8)
-    s += svg_close()
-    write(ASSETS / "food-retail" / "sheng-siong.svg", s)
+def ground_road_h():
+    b = _road_base()
+    # horizontal dashed center line
+    b += rr(6, 29, 18, 5, 2, C["road_line"])
+    b += rr(40, 29, 18, 5, 2, C["road_line"])
+    write(TILESET / "ground" / "road-h.svg", svg(T, T, "Road Horizontal", b))
 
 
-# ---------------------------------------------------------------------------
-# TRANSPORTATION
-# ---------------------------------------------------------------------------
-
-def make_mrt_station():
-    w = h = BUILDING
-    s = svg_open(w, h, "MRT Station")
-    s += plaza(50, 280, 410, 170, 24)
-    s += building_block(100, 50, 260, 95, 180, C["white"], C["white_side"], C["mrt_green"], C["mrt_green_dark"], 14)
-    s += round_rect(100, 95, 260, 36, 6, C["mrt_green"])
-    s += circle(230, 113, 14, C["white"])
-    s += circle(230, 113, 9, C["mrt_red"])
-    s += circle(230, 113, 4, C["white"])
-    s += round_rect(130, 155, 80, 55, 10, C["blue_window"])
-    s += round_rect(250, 155, 80, 55, 10, C["blue_window"])
-    s += door(210, 160, 32, 50, C["charcoal"], 8)
-    s += round_rect(180, 280, 100, 22, 8, C["dark_grey"])
-    s += round_rect(190, 288, 80, 8, 3, C["mrt_green"])
-    s += round_rect(70, 340, 370, 40, 12, C["road"])
-    for x in range(90, 400, 55):
-        s += round_rect(x, 352, 36, 10, 4, C["yellow"])
-    s += svg_close()
-    write(ASSETS / "transportation" / "mrt-station.svg", s)
+def ground_road_v():
+    b = _road_base()
+    b += rr(29, 6, 5, 18, 2, C["road_line"])
+    b += rr(29, 40, 5, 18, 2, C["road_line"])
+    write(TILESET / "ground" / "road-v.svg", svg(T, T, "Road Vertical", b))
 
 
-def make_bus_interchange():
-    w = h = BUILDING
-    s = svg_open(w, h, "Bus Interchange")
-    s += round_rect(40, 200, 430, 260, 24, C["road"])
-    s += soft_shadow(256, 460, 180, 14)
-
-    # Central concourse
-    s += building_block(160, 60, 180, 70, 120, C["cream"], C["cream_side"], C["blue"], C["blue_dark"], 12)
-    s += round_rect(160, 100, 180, 28, 6, C["blue"])
-    s += round_rect(220, 108, 60, 12, 4, C["white"])
-
-    # Bus bays (rounded lanes)
-    for i, y in enumerate([240, 300, 360]):
-        s += round_rect(60, y, 390, 40, 12, C["road_dark"])
-        s += round_rect(80, y + 14, 50, 10, 3, C["road_line"])
-        s += round_rect(160, y + 14, 50, 10, 3, C["road_line"])
-        # Shelter
-        s += round_rect(320, y - 8, 100, 20, 6, C["blue_awning"])
-        s += round_rect(340, y + 12, 60, 16, 4, C["cream"])
-
-    s += svg_close()
-    write(ASSETS / "transportation" / "bus-interchange.svg", s)
+def ground_road_corner():
+    # L: fills bottom+right into top-left curve — full tile road with grass cut
+    b = rr(0, 0, T, T, 0, C["grass"])
+    b += rr(0, 0, T, T, 0, C["road"])
+    # cut grass quadrant (top-right empty for corner going down+left style: NW grass)
+    b += pth(f"M{T},0 L{T},{T*0.35} Q{T*0.65},{T*0.35} {T*0.35},{T*0.35} L{T*0.35},0 Z", C["grass"])
+    # Actually cleaner: draw road as two arms meeting
+    b = rr(0, 0, T, T, 0, C["grass"])
+    b += rr(0, 16, T, 32, 0, C["road"])  # horizontal arm
+    b += rr(16, 16, 32, 48, 0, C["road"])  # vertical arm down
+    # rounded inner corner fill
+    b += cir(16, 16, 0, C["road"])  # noop
+    b += rr(8, 28, 14, 6, 2, C["road_line"])
+    b += rr(28, 40, 6, 14, 2, C["road_line"])
+    write(TILESET / "ground" / "road-corner.svg", svg(T, T, "Road Corner", b))
 
 
-def make_bus_stop():
-    w = h = TILE
-    s = svg_open(w, h, "Bus Stop")
-    s += soft_shadow(128, 200, 70, 12)
-    # Pavement pad
-    s += round_rect(40, 160, 176, 60, 14, C["pavement"])
-    # Shelter roof
-    s += round_rect(55, 70, 146, 28, 10, C["blue_awning"])
-    s += round_rect(60, 90, 136, 10, 4, C["blue_awning_side"])
-    # Posts
-    s += round_rect(68, 98, 10, 70, 4, C["dark_grey"])
-    s += round_rect(178, 98, 10, 70, 4, C["dark_grey"])
-    # Bench
-    s += round_rect(90, 140, 76, 16, 6, C["red"])
-    s += round_rect(96, 154, 8, 10, 2, C["black"])
-    s += round_rect(152, 154, 8, 10, 2, C["black"])
-    # Bus stop pole + sign
-    s += round_rect(210, 50, 10, 130, 4, C["dark_grey"])
-    s += round_rect(195, 40, 40, 36, 8, C["blue"])
-    s += round_rect(202, 48, 26, 10, 3, C["white"])
-    s += circle(215, 68, 6, C["white"])
-    s += svg_close()
-    write(ASSETS / "transportation" / "bus-stop.svg", s)
+def ground_road_t():
+    b = rr(0, 0, T, T, 0, C["grass"])
+    b += rr(0, 16, T, 32, 0, C["road"])
+    b += rr(16, 0, 32, 48, 0, C["road"])
+    b += rr(8, 28, 14, 6, 2, C["road_line"])
+    b += rr(42, 28, 14, 6, 2, C["road_line"])
+    b += rr(29, 6, 5, 14, 2, C["road_line"])
+    write(TILESET / "ground" / "road-t.svg", svg(T, T, "Road T-Junction", b))
 
 
-def make_taxi_pickup():
-    w = h = TILE
-    s = svg_open(w, h, "Taxi / Ride-Hailing Pick-up")
-    s += soft_shadow(128, 200, 80, 12)
-    s += round_rect(36, 140, 184, 80, 16, C["pavement"])
-    # Marked bay
-    s += round_rect(50, 155, 156, 50, 12, C["road"])
-    s += round_rect(60, 168, 30, 8, 3, C["yellow"])
-    s += round_rect(100, 168, 30, 8, 3, C["yellow"])
-    s += round_rect(140, 168, 30, 8, 3, C["yellow"])
-    # Sign post
-    s += round_rect(118, 40, 10, 110, 4, C["dark_grey"])
-    s += round_rect(95, 30, 56, 40, 10, C["yellow"])
-    s += round_rect(105, 40, 36, 10, 3, C["charcoal"])
-    # Small canopy
-    s += round_rect(70, 100, 116, 18, 8, C["blue_awning"])
-    s += svg_close()
-    write(ASSETS / "transportation" / "taxi-pickup.svg", s)
+def ground_road_cross():
+    b = rr(0, 0, T, T, 0, C["grass"])
+    b += rr(0, 16, T, 32, 0, C["road"])
+    b += rr(16, 0, 32, T, 0, C["road"])
+    b += rr(6, 29, 14, 5, 2, C["road_line"])
+    b += rr(44, 29, 14, 5, 2, C["road_line"])
+    b += rr(29, 6, 5, 14, 2, C["road_line"])
+    b += rr(29, 44, 5, 14, 2, C["road_line"])
+    write(TILESET / "ground" / "road-cross.svg", svg(T, T, "Road Crossroads", b))
 
 
-# ---------------------------------------------------------------------------
-# HEALTHCARE
-# ---------------------------------------------------------------------------
+def ground_road_roundabout():
+    b = rr(0, 0, T, T, 0, C["grass"])
+    b += rr(0, 16, T, 32, 0, C["road"])
+    b += rr(16, 0, 32, T, 0, C["road"])
+    b += cir(32, 32, 14, C["grass"])
+    b += cir(32, 32, 8, C["grass_light"])
+    b += cir(32, 32, 4, C["bush"])
+    write(TILESET / "ground" / "road-roundabout.svg", svg(T, T, "Road Roundabout", b))
 
-def make_polyclinic():
-    w = h = BUILDING
-    s = svg_open(w, h, "Polyclinic")
-    s += plaza(80, 320, 300, 120, 18)
-    s += building_block(80, 60, 300, 90, 220, C["white"], C["white_side"], C["blue"], C["blue_dark"], 14)
-    s += round_rect(80, 110, 300, 40, 6, C["blue"])
-    s += round_rect(210, 116, 12, 28, 3, C["white"])
-    s += round_rect(198, 128, 36, 12, 3, C["white"])
+
+def ground_zebra_h():
+    b = rr(0, 0, T, T, 0, C["road"])
+    for i in range(5):
+        b += rr(4 + i * 12, 14, 7, 36, 2, C["road_line"])
+    write(TILESET / "ground" / "zebra-h.svg", svg(T, T, "Zebra Crossing H", b))
+
+
+def ground_zebra_v():
+    b = rr(0, 0, T, T, 0, C["road"])
+    for i in range(5):
+        b += rr(14, 4 + i * 12, 36, 7, 2, C["road_line"])
+    write(TILESET / "ground" / "zebra-v.svg", svg(T, T, "Zebra Crossing V", b))
+
+
+# ===========================================================================
+# NATURE / PROPS — 64×64, soft coloured shadows
+# ===========================================================================
+
+def prop_tree():
+    b = shadow(32, 56, 14, 5)
+    b += rr(28, 34, 8, 20, 3, C["trunk"])
+    b += rr(30, 36, 4, 16, 2, C["trunk_dark"])
+    b += cir(32, 26, 18, C["tree"])
+    b += cir(22, 30, 10, C["tree_dark"])
+    b += cir(40, 20, 9, C["tree_light"])
+    b += cir(34, 18, 6, C["tree"])
+    write(TILESET / "nature" / "tree.svg", svg(T, T, "Tree", b))
+
+
+def prop_bush():
+    b = shadow(32, 50, 18, 5)
+    b += cir(24, 38, 14, C["bush"])
+    b += cir(40, 40, 15, C["bush_dark"])
+    b += cir(32, 30, 13, C["bush_light"])
+    b += cir(28, 36, 2.5, C["orange_roof"])
+    b += cir(42, 38, 2, C["yellow"])
+    write(TILESET / "nature" / "bush.svg", svg(T, T, "Bush", b))
+
+
+def prop_bench():
+    b = shadow(32, 44, 20, 4)
+    b += rr(10, 28, 44, 12, 5, C["red"])
+    b += rr(10, 28, 44, 4, 3, C["red_dark"])
+    b += rr(14, 40, 5, 8, 1.5, C["black"])
+    b += rr(45, 40, 5, 8, 1.5, C["black"])
+    write(TILESET / "props" / "bench.svg", svg(T, T, "Bench", b))
+
+
+def prop_lamp():
+    b = shadow(32, 58, 6, 3)
+    b += rr(29, 14, 6, 42, 2, C["dark"])
+    b += rr(30, 16, 4, 38, 1.5, C["charcoal"])
+    b += el(32, 12, 10, 7, C["yellow"])
+    b += el(32, 11, 6, 4, C["lemon"])
+    write(TILESET / "props" / "lamp.svg", svg(T, T, "Lamp Post", b))
+
+
+def prop_bin():
+    b = shadow(32, 54, 10, 4)
+    b += rr(20, 18, 24, 34, 8, C["bush"])
+    b += rr(24, 18, 18, 34, 7, C["bush_dark"])
+    b += rr(20, 18, 24, 10, 6, C["grass_dark"])
+    b += rr(26, 30, 12, 12, 3, C["yellow"])
+    b += pth("M28,33 L36,33 L32,40 Z", C["bush"])
+    write(TILESET / "props" / "bin.svg", svg(T, T, "Dustbin", b))
+
+
+def prop_bus_shelter():
+    b = shadow(32, 56, 24, 4)
+    b += rr(6, 48, 52, 10, 4, C["pavement"])
+    b += rr(8, 10, 48, 12, 5, C["blue"])
+    b += rr(10, 20, 44, 5, 2, C["blue_dark"])
+    b += rr(12, 24, 5, 26, 2, C["dark"])
+    b += rr(47, 24, 5, 26, 2, C["dark"])
+    b += rr(18, 38, 28, 8, 3, C["red"])
+    write(TILESET / "props" / "bus-shelter.svg", svg(T, T, "Bus Shelter", b))
+
+
+def prop_mrt_entrance():
+    b = shadow(32, 56, 20, 4)
+    b += rr(10, 44, 44, 14, 5, C["pavement"])
+    b += rr(14, 12, 36, 16, 5, C["mrt_green"])
+    b += rr(16, 24, 32, 6, 2, C["mrt_green_dark"])
+    for i in range(3):
+        b += rr(20 + i * 2, 30 + i * 5, 24 - i * 4, 6, 2, C["dark"] if i % 2 == 0 else C["charcoal"])
+    b += cir(32, 18, 5, C["white"])
+    b += cir(32, 18, 3, C["mrt_red"])
+    write(TILESET / "props" / "mrt-entrance.svg", svg(T, T, "MRT Entrance", b))
+
+
+def prop_table_set():
+    """Hawker table + stools — single 64 tile."""
+    b = shadow(32, 48, 18, 5)
+    b += el(32, 34, 14, 8, C["lemon"])
+    b += el(32, 36, 14, 6, C["yellow_dark"])
+    for sx, sy, sc in [(16, 40, C["stool_red"]), (48, 40, C["stool_blue"]),
+                       (24, 48, C["stool_blue"]), (40, 24, C["stool_red"])]:
+        b += el(sx, sy, 5, 3.5, sc)
+    write(TILESET / "props" / "table-set.svg", svg(T, T, "Table Set", b))
+
+
+def prop_notice_board():
+    b = shadow(32, 54, 14, 4)
+    b += rr(14, 10, 36, 40, 4, C["notice"])
+    b += rr(18, 14, 12, 10, 2, C["red"])
+    b += rr(34, 14, 12, 10, 2, C["yellow"])
+    b += rr(18, 28, 12, 10, 2, C["blue"])
+    b += rr(34, 28, 12, 10, 2, C["grass"])
+    write(TILESET / "props" / "notice-board.svg", svg(T, T, "Notice Board", b))
+
+
+def prop_flagpole():
+    b = shadow(20, 58, 5, 3)
+    b += rr(17, 8, 4, 50, 1.5, C["dark"])
+    b += rr(21, 10, 28, 16, 2, C["sg_red"])
+    b += cir(30, 16, 3.5, C["white"])
+    # crescent hint
+    b += cir(31.5, 16, 2.5, C["sg_red"])
+    write(TILESET / "props" / "flagpole.svg", svg(T, T, "SG Flagpole", b))
+
+
+def prop_letterbox():
+    b = shadow(32, 54, 18, 4)
+    b += rr(12, 12, 40, 40, 5, C["dark"])
+    b += rr(15, 15, 34, 34, 3, C["charcoal"])
+    for row in range(3):
+        for col in range(3):
+            x, y = 18 + col * 10, 18 + row * 10
+            b += rr(x, y, 8, 8, 1.5, C["cream"] if (row + col) % 2 == 0 else C["white"])
+            b += rr(x + 2.5, y + 3, 3, 2, 0.5, C["dark"])
+    write(TILESET / "props" / "letterbox.svg", svg(T, T, "Letterbox", b))
+
+
+def prop_atm():
+    b = shadow(32, 56, 12, 4)
+    b += rr(18, 8, 28, 46, 6, C["white"])
+    b += rr(22, 8, 22, 46, 5, C["white_side"])
+    b += rr(18, 8, 28, 12, 5, C["bank"])
+    b += rr(22, 26, 20, 14, 3, C["blue_window"])
+    b += rr(24, 44, 16, 4, 1.5, C["dark"])
+    write(TILESET / "props" / "atm.svg", svg(T, T, "ATM", b))
+
+
+# ===========================================================================
+# ARCHITECTURE MODULES — 64×64 walls / roofs / doors / windows
+# ===========================================================================
+
+def arch_wall():
+    b = shadow(32, 58, 22, 4, soft=True)
+    b += rr(6, 8, 42, 48, 6, C["cream"])
+    b += rr(48, 12, 10, 44, 3, C["cream_side"])
+    write(TILESET / "architecture" / "wall.svg", svg(T, T, "Wall", b))
+
+
+def arch_wall_window():
+    b = shadow(32, 58, 22, 4, soft=True)
+    b += rr(6, 8, 42, 48, 6, C["cream"])
+    b += rr(48, 12, 10, 44, 3, C["cream_side"])
+    b += rr(14, 18, 26, 22, 4, C["blue"])
+    b += rr(17, 21, 20, 16, 3, C["blue_window"])
+    write(TILESET / "architecture" / "wall-window.svg", svg(T, T, "Wall + Window", b))
+
+
+def arch_wall_door():
+    b = shadow(32, 58, 22, 4, soft=True)
+    b += rr(6, 8, 42, 48, 6, C["cream"])
+    b += rr(48, 12, 10, 44, 3, C["cream_side"])
+    b += rr(16, 22, 22, 34, 5, C["dark"])
+    b += rr(20, 26, 14, 12, 2, C["blue_window"])
+    b += cir(32, 44, 2, C["yellow"])
+    write(TILESET / "architecture" / "wall-door.svg", svg(T, T, "Wall + Door", b))
+
+
+def arch_wall_blue_window():
+    """HDB-style blue-framed window + laundry poles."""
+    b = shadow(32, 58, 22, 4, soft=True)
+    b += rr(6, 8, 42, 48, 6, C["cream"])
+    b += rr(48, 12, 10, 44, 3, C["cream_side"])
+    b += rr(12, 16, 30, 24, 4, C["blue"])
+    b += rr(15, 19, 24, 18, 3, C["blue_window"])
+    # laundry poles
+    b += rr(44, 22, 14, 3, 1, C["red"])
+    b += rr(44, 28, 12, 3, 1, C["yellow"])
+    b += rr(44, 34, 10, 3, 1, C["blue_light"])
+    write(TILESET / "architecture" / "wall-hdb-window.svg", svg(T, T, "HDB Window + Laundry", b))
+
+
+def arch_roof(name, file, top, side):
+    b = pth("M4,40 L32,10 L60,40 L50,44 L32,22 L14,44 Z", top)
+    b += pth("M14,44 L32,22 L50,44 L60,40 L32,54 Z", side)
+    b += rr(8, 40, 48, 8, 3, side)
+    # tile lines for orange roofs
+    if "orange" in file:
+        for i in range(3):
+            y = 22 + i * 6
+            b += pth(
+                f"M{16+i*3:.0f},{y:.0f} L32,{y-12:.0f} L{48-i*3:.0f},{y:.0f} L32,{y+3:.0f} Z",
+                C["orange_tile"] if i % 2 == 0 else top,
+            )
+    write(TILESET / "architecture" / file, svg(T, T, name, b))
+
+
+def arch_door():
+    b = shadow(32, 56, 10, 3)
+    b += rr(18, 8, 28, 46, 5, C["dark"])
+    b += rr(22, 12, 20, 16, 3, C["blue_window"])
+    b += cir(38, 36, 2.5, C["yellow"])
+    write(TILESET / "architecture" / "door.svg", svg(T, T, "Door", b))
+
+
+def arch_window():
+    b = shadow(32, 48, 14, 3, soft=True)
+    b += rr(12, 12, 40, 36, 5, C["cream"])
+    b += rr(16, 16, 32, 28, 4, C["blue_window"])
+    b += rr(30, 16, 3, 28, 1, C["white"])
+    b += rr(16, 28, 32, 3, 1, C["white"])
+    write(TILESET / "architecture" / "window.svg", svg(T, T, "Window", b))
+
+
+def arch_awning():
+    b = shadow(32, 40, 24, 4, soft=True)
+    b += rr(4, 20, 56, 14, 5, C["blue"])
+    b += rr(6, 32, 52, 6, 2, C["blue_dark"])
+    write(TILESET / "architecture" / "awning.svg", svg(T, T, "Awning", b))
+
+
+def arch_hdb_corridor():
+    b = shadow(32, 56, 26, 4, soft=True)
+    b += rr(2, 28, 60, 24, 4, C["pavement"])
+    b += rr(2, 8, 60, 24, 4, C["cream"])
+    b += rr(2, 28, 60, 5, 2, C["blue"])
+    for x in (10, 28, 46):
+        b += rr(x, 12, 12, 16, 3, C["dark"])
+        b += rr(x + 2, 14, 8, 6, 1.5, C["blue_window"])
+    write(TILESET / "architecture" / "hdb-corridor.svg", svg(T, T, "HDB Corridor", b))
+
+
+def arch_void_deck_pillar():
+    b = rr(22, 4, 20, 56, 5, C["cream"])
+    b += rr(26, 4, 12, 56, 4, C["cream_side"])
+    write(TILESET / "architecture" / "void-deck-pillar.svg", svg(T, T, "Void Deck Pillar", b))
+
+
+# ===========================================================================
+# LOCATION COMPOSITIONS — multiples of 64
+# Dimetric buildings sitting on plaza pads
+# ===========================================================================
+
+def building(
+    ox, oy, bw, bd, bh, front, side, roof, roof_side=None, corner=8
+) -> str:
+    """Dimetric building block. Returns SVG body fragment."""
+    if roof_side is None:
+        roof_side = roof
+    dx = bd * 0.5
+    dy = bd * 0.3
+    rh = max(8, bd * 0.18)
+    s = shadow(ox + bw / 2 + dx * 0.2, oy + bh + rh + 6, bw * 0.42, 6)
+    s += rr(ox, oy + rh, bw, bh, corner, front)
+    s += pth(
+        f"M{ox+bw:.1f},{oy+rh+3:.1f} L{ox+bw:.1f},{oy+rh+bh:.1f} "
+        f"L{ox+bw+dx:.1f},{oy+rh+bh-dy:.1f} L{ox+bw+dx:.1f},{oy+rh-dy+3:.1f} Z",
+        side,
+    )
+    s += pth(
+        f"M{ox+4:.1f},{oy+rh:.1f} L{ox+bw:.1f},{oy+rh:.1f} "
+        f"L{ox+bw+dx:.1f},{oy+rh-dy:.1f} L{ox+dx+4:.1f},{oy+rh-dy:.1f} Z",
+        roof,
+    )
+    s += rr(ox, oy + rh, bw, max(5, rh * 0.6), corner * 0.4, roof_side)
+    return s
+
+
+def loc_hawker():
+    W, H = T * 4, T * 4  # 256×256
+    b = rr(8, 8, W - 16, H - 16, 16, C["pavement"])
+    # multi-tier orange roof
+    b += building(28, 20, 160, 50, 80, C["cream"], C["cream_side"], C["orange_roof"], C["orange_roof_side"], 10)
+    b += pth("M48,18 L170,18 L190,6 L68,6 Z", C["orange_tile"])
+    b += rr(48, 18, 122, 6, 2, C["orange_roof_side"])
+    b += pth("M70,10 L155,10 L168,2 L83,2 Z", C["orange_roof"])
+    # stalls
+    for i, col in enumerate([C["red"], C["blue"], C["yellow"], C["grass_dark"], C["sg_red"]]):
+        x = 40 + i * 28
+        b += rr(x, 70, 24, 30, 4, C["white"])
+        b += rr(x + 3, 73, 18, 7, 2, col)
+        b += rr(x + 5, 84, 14, 10, 2, C["cream_dark"])
+    # fans
+    for fx in (60, 108, 156):
+        b += el(fx, 58, 8, 2.5, C["white"])
+        b += el(fx, 58, 2.5, 7, C["white"])
+        b += cir(fx, 58, 2, C["dark"])
+    # tables
+    for tx, ty in [(48, 160), (100, 180), (160, 165), (210, 185)]:
+        b += shadow(tx, ty + 10, 12, 4)
+        b += el(tx, ty, 12, 7, C["lemon"])
+        b += el(tx, ty + 2, 12, 5, C["yellow_dark"])
+        for sx, sy, sc in [(tx - 14, ty + 6, C["stool_red"]), (tx + 14, ty + 6, C["stool_blue"]),
+                           (tx - 4, ty + 14, C["stool_red"]), (tx + 6, ty - 10, C["stool_blue"])]:
+            b += el(sx, sy, 4, 3, sc)
+    # tray return + bin
+    b += rr(210, 130, 20, 28, 4, C["blue"])
+    b += rr(214, 135, 12, 6, 1.5, C["white"])
+    b += rr(214, 144, 12, 6, 1.5, C["white"])
+    b += rr(220, 168, 14, 20, 6, C["bush"])
+    b += rr(223, 171, 8, 6, 2, C["yellow"])
+    write(TILESET / "locations" / "food-retail" / "hawker-centre.svg", svg(W, H, "Hawker Centre", b))
+
+
+def loc_wet_market():
+    W, H = T * 3, T * 3  # 192
+    b = rr(6, 6, W - 12, H - 12, 12, C["pavement"])
+    b += building(24, 16, 120, 45, 70, C["cream"], C["cream_side"], C["blue"], C["blue_dark"], 8)
+    b += rr(12, 70, 40, 14, 4, C["blue"])
+    b += rr(120, 70, 40, 14, 4, C["blue"])
+    for i, col in enumerate([C["red"], C["yellow"], C["grass"], C["orange_roof"], C["blue"], C["sg_red"]]):
+        x = 28 + (i % 3) * 42
+        y = 100 + (i // 3) * 36
+        b += rr(x, y, 36, 24, 5, C["white_side"])
+        b += rr(x + 4, y + 4, 28, 10, 3, col)
+        b += cir(x + 10, y + 18, 3, col)
+        b += cir(x + 22, y + 18, 3, C["yellow"] if col != C["yellow"] else C["red"])
+    write(TILESET / "locations" / "food-retail" / "wet-market.svg", svg(W, H, "Wet Market", b))
+
+
+def loc_shop(name, file, brand, brand_dark, icon_body):
+    W, H = T * 3, T * 3
+    b = rr(8, H - 56, W - 16, 48, 10, C["pavement"])
+    b += building(28, 12, 120, 40, 90, C["white"], C["white_side"], brand, brand_dark, 8)
+    b += rr(28, 40, 120, 22, 4, brand)
+    b += icon_body
+    b += rr(40, 75, 40, 30, 5, C["blue_window"])
+    b += rr(96, 75, 40, 30, 5, C["blue_window"])
+    b += rr(78, 80, 16, 28, 4, C["dark"])
+    write(TILESET / "locations" / "food-retail" / file, svg(W, H, name, b))
+
+
+def loc_fairprice():
+    # Clearer shopping-cart silhouette
+    icon = (
+        rr(76, 46, 20, 10, 2, C["white"])
+        + pth("M74,44 L68,44 L66,50 L74,50 Z", C["white"])
+        + cir(80, 58, 3.2, C["white"])
+        + cir(92, 58, 3.2, C["white"])
+        + rr(94, 42, 3, 12, 1.2, C["white"])
+    )
+    loc_shop("NTUC FairPrice", "ntuc-fairprice.svg", C["fairprice"], C["fairprice_dark"], icon)
+
+
+def loc_sheng():
+    icon = (
+        rr(78, 44, 10, 14, 3, C["white"])
+        + rr(92, 44, 10, 14, 3, C["white"])
+        + rr(80, 48, 5, 3, 1, C["sheng"])
+        + rr(94, 52, 5, 3, 1, C["sheng"])
+    )
+    loc_shop("Sheng Siong", "sheng-siong.svg", C["sheng"], C["sheng_dark"], icon)
+
+
+def loc_mrt():
+    W, H = T * 3, T * 3
+    b = rr(8, H - 64, W - 16, 56, 10, C["pavement"])
+    b += building(30, 10, 110, 45, 85, C["white"], C["white_side"], C["mrt_green"], C["mrt_green_dark"], 8)
+    b += rr(30, 38, 110, 18, 3, C["mrt_green"])
+    b += cir(85, 47, 8, C["white"])
+    b += cir(85, 47, 5, C["mrt_red"])
+    b += cir(85, 47, 2.5, C["white"])
+    b += rr(42, 68, 32, 26, 5, C["blue_window"])
+    b += rr(96, 68, 32, 26, 5, C["blue_window"])
+    b += rr(76, 72, 14, 24, 4, C["charcoal"])
+    b += rr(60, 118, 50, 12, 4, C["dark"])
+    b += rr(64, 122, 42, 5, 2, C["mrt_green"])
+    b += rr(20, 140, 150, 20, 6, C["road"])
+    for x in range(28, 160, 28):
+        b += rr(x, 146, 16, 6, 2, C["yellow"])
+    write(TILESET / "locations" / "transportation" / "mrt-station.svg", svg(W, H, "MRT Station", b))
+
+
+def loc_bus_interchange():
+    W, H = T * 4, T * 3  # 256×192
+    b = rr(4, 40, W - 8, H - 48, 12, C["road"])
+    b += building(70, 8, 100, 35, 55, C["cream"], C["cream_side"], C["blue"], C["blue_dark"], 7)
+    b += rr(70, 28, 100, 14, 3, C["blue"])
+    b += rr(100, 32, 40, 6, 2, C["white"])
+    for i, y in enumerate([70, 110, 150]):
+        b += rr(16, y, W - 32, 28, 8, C["road_dark"])
+        b += rr(28, y + 10, 24, 6, 2, C["road_line"])
+        b += rr(70, y + 10, 24, 6, 2, C["road_line"])
+        b += rr(180, y - 4, 50, 12, 4, C["blue"])
+        b += rr(188, y + 10, 34, 10, 3, C["cream"])
+    write(TILESET / "locations" / "transportation" / "bus-interchange.svg", svg(W, H, "Bus Interchange", b))
+
+
+def loc_bus_stop():
+    # 128×64 — two tiles wide
+    W, H = T * 2, T
+    b = shadow(64, 56, 40, 5)
+    b += rr(8, 44, 112, 16, 5, C["pavement"])
+    b += rr(16, 8, 80, 14, 5, C["blue"])
+    b += rr(18, 20, 76, 5, 2, C["blue_dark"])
+    b += rr(22, 24, 5, 22, 2, C["dark"])
+    b += rr(85, 24, 5, 22, 2, C["dark"])
+    b += rr(32, 34, 40, 8, 3, C["red"])
+    b += rr(108, 4, 6, 48, 2, C["dark"])
+    b += rr(100, 2, 22, 18, 4, C["blue"])
+    b += rr(104, 6, 14, 5, 1.5, C["white"])
+    b += cir(111, 14, 3.5, C["white"])
+    write(TILESET / "locations" / "transportation" / "bus-stop.svg", svg(W, H, "Bus Stop", b))
+
+
+def loc_taxi():
+    W, H = T * 2, T
+    b = shadow(64, 56, 42, 5)
+    b += rr(6, 36, 116, 24, 6, C["pavement"])
+    b += rr(14, 40, 100, 16, 5, C["road"])
+    for x in (22, 48, 74):
+        b += rr(x, 45, 16, 5, 2, C["yellow"])
+    b += rr(58, 4, 6, 36, 2, C["dark"])
+    b += rr(44, 2, 34, 18, 5, C["yellow"])
+    b += rr(50, 7, 22, 6, 2, C["charcoal"])
+    b += rr(28, 24, 72, 10, 4, C["blue"])
+    write(TILESET / "locations" / "transportation" / "taxi-pickup.svg", svg(W, H, "Taxi Pick-up", b))
+
+
+def loc_polyclinic():
+    W, H = T * 3, T * 3
+    b = rr(8, H - 48, W - 16, 40, 10, C["pavement"])
+    b += building(24, 8, 130, 45, 100, C["white"], C["white_side"], C["blue"], C["blue_dark"], 8)
+    b += rr(24, 36, 130, 18, 3, C["blue"])
+    b += rr(82, 39, 6, 12, 1.5, C["white"])
+    b += rr(76, 44, 18, 6, 1.5, C["white"])
     for row in range(2):
-        s += windows_row(110, 180 + row * 50, 5, 28, 32, 18, C["blue_window"], 6)
-    s += door(210, 270, 40, 55, C["dark_grey"], 8)
-    s += svg_close()
-    write(ASSETS / "healthcare" / "polyclinic.svg", s)
+        for col in range(4):
+            b += rr(36 + col * 28, 68 + row * 28, 18, 18, 3, C["blue_window"])
+    b += rr(78, 118, 20, 28, 5, C["dark"])
+    write(TILESET / "locations" / "healthcare" / "polyclinic.svg", svg(W, H, "Polyclinic", b))
 
 
-def make_gp_clinic():
-    w = h = TILE
-    s = svg_open(w, h, "GP Clinic")
-    s += soft_shadow(128, 210, 90, 12)
-    s += building_block(50, 50, 140, 50, 120, C["cream"], C["cream_side"], C["red_roof"], C["red_roof_side"], 10)
-    s += round_rect(50, 85, 140, 24, 5, C["blue"])
-    s += round_rect(105, 90, 10, 14, 2, C["white"])
-    s += round_rect(98, 95, 24, 8, 2, C["white"])
-    s += round_rect(70, 125, 40, 36, 6, C["blue_window"])
-    s += door(130, 130, 28, 40, C["dark_grey"], 5)
-    s += round_rect(50, 195, 140, 30, 10, C["pavement"])
-    s += svg_close()
-    write(ASSETS / "healthcare" / "gp-clinic.svg", s)
+def loc_gp():
+    W, H = T * 2, T * 2
+    b = rr(6, H - 36, W - 12, 30, 8, C["pavement"])
+    b += building(18, 8, 80, 30, 60, C["cream"], C["cream_side"], C["red_roof"], C["red_roof_side"], 6)
+    b += rr(18, 28, 80, 14, 3, C["blue"])
+    b += rr(52, 30, 5, 10, 1, C["white"])
+    b += rr(48, 34, 14, 5, 1, C["white"])
+    b += rr(28, 50, 22, 20, 3, C["blue_window"])
+    b += rr(62, 52, 16, 22, 3, C["dark"])
+    write(TILESET / "locations" / "healthcare" / "gp-clinic.svg", svg(W, H, "GP Clinic", b))
 
 
-def make_pharmacy(name: str, brand: str, brand_dark: str, filename: str, mark: str):
-    w = h = TILE
-    s = svg_open(w, h, name)
-    s += soft_shadow(128, 210, 90, 12)
-    s += building_block(48, 45, 145, 50, 125, C["white"], C["white_side"], brand, brand_dark, 10)
-    s += round_rect(48, 80, 145, 32, 6, brand)
+def loc_pharmacy(name, file, brand, brand_dark, mark):
+    W, H = T * 2, T * 2
+    b = rr(6, H - 36, W - 12, 30, 8, C["pavement"])
+    b += building(16, 6, 80, 30, 62, C["white"], C["white_side"], brand, brand_dark, 6)
+    b += rr(16, 28, 80, 16, 3, brand)
     if mark == "G":
-        s += round_rect(100, 88, 40, 16, 6, C["white"])
+        b += rr(44, 32, 24, 8, 3, C["white"])
     elif mark == "W":
-        s += round_rect(95, 88, 50, 16, 6, C["white"])
-        s += path("M105,92 L110,100 L115,92 L120,100 L125,92 L130,96 L120,104 L115,96 L110,104 L100,96 Z", brand)
-    else:  # Unity
-        s += circle(120, 96, 10, C["white"])
-        s += round_rect(117, 88, 6, 16, 2, brand)
-        s += round_rect(112, 93, 16, 6, 2, brand)
-    s += round_rect(65, 130, 45, 40, 6, C["blue_window"])
-    s += door(130, 135, 28, 40, C["dark_grey"], 5)
-    s += round_rect(48, 195, 145, 30, 10, C["pavement"])
-    s += svg_close()
-    write(ASSETS / "healthcare" / filename, s)
+        b += rr(40, 32, 28, 8, 3, C["white"])
+    else:
+        b += cir(56, 36, 6, C["white"])
+        b += rr(54, 31, 4, 10, 1, brand)
+        b += rr(51, 34, 10, 4, 1, brand)
+    b += rr(26, 54, 24, 20, 3, C["blue_window"])
+    b += rr(60, 56, 16, 22, 3, C["dark"])
+    write(TILESET / "locations" / "healthcare" / file, svg(W, H, name, b))
 
 
-# ---------------------------------------------------------------------------
-# COMMUNITY
-# ---------------------------------------------------------------------------
-
-def make_community_club():
-    w = h = BUILDING
-    s = svg_open(w, h, "Community Club (CC)")
-    s += plaza(90, 320, 280, 120, 18)
-    s += building_block(90, 50, 280, 90, 210, C["white"], C["white_side"], C["red_roof"], C["red_roof_side"], 14)
-    s += circle(230, 145, 22, C["sg_red"])
+def loc_cc():
+    W, H = T * 3, T * 3
+    b = rr(8, H - 48, W - 16, 40, 10, C["pavement"])
+    b += building(28, 10, 120, 42, 95, C["white"], C["white_side"], C["red_roof"], C["red_roof_side"], 8)
+    # flower logo
+    b += cir(88, 55, 12, C["sg_red"])
     for ang in range(0, 360, 60):
         rad = math.radians(ang)
-        s += circle(230 + math.cos(rad) * 18, 145 + math.sin(rad) * 14, 8, C["sg_red"])
-    s += circle(230, 145, 10, C["white"])
-    s += windows_row(120, 195, 4, 32, 36, 20, C["blue_window"], 6)
-    s += door(210, 255, 40, 55, C["dark_grey"], 8)
-    s += round_rect(400, 90, 6, 160, 2, C["dark_grey"])
-    s += round_rect(406, 95, 40, 24, 3, C["sg_red"])
-    s += circle(418, 107, 5, C["white"])
-    s += svg_close()
-    write(ASSETS / "community" / "community-club.svg", s)
+        b += cir(88 + math.cos(rad) * 10, 55 + math.sin(rad) * 8, 5, C["sg_red"])
+    b += cir(88, 55, 5, C["white"])
+    for col in range(3):
+        b += rr(42 + col * 30, 80, 20, 20, 4, C["blue_window"])
+    b += rr(78, 108, 20, 28, 5, C["dark"])
+    # flag
+    b += rr(170, 30, 4, 80, 1, C["dark"])
+    b += rr(174, 32, 22, 14, 2, C["sg_red"])
+    b += cir(182, 38, 3, C["white"])
+    write(TILESET / "locations" / "community" / "community-club.svg", svg(W, H, "Community Club", b))
 
 
-def make_singpost():
-    w = h = TILE
-    s = svg_open(w, h, "SingPost Office")
-    s += soft_shadow(128, 210, 90, 12)
-    s += building_block(50, 45, 140, 50, 125, C["cream"], C["cream_side"], C["singpost_red"], C["sg_red_dark"], 10)
-    s += round_rect(50, 80, 140, 28, 5, C["singpost_red"])
-    # Envelope icon
-    s += round_rect(100, 86, 40, 18, 3, C["white"])
-    s += path("M100,86 L120,98 L140,86 Z", C["singpost_red"])
-    s += round_rect(70, 125, 40, 36, 6, C["blue_window"])
-    s += door(130, 130, 28, 40, C["dark_grey"], 5)
-    s += round_rect(50, 195, 140, 30, 10, C["pavement"])
-    s += svg_close()
-    write(ASSETS / "community" / "singpost-office.svg", s)
+def loc_singpost():
+    W, H = T * 2, T * 2
+    b = rr(6, H - 36, W - 12, 30, 8, C["pavement"])
+    b += building(18, 8, 78, 30, 58, C["cream"], C["cream_side"], C["singpost"], C["sg_red_dark"], 6)
+    b += rr(18, 28, 78, 14, 3, C["singpost"])
+    b += rr(44, 32, 26, 10, 2, C["white"])
+    b += pth("M44,32 L57,40 L70,32 Z", C["singpost"])
+    b += rr(28, 52, 22, 18, 3, C["blue_window"])
+    b += rr(62, 54, 16, 20, 3, C["dark"])
+    write(TILESET / "locations" / "community" / "singpost.svg", svg(W, H, "SingPost", b))
 
 
-def make_bank():
-    w = h = TILE
-    s = svg_open(w, h, "Bank Branch")
-    s += soft_shadow(128, 210, 90, 12)
-    s += building_block(48, 40, 145, 55, 130, C["white"], C["white_side"], C["bank_blue"], C["bank_blue_dark"], 10)
-    s += round_rect(48, 78, 145, 28, 5, C["bank_blue"])
-    # Simple column marks
-    for x in (70, 100, 130, 160):
-        s += round_rect(x, 120, 10, 50, 3, C["cream_dark"])
-    s += door(105, 140, 30, 42, C["dark_grey"], 5)
-    s += round_rect(48, 195, 145, 30, 10, C["pavement"])
-    s += svg_close()
-    write(ASSETS / "community" / "bank-branch.svg", s)
+def loc_bank():
+    W, H = T * 2, T * 2
+    b = rr(6, H - 36, W - 12, 30, 8, C["pavement"])
+    b += building(16, 6, 82, 32, 62, C["white"], C["white_side"], C["bank"], C["bank_dark"], 6)
+    b += rr(16, 28, 82, 14, 3, C["bank"])
+    for x in (28, 44, 60, 76):
+        b += rr(x, 50, 6, 24, 2, C["cream_dark"])
+    b += rr(50, 58, 14, 20, 3, C["dark"])
+    write(TILESET / "locations" / "community" / "bank.svg", svg(W, H, "Bank Branch", b))
 
 
-def make_atm():
-    w = h = TILE
-    s = svg_open(w, h, "ATM")
-    s += soft_shadow(128, 200, 40, 10)
-    # Kiosk body
-    s += round_rect(88, 60, 80, 140, 14, C["white"])
-    s += round_rect(96, 60, 72, 140, 12, C["white_side"])  # side hint
-    s += round_rect(88, 60, 80, 36, 12, C["bank_blue"])
-    s += round_rect(100, 110, 56, 40, 6, C["blue_window"])
-    s += round_rect(108, 160, 40, 10, 3, C["dark_grey"])  # card slot
-    s += round_rect(112, 178, 32, 8, 3, C["yellow"])  # cash slot
-    s += round_rect(80, 200, 96, 24, 8, C["pavement"])
-    s += svg_close()
-    write(ASSETS / "community" / "atm.svg", s)
-
-
-# ---------------------------------------------------------------------------
-# RESIDENTIAL
-# ---------------------------------------------------------------------------
-
-def make_hdb_void_deck():
-    w = h = BUILDING
-    s = svg_open(w, h, "HDB Void Deck")
-    s += soft_shadow(256, 450, 180, 16)
-    # Building mass above
-    s += building_block(80, 40, 300, 80, 280, C["cream"], C["cream_side"], C["cream_dark"], C["cream_dark"], 12)
-    # Blue window accents (upper floors)
-    for row in range(4):
-        s += windows_row(110, 80 + row * 42, 5, 28, 26, 18, C["blue_window"], 5)
-    # Void deck open ground floor — pillars + open space
-    s += round_rect(80, 280, 300, 100, 10, C["cream"])
-    # Pillars
-    for x in (100, 170, 240, 310):
-        s += round_rect(x, 280, 18, 100, 6, C["cream_side"])
-    # Open darker recess
-    s += round_rect(120, 295, 200, 70, 8, C["cream_dark"])
-    # Notice board
-    s += round_rect(150, 310, 50, 40, 6, C["notice"])
-    s += round_rect(156, 316, 16, 12, 2, C["red"])
-    s += round_rect(176, 316, 16, 12, 2, C["yellow"])
-    s += round_rect(156, 332, 16, 10, 2, C["blue"])
-    s += round_rect(176, 332, 16, 10, 2, C["grass"])
-    # Bench
-    s += round_rect(230, 340, 70, 14, 6, C["red"])
-    s += round_rect(80, 390, 300, 50, 14, C["pavement"])
-    s += svg_close()
-    write(ASSETS / "residential" / "hdb-void-deck.svg", s)
-
-
-def make_letterbox():
-    w = h = TILE
-    s = svg_open(w, h, "Letterbox Area")
-    s += soft_shadow(128, 210, 90, 12)
-    s += round_rect(40, 160, 176, 60, 14, C["pavement"])
-    # Letterbox bank
-    s += round_rect(55, 70, 146, 100, 10, C["dark_grey"])
-    s += round_rect(60, 75, 136, 90, 8, C["charcoal"])
-    # Individual boxes
-    colors = [C["cream"], C["white"], C["cream"], C["white"]]
-    for row in range(3):
+def loc_hdb_void_deck():
+    W, H = T * 3, T * 4  # 192×256 tall
+    b = rr(8, H - 40, W - 16, 32, 8, C["pavement"])
+    b += building(20, 8, 130, 40, 180, C["cream"], C["cream_side"], C["cream_dark"], C["cream_dark"], 8)
+    # windows with laundry
+    for row in range(5):
         for col in range(4):
-            x = 70 + col * 30
-            y = 85 + row * 26
-            s += round_rect(x, y, 24, 20, 3, colors[col])
-            s += round_rect(x + 8, y + 8, 8, 4, 1, C["dark_grey"])
-    s += svg_close()
-    write(ASSETS / "residential" / "letterbox-area.svg", s)
+            x, y = 32 + col * 28, 28 + row * 26
+            b += rr(x, y, 18, 16, 3, C["blue"])
+            b += rr(x + 2, y + 2, 14, 12, 2, C["blue_window"])
+            if (row + col) % 3 == 0:
+                b += rr(x + 16, y + 4, 10, 2, 1, C["red"])
+                b += rr(x + 16, y + 8, 8, 2, 1, C["yellow"])
+    # void deck
+    b += rr(20, 170, 130, 50, 6, C["cream"])
+    for x in (32, 60, 98, 126):
+        b += rr(x, 170, 10, 50, 3, C["cream_side"])
+    b += rr(44, 180, 80, 32, 4, C["cream_dark"])
+    # notice + bench
+    b += rr(50, 186, 22, 20, 3, C["notice"])
+    b += rr(53, 189, 7, 6, 1, C["red"])
+    b += rr(62, 189, 7, 6, 1, C["yellow"])
+    b += rr(53, 197, 7, 5, 1, C["blue"])
+    b += rr(62, 197, 7, 5, 1, C["grass"])
+    b += rr(90, 198, 28, 8, 3, C["red"])
+    write(TILESET / "locations" / "residential" / "hdb-void-deck.svg", svg(W, H, "HDB Void Deck", b))
 
 
-def make_neighbourhood_park():
-    w = h = BUILDING
-    s = svg_open(w, h, "Neighbourhood Park")
-    s += grass_base(40, 40, 430, 430, 28)
-    s += soft_shadow(256, 460, 160, 12)
-
-    # Path
-    s += round_rect(200, 60, 50, 390, 16, C["pavement"])
-    s += round_rect(60, 220, 390, 45, 16, C["pavement"])
-
-    # Trees
-    for tx, ty in [(100, 120), (380, 110), (120, 340), (370, 350), (300, 180)]:
-        s += soft_shadow(tx, ty + 30, 28, 8)
-        s += round_rect(tx - 6, ty + 10, 12, 28, 4, C["trunk"])
-        s += circle(tx, ty, 28, C["tree_canopy"])
-        s += circle(tx - 12, ty + 6, 16, C["tree_canopy_dark"])
-        s += circle(tx + 10, ty - 8, 14, C["grass_light"])
-
-    # Bushes
-    for bx, by in [(80, 250), (400, 260), (180, 400)]:
-        s += circle(bx, by, 18, C["bush"])
-        s += circle(bx + 14, by + 4, 14, C["bush_dark"])
-        s += circle(bx + 6, by - 6, 4, C["orange_roof"])
-
-    # Bench
-    s += round_rect(230, 280, 70, 16, 8, C["red"])
-    s += round_rect(238, 294, 8, 10, 2, C["black"])
-    s += round_rect(284, 294, 8, 10, 2, C["black"])
-
-    # Fitness corner
-    s += round_rect(300, 300, 8, 40, 3, C["blue"])
-    s += round_rect(340, 300, 8, 40, 3, C["blue"])
-    s += round_rect(300, 295, 48, 8, 3, C["blue_dark"])
-    s += ellipse(380, 330, 16, 10, C["blue"])
-    s += round_rect(372, 310, 8, 30, 3, C["blue_dark"])
-
-    s += svg_close()
-    write(ASSETS / "residential" / "neighbourhood-park.svg", s)
+def loc_letterbox_area():
+    W, H = T * 2, T * 2
+    b = rr(6, 6, W - 12, H - 12, 10, C["pavement"])
+    b += shadow(64, 100, 36, 6)
+    b += rr(24, 24, 80, 70, 6, C["dark"])
+    b += rr(28, 28, 72, 62, 4, C["charcoal"])
+    for row in range(4):
+        for col in range(4):
+            x, y = 34 + col * 16, 34 + row * 14
+            b += rr(x, y, 12, 10, 2, C["cream"] if (row + col) % 2 == 0 else C["white"])
+            b += rr(x + 4, y + 4, 4, 2, 0.5, C["dark"])
+    write(TILESET / "locations" / "residential" / "letterbox-area.svg", svg(W, H, "Letterbox Area", b))
 
 
-def make_pcn():
-    w = h = BUILDING
-    s = svg_open(w, h, "Park Connector Network (PCN)")
-    s += grass_base(30, 30, 450, 450, 24)
-    # Winding path
-    s += path(
-        "M40,200 "
-        "C120,180 160,140 220,160 "
-        "C280,180 300,240 360,250 "
-        "C420,260 460,220 480,200 "
-        "L480,250 "
-        "C440,270 400,300 360,290 "
-        "C300,278 280,220 220,210 "
-        "C160,200 100,240 40,250 Z",
+def loc_park():
+    W, H = T * 4, T * 4
+    b = rr(4, 4, W - 8, H - 8, 14, C["grass"])
+    # paths
+    b += rr(112, 16, 32, W - 32, 10, C["pavement"])
+    b += rr(16, 112, W - 32, 32, 10, C["pavement"])
+    # trees
+    for tx, ty in [(48, 48), (200, 52), (56, 190), (196, 188), (160, 80)]:
+        b += shadow(tx, ty + 18, 12, 4)
+        b += rr(tx - 3, ty + 6, 6, 16, 2, C["trunk"])
+        b += cir(tx, ty, 16, C["tree"])
+        b += cir(tx - 7, ty + 4, 8, C["tree_dark"])
+        b += cir(tx + 6, ty - 5, 7, C["tree_light"])
+    # bushes
+    for bx, by in [(40, 120), (220, 130)]:
+        b += cir(bx, by, 12, C["bush"])
+        b += cir(bx + 8, by + 2, 10, C["bush_dark"])
+        b += cir(bx + 3, by - 3, 2.5, C["orange_roof"])
+    # bench
+    b += rr(120, 150, 36, 10, 4, C["red"])
+    b += rr(124, 160, 4, 6, 1, C["black"])
+    b += rr(148, 160, 4, 6, 1, C["black"])
+    # fitness
+    b += rr(170, 160, 5, 24, 2, C["blue"])
+    b += rr(196, 160, 5, 24, 2, C["blue"])
+    b += rr(170, 156, 31, 5, 2, C["blue_dark"])
+    b += el(220, 178, 10, 6, C["blue"])
+    # basketball court corner
+    b += rr(16, 170, 56, 64, 6, C["court"])
+    b += rr(16, 190, 20, 24, 3, C["court_key"])
+    b += rr(68, 188, 4, 28, 1.5, C["dark"])
+    b += el(70, 186, 8, 4, C["red"])
+    b += el(70, 186, 5, 2.5, C["white"])
+    write(TILESET / "locations" / "residential" / "neighbourhood-park.svg", svg(W, H, "Neighbourhood Park", b))
+
+
+def loc_pcn():
+    W, H = T * 4, T * 3  # 256×192
+    b = rr(4, 4, W - 8, H - 8, 12, C["grass"])
+    # winding path
+    b += pth(
+        "M0,80 C60,70 90,50 130,60 C170,70 190,110 230,115 "
+        "C250,118 256,100 256,100 L256,130 C240,145 210,155 180,145 "
+        "C150,135 140,100 110,95 C70,88 30,110 0,115 Z",
         C["pavement"],
     )
-    # Center dashed line
-    for i in range(8):
-        t = i / 7
-        x = 60 + t * 400
-        y = 210 + math.sin(t * math.pi * 1.5) * 30
-        s += round_rect(x, y, 24, 6, 3, C["road_line"])
-
-    # Trees along path
-    for tx, ty in [(90, 120), (180, 100), (280, 130), (400, 150), (100, 340), (250, 360), (400, 340)]:
-        s += soft_shadow(tx, ty + 22, 20, 6)
-        s += round_rect(tx - 5, ty + 8, 10, 22, 3, C["trunk"])
-        s += circle(tx, ty, 22, C["tree_canopy"])
-        s += circle(tx + 8, ty - 4, 12, C["grass_light"])
-
-    # Lamp posts
-    for lx, ly in [(150, 200), (320, 240)]:
-        s += round_rect(lx, ly - 40, 6, 50, 2, C["dark_grey"])
-        s += ellipse(lx + 3, ly - 42, 12, 8, C["yellow"])
-
-    s += svg_close()
-    write(ASSETS / "residential" / "park-connector-network.svg", s)
-
-
-# ---------------------------------------------------------------------------
-# MODULAR — ROADS
-# ---------------------------------------------------------------------------
-
-def road_surface(size=TILE) -> str:
-    return round_rect(16, 16, size - 32, size - 32, 28, C["road"])
-
-
-def make_road_straight():
-    w = h = TILE
-    s = svg_open(w, h, "Road Straight")
-    s += road_surface()
-    # Center dashes
-    for y in (40, 80, 120, 160, 200):
-        s += round_rect(118, y, 20, 28, 6, C["road_line"])
-    # Edge lips
-    s += round_rect(16, 16, 10, 224, 4, C["pavement_edge"])
-    s += round_rect(230, 16, 10, 224, 4, C["pavement_edge"])
-    s += svg_close()
-    write(ASSETS / "modular" / "roads" / "road-straight.svg", s)
-
-
-def make_road_straight_h():
-    w = h = TILE
-    s = svg_open(w, h, "Road Straight Horizontal")
-    s += road_surface()
-    for x in (40, 80, 120, 160, 200):
-        s += round_rect(x, 118, 28, 20, 6, C["road_line"])
-    s += round_rect(16, 16, 224, 10, 4, C["pavement_edge"])
-    s += round_rect(16, 230, 224, 10, 4, C["pavement_edge"])
-    s += svg_close()
-    write(ASSETS / "modular" / "roads" / "road-straight-h.svg", s)
-
-
-def make_road_corner():
-    w = h = TILE
-    s = svg_open(w, h, "Road Corner")
-    # L-shaped road with rounded outer/inner
-    s += path(
-        "M16,16 h120 a100,100 0 0 1 100,100 v120 h-80 "
-        "a40,40 0 0 0 -40,-40 H16 Z",
-        C["road"],
-    )
-    # Dashed curve approximation
-    for i, (x, y) in enumerate([(60, 50), (100, 70), (140, 110), (160, 150)]):
-        s += round_rect(x, y, 18, 14, 5, C["road_line"])
-    s += round_rect(16, 16, 10, 140, 4, C["pavement_edge"])
-    s += round_rect(140, 230, 100, 10, 4, C["pavement_edge"])
-    s += svg_close()
-    write(ASSETS / "modular" / "roads" / "road-corner.svg", s)
-
-
-def make_road_t():
-    w = h = TILE
-    s = svg_open(w, h, "Road T-Junction")
-    s += round_rect(16, 70, 224, 116, 24, C["road"])
-    s += round_rect(70, 16, 116, 180, 24, C["road"])
-    for x in (40, 90, 140, 190):
-        s += round_rect(x, 118, 24, 16, 5, C["road_line"])
-    for y in (40, 80, 140):
-        s += round_rect(118, y, 16, 24, 5, C["road_line"])
-    s += svg_close()
-    write(ASSETS / "modular" / "roads" / "road-t-junction.svg", s)
-
-
-def make_road_cross():
-    w = h = TILE
-    s = svg_open(w, h, "Road Crossroads")
-    s += round_rect(16, 70, 224, 116, 24, C["road"])
-    s += round_rect(70, 16, 116, 224, 24, C["road"])
-    for x in (40, 90, 150, 190):
-        s += round_rect(x, 118, 24, 16, 5, C["road_line"])
-    for y in (40, 90, 150, 190):
-        s += round_rect(118, y, 16, 24, 5, C["road_line"])
-    s += svg_close()
-    write(ASSETS / "modular" / "roads" / "road-crossroads.svg", s)
-
-
-def make_road_roundabout():
-    w = h = TILE
-    s = svg_open(w, h, "Road Roundabout")
-    s += round_rect(16, 70, 224, 116, 24, C["road"])
-    s += round_rect(70, 16, 116, 224, 24, C["road"])
-    s += circle(128, 128, 48, C["grass"])
-    s += circle(128, 128, 36, C["grass_light"])
-    s += circle(128, 128, 14, C["bush"])
-    # Ring dashes
-    for ang in range(0, 360, 45):
-        rad = math.radians(ang)
-        x = 128 + math.cos(rad) * 58
-        y = 128 + math.sin(rad) * 58
-        s += circle(x, y, 5, C["road_line"])
-    s += svg_close()
-    write(ASSETS / "modular" / "roads" / "road-roundabout.svg", s)
-
-
-def make_zebra():
-    w = h = TILE
-    s = svg_open(w, h, "Zebra Crossing")
-    s += round_rect(16, 70, 224, 116, 20, C["road"])
     for i in range(7):
-        s += round_rect(40 + i * 26, 85, 16, 86, 4, C["road_line"])
-    s += svg_close()
-    write(ASSETS / "modular" / "roads" / "zebra-crossing.svg", s)
+        t = i / 6
+        x = 20 + t * 220
+        y = 95 + math.sin(t * math.pi * 1.4) * 18
+        b += rr(x, y, 14, 4, 2, C["road_line"])
+    for tx, ty in [(40, 40), (100, 30), (180, 45), (220, 50), (50, 150), (160, 155)]:
+        b += shadow(tx, ty + 14, 10, 3)
+        b += rr(tx - 2.5, ty + 4, 5, 14, 2, C["trunk"])
+        b += cir(tx, ty, 12, C["tree"])
+        b += cir(tx + 5, ty - 3, 6, C["tree_light"])
+    for lx, ly in [(90, 90), (190, 110)]:
+        b += rr(lx, ly - 24, 4, 30, 1.5, C["dark"])
+        b += el(lx + 2, ly - 26, 7, 5, C["yellow"])
+    write(TILESET / "locations" / "residential" / "park-connector.svg", svg(W, H, "Park Connector", b))
 
 
-def make_zebra_v():
-    w = h = TILE
-    s = svg_open(w, h, "Zebra Crossing Vertical")
-    s += round_rect(70, 16, 116, 224, 20, C["road"])
-    for i in range(7):
-        s += round_rect(85, 40 + i * 26, 86, 16, 4, C["road_line"])
-    s += svg_close()
-    write(ASSETS / "modular" / "roads" / "zebra-crossing-v.svg", s)
+# ===========================================================================
+# Manifest, preview, PNG export
+# ===========================================================================
 
-
-# ---------------------------------------------------------------------------
-# MODULAR — PAVEMENTS / GRASS / NATURE / PROPS
-# ---------------------------------------------------------------------------
-
-def make_pavement():
-    w = h = TILE
-    s = svg_open(w, h, "Pavement Tile")
-    s += round_rect(8, 8, 240, 240, 20, C["pavement"])
-    # subtle tile divisions
-    s += round_rect(8, 124, 240, 4, 1, C["pavement_edge"], 0.5)
-    s += round_rect(124, 8, 4, 240, 1, C["pavement_edge"], 0.5)
-    s += svg_close()
-    write(ASSETS / "modular" / "pavements" / "pavement.svg", s)
-
-
-def make_pavement_corner():
-    w = h = TILE
-    s = svg_open(w, h, "Pavement Corner")
-    s += path(
-        "M8,8 h240 v120 a112,112 0 0 1 -112,112 H8 Z",
-        C["pavement"],
-    )
-    s += svg_close()
-    write(ASSETS / "modular" / "pavements" / "pavement-corner.svg", s)
-
-
-def make_grass():
-    w = h = TILE
-    s = svg_open(w, h, "Grass Tile")
-    s += grass_base(8, 8, 240, 240, 22)
-    s += svg_close()
-    write(ASSETS / "modular" / "nature" / "grass.svg", s)
-
-
-def make_tree():
-    w = h = TILE
-    s = svg_open(w, h, "Tree")
-    s += soft_shadow(128, 210, 40, 12)
-    s += round_rect(118, 140, 20, 70, 8, C["trunk"])
-    s += round_rect(122, 145, 12, 60, 5, C["trunk_dark"])
-    s += circle(128, 110, 55, C["tree_canopy"])
-    s += circle(100, 120, 30, C["tree_canopy_dark"])
-    s += circle(150, 95, 28, C["grass_light"])
-    s += circle(130, 85, 22, C["tree_canopy"])
-    s += svg_close()
-    write(ASSETS / "modular" / "nature" / "tree.svg", s)
-
-
-def make_bush():
-    w = h = TILE
-    s = svg_open(w, h, "Bush")
-    s += soft_shadow(128, 180, 50, 12)
-    s += circle(100, 140, 40, C["bush"])
-    s += circle(140, 145, 42, C["bush_dark"])
-    s += circle(120, 120, 36, C["bush"])
-    s += circle(110, 130, 6, C["orange_roof"])
-    s += circle(145, 135, 5, C["orange_roof"])
-    s += circle(125, 150, 4, C["yellow"])
-    s += svg_close()
-    write(ASSETS / "modular" / "nature" / "bush.svg", s)
-
-
-def make_bench():
-    w = h = TILE
-    s = svg_open(w, h, "Bench")
-    s += soft_shadow(128, 170, 55, 10)
-    s += round_rect(60, 120, 136, 28, 12, C["red"])
-    s += round_rect(60, 120, 136, 10, 8, C["red_dark"])
-    s += round_rect(72, 148, 10, 22, 3, C["black"])
-    s += round_rect(174, 148, 10, 22, 3, C["black"])
-    s += svg_close()
-    write(ASSETS / "modular" / "props" / "bench.svg", s)
-
-
-def make_lamp_post():
-    w = h = TILE
-    s = svg_open(w, h, "Lamp Post")
-    s += soft_shadow(128, 220, 18, 8)
-    s += round_rect(122, 60, 12, 160, 5, C["dark_grey"])
-    s += round_rect(124, 65, 8, 150, 4, C["charcoal"])
-    s += ellipse(128, 50, 28, 18, C["yellow"])
-    s += ellipse(128, 48, 20, 12, C["lemon"])
-    s += circle(128, 48, 6, C["white"])
-    s += svg_close()
-    write(ASSETS / "modular" / "props" / "lamp-post.svg", s)
-
-
-def make_dustbin():
-    w = h = TILE
-    s = svg_open(w, h, "Dustbin")
-    s += soft_shadow(128, 200, 28, 10)
-    s += round_rect(100, 90, 56, 100, 18, C["bush"])
-    s += round_rect(108, 90, 48, 100, 16, C["bush_dark"])
-    s += round_rect(100, 90, 56, 24, 12, C["green_dark"])
-    # recycle mark
-    s += round_rect(114, 125, 28, 28, 6, C["yellow"])
-    s += path("M120,132 L136,132 L128,148 Z", C["bush"])
-    s += svg_close()
-    write(ASSETS / "modular" / "props" / "dustbin.svg", s)
-
-
-def make_bus_shelter():
-    w = h = TILE
-    s = svg_open(w, h, "Bus Shelter")
-    s += soft_shadow(128, 210, 80, 12)
-    s += round_rect(40, 180, 176, 40, 12, C["pavement"])
-    s += round_rect(50, 70, 156, 30, 12, C["blue_awning"])
-    s += round_rect(55, 92, 146, 12, 4, C["blue_awning_side"])
-    s += round_rect(60, 100, 10, 80, 4, C["dark_grey"])
-    s += round_rect(186, 100, 10, 80, 4, C["dark_grey"])
-    s += round_rect(85, 150, 86, 18, 8, C["red"])
-    s += svg_close()
-    write(ASSETS / "modular" / "props" / "bus-shelter.svg", s)
-
-
-def make_mrt_entrance():
-    w = h = TILE
-    s = svg_open(w, h, "MRT Entrance")
-    s += soft_shadow(128, 210, 70, 12)
-    s += round_rect(50, 160, 156, 60, 14, C["pavement"])
-    # Canopy
-    s += round_rect(70, 70, 116, 40, 12, C["mrt_green"])
-    s += round_rect(75, 100, 106, 14, 5, C["mrt_green_dark"])
-    # Stairs into ground
-    for i in range(4):
-        s += round_rect(90 + i * 4, 120 + i * 10, 76 - i * 8, 12, 3, C["dark_grey"] if i % 2 == 0 else C["charcoal"])
-    s += circle(128, 85, 10, C["white"])
-    s += circle(128, 85, 6, C["mrt_red"])
-    s += svg_close()
-    write(ASSETS / "modular" / "props" / "mrt-entrance.svg", s)
-
-
-# ---------------------------------------------------------------------------
-# MODULAR — ARCHITECTURE PIECES
-# ---------------------------------------------------------------------------
-
-def make_hdb_corridor():
-    w = h = TILE
-    s = svg_open(w, h, "HDB Corridor")
-    s += soft_shadow(128, 200, 100, 10)
-    # Floor
-    s += round_rect(20, 140, 216, 60, 10, C["pavement"])
-    # Back wall
-    s += round_rect(20, 60, 216, 90, 8, C["cream"])
-    # Parapet railing
-    s += round_rect(20, 140, 216, 12, 4, C["blue"])
-    # Doors
-    for x in (50, 110, 170):
-        s += round_rect(x, 85, 36, 55, 6, C["dark_grey"])
-        s += round_rect(x + 6, 95, 24, 20, 3, C["blue_window"])
-    s += svg_close()
-    write(ASSETS / "modular" / "architecture" / "hdb-corridor.svg", s)
-
-
-def make_roof_red():
-    w = h = TILE
-    s = svg_open(w, h, "Roof Red")
-    s += path("M30,140 L128,50 L226,140 L200,150 L128,80 L56,150 Z", C["red_roof"])
-    s += path("M56,150 L128,80 L200,150 L226,140 L128,180 Z", C["red_roof_side"])
-    s += round_rect(40, 140, 176, 20, 6, C["red_dark"])
-    s += svg_close()
-    write(ASSETS / "modular" / "architecture" / "roof-red.svg", s)
-
-
-def make_roof_orange():
-    w = h = TILE
-    s = svg_open(w, h, "Roof Orange Tiled")
-    s += path("M30,140 L128,50 L226,140 L200,150 L128,80 L56,150 Z", C["orange_roof"])
-    s += path("M56,150 L128,80 L200,150 L226,140 L128,180 Z", C["orange_roof_side"])
-    # Tile ridges
-    for i in range(4):
-        y = 100 + i * 14
-        s += path(
-            f"M{70+i*8:.0f},{y:.0f} L128,{y-30:.0f} L{186-i*8:.0f},{y:.0f} L128,{y+8:.0f} Z",
-            C["orange_tile"] if i % 2 == 0 else C["orange_roof"],
-        )
-    s += round_rect(40, 140, 176, 20, 6, C["orange_roof_side"])
-    s += svg_close()
-    write(ASSETS / "modular" / "architecture" / "roof-orange.svg", s)
-
-
-def make_roof_blue():
-    w = h = TILE
-    s = svg_open(w, h, "Roof Blue")
-    s += path("M30,140 L128,50 L226,140 L200,150 L128,80 L56,150 Z", C["blue"])
-    s += path("M56,150 L128,80 L200,150 L226,140 L128,180 Z", C["blue_dark"])
-    s += round_rect(40, 140, 176, 20, 6, C["blue_dark"])
-    s += svg_close()
-    write(ASSETS / "modular" / "architecture" / "roof-blue.svg", s)
-
-
-def make_wall():
-    w = h = TILE
-    s = svg_open(w, h, "Wall Front")
-    s += soft_shadow(128, 210, 90, 10)
-    s += round_rect(40, 50, 160, 160, 14, C["cream"])
-    s += round_rect(200, 60, 30, 150, 8, C["cream_side"])
-    s += svg_close()
-    write(ASSETS / "modular" / "architecture" / "wall.svg", s)
-
-
-def make_wall_side():
-    w = h = TILE
-    s = svg_open(w, h, "Wall Side")
-    s += soft_shadow(128, 210, 50, 10)
-    s += round_rect(90, 50, 80, 160, 12, C["cream_side"])
-    s += svg_close()
-    write(ASSETS / "modular" / "architecture" / "wall-side.svg", s)
-
-
-def make_door():
-    w = h = TILE
-    s = svg_open(w, h, "Door")
-    s += soft_shadow(128, 200, 30, 8)
-    s += round_rect(95, 60, 66, 140, 12, C["dark_grey"])
-    s += round_rect(105, 75, 46, 50, 6, C["blue_window"])
-    s += circle(145, 140, 5, C["yellow"])
-    s += svg_close()
-    write(ASSETS / "modular" / "architecture" / "door.svg", s)
-
-
-def make_window():
-    w = h = TILE
-    s = svg_open(w, h, "Window")
-    s += soft_shadow(128, 160, 40, 8)
-    s += round_rect(70, 70, 116, 100, 12, C["cream"])
-    s += round_rect(82, 82, 92, 76, 8, C["blue_window"])
-    # muntin
-    s += round_rect(124, 82, 6, 76, 2, C["white"])
-    s += round_rect(82, 116, 92, 6, 2, C["white"])
-    s += svg_close()
-    write(ASSETS / "modular" / "architecture" / "window.svg", s)
-
-
-def make_window_blue_accent():
-    w = h = TILE
-    s = svg_open(w, h, "Window Blue Accent")
-    s += soft_shadow(128, 160, 40, 8)
-    s += round_rect(70, 70, 116, 100, 12, C["blue"])
-    s += round_rect(82, 82, 92, 76, 8, C["blue_window"])
-    s += round_rect(124, 82, 6, 76, 2, C["white"])
-    s += round_rect(82, 116, 92, 6, 2, C["white"])
-    s += svg_close()
-    write(ASSETS / "modular" / "architecture" / "window-blue-accent.svg", s)
-
-
-def make_awning():
-    w = h = TILE
-    s = svg_open(w, h, "Awning")
-    s += soft_shadow(128, 150, 80, 10)
-    s += round_rect(40, 90, 176, 40, 12, C["blue_awning"])
-    s += round_rect(48, 120, 160, 14, 5, C["blue_awning_side"])
-    s += svg_close()
-    write(ASSETS / "modular" / "architecture" / "awning.svg", s)
-
-
-# ---------------------------------------------------------------------------
-# Manifest + Preview
-# ---------------------------------------------------------------------------
-
-MANIFEST = {
-    "name": "Singapore Neighbourhood Modular Asset Pack",
-    "version": "1.0.0",
-    "style": {
-        "description": "Clean Nintendo-like vector cartoon (Animal Crossing / Townscaper)",
-        "perspective": "dimetric 3/4 top-down",
-        "outlines": False,
-        "shading": "two-tone front/side only",
-        "corners": "soft rounded",
-        "background": "transparent",
-    },
-    "grid": {
-        "tileSize": TILE,
-        "buildingSize": BUILDING,
-        "units": "px",
-        "pivot": "bottom-center",
-    },
-    "palette": C,
-    "categories": {},
-}
-
-
-def collect_manifest():
-    cats = {
-        "food-retail": "Food & Retail",
-        "transportation": "Transportation",
-        "healthcare": "Healthcare",
-        "community": "Community",
-        "residential": "Residential",
-        "modular/roads": "Roads",
-        "modular/pavements": "Pavements",
-        "modular/nature": "Nature",
-        "modular/props": "Props",
-        "modular/architecture": "Architecture Modules",
-    }
-    for rel, title in cats.items():
-        folder = ASSETS / rel
-        files = sorted(folder.glob("*.svg")) if folder.exists() else []
+def collect_assets():
+    cats = {}
+    for folder in [
+        "ground", "nature", "props", "architecture",
+        "locations/food-retail", "locations/transportation",
+        "locations/healthcare", "locations/community", "locations/residential",
+    ]:
+        path = TILESET / folder
         assets = []
-        for f in files:
+        for f in sorted(path.glob("*.svg")):
             text = f.read_text(encoding="utf-8")
-            size = BUILDING if f'width="{BUILDING}"' in text else TILE
-            assets.append(
-                {
-                    "id": f.stem,
-                    "file": str(f.relative_to(ROOT)).replace("\\", "/"),
-                    "size": size,
-                }
-            )
-        MANIFEST["categories"][rel] = {"title": title, "assets": assets}
+            # parse width/height
+            import re
+            m = re.search(r'width="(\d+)".*?height="(\d+)"', text)
+            w = int(m.group(1)) if m else T
+            h = int(m.group(2)) if m else T
+            assets.append({
+                "id": f.stem,
+                "file": str(f.relative_to(ROOT)).replace("\\", "/"),
+                "width": w,
+                "height": h,
+                "tilesW": w // T,
+                "tilesH": h // T,
+            })
+        cats[folder] = assets
+    return cats
 
 
-def make_preview_html():
-    collect_manifest()
-    write(ROOT / "manifest.json", json.dumps(MANIFEST, indent=2) + "\n")
+def write_manifest(cats):
+    titles = {
+        "ground": "Ground (64×64 seamless)",
+        "nature": "Nature",
+        "props": "Props",
+        "architecture": "Architecture Modules",
+        "locations/food-retail": "Food & Retail",
+        "locations/transportation": "Transportation",
+        "locations/healthcare": "Healthcare",
+        "locations/community": "Community",
+        "locations/residential": "Residential",
+    }
+    manifest = {
+        "name": "Singapore Neighbourhood 64px Modular Tileset",
+        "version": "2.0.0",
+        "tileSize": T,
+        "style": {
+            "perspective": "dimetric 3/4 top-down",
+            "outlines": False,
+            "shading": "two-tone + soft coloured shadows",
+            "corners": "soft rounded",
+            "background": "transparent",
+        },
+        "palette": C,
+        "categories": {
+            k: {"title": titles.get(k, k), "assets": v} for k, v in cats.items()
+        },
+    }
+    write(ROOT / "manifest.json", json.dumps(manifest, indent=2) + "\n")
+    return manifest
 
+
+def make_preview(manifest):
     sections = []
-    for rel, data in MANIFEST["categories"].items():
+    for key, data in manifest["categories"].items():
         cards = []
         for a in data["assets"]:
-            size = a["size"]
-            cards.append(
-                f"""
+            cards.append(f"""
         <figure class="card">
-          <div class="tile" style="--s:{size}px">
-            <img src="../{a['file']}" alt="{a['id']}" width="{size}" height="{size}"/>
-          </div>
-          <figcaption>{a['id']}<span>{size}×{size}</span></figcaption>
-        </figure>"""
-            )
-        sections.append(
-            f"""
+          <div class="tile"><img src="../{a['file']}" alt="{a['id']}"/></div>
+          <figcaption>{a['id']}<span>{a['width']}×{a['height']} · {a['tilesW']}×{a['tilesH']} tiles</span></figcaption>
+        </figure>""")
+        sections.append(f"""
       <section>
         <h2>{data['title']}</h2>
-        <div class="grid">{''.join(cards)}
-        </div>
-      </section>"""
-        )
+        <div class="grid">{''.join(cards)}</div>
+      </section>""")
 
     html = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>SG Neighbourhood Asset Pack — Preview</title>
+<title>SG 64px Modular Tileset</title>
 <style>
   :root {{
-    --bg: #E8F0E9;
-    --ink: #2C3A2E;
-    --muted: #5A6B5C;
-    --panel: #F7FBF7;
-    --tile-bg: repeating-conic-gradient(#dfe8e0 0% 25%, #f4f8f4 0% 50%) 50% / 16px 16px;
+    --bg: #E4EFE5; --ink: #2A3A2C; --muted: #5A6B5C; --panel: #F6FBF6;
+    --check: repeating-conic-gradient(#d8e4d9 0% 25%, #f3f8f3 0% 50%) 50%/14px 14px;
   }}
   * {{ box-sizing: border-box; margin: 0; padding: 0; }}
   body {{
-    font-family: "Avenir Next", "Segoe UI", "Nunito", sans-serif;
-    background:
-      radial-gradient(ellipse at 20% 0%, #d4ecd8 0%, transparent 50%),
-      radial-gradient(ellipse at 90% 10%, #fde8d8 0%, transparent 40%),
-      var(--bg);
-    color: var(--ink);
-    min-height: 100vh;
-    padding: 48px 32px 80px;
+    font-family: "Avenir Next","Segoe UI",Nunito,sans-serif;
+    background: radial-gradient(ellipse at 15% 0%,#cfe8d4,transparent 45%),
+                radial-gradient(ellipse at 90% 5%,#fde6d4,transparent 40%), var(--bg);
+    color: var(--ink); padding: 40px 28px 72px;
   }}
-  header {{ max-width: 1200px; margin: 0 auto 48px; }}
-  header h1 {{
-    font-size: clamp(2rem, 4vw, 3rem);
-    font-weight: 800;
-    letter-spacing: -0.03em;
-    margin-bottom: 8px;
-  }}
-  header p {{ color: var(--muted); max-width: 52ch; line-height: 1.5; font-size: 1.05rem; }}
-  .meta {{ display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }}
-  .meta span {{
-    background: var(--panel); border-radius: 999px; padding: 6px 14px;
-    font-size: 0.85rem; color: var(--muted);
-  }}
-  section {{ max-width: 1200px; margin: 0 auto 40px; }}
-  h2 {{
-    font-size: 1.25rem; margin-bottom: 16px; padding-bottom: 8px;
-    border-bottom: 2px solid #c5d9c7;
-  }}
-  .grid {{
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 20px;
-  }}
-  .card {{
-    background: var(--panel); border-radius: 20px; padding: 16px;
-    display: flex; flex-direction: column; align-items: center; gap: 12px;
-  }}
-  .tile {{
-    width: 100%; aspect-ratio: 1; background: var(--tile-bg);
-    border-radius: 14px; display: grid; place-items: center; overflow: hidden;
-  }}
-  .tile img {{ width: 90%; height: 90%; object-fit: contain; }}
-  figcaption {{
-    font-size: 0.8rem; font-weight: 600; text-align: center;
-    display: flex; flex-direction: column; gap: 2px;
-  }}
-  figcaption span {{ font-weight: 500; color: var(--muted); font-size: 0.7rem; }}
-  .hero {{
-    max-width: 1200px; margin: 0 auto 48px;
-    border-radius: 24px; overflow: hidden;
-    background: var(--panel); padding: 12px;
-  }}
-  .hero img {{ width: 100%; height: auto; border-radius: 16px; display: block; }}
+  header {{ max-width: 1100px; margin: 0 auto 36px; }}
+  h1 {{ font-size: clamp(1.8rem,3.5vw,2.6rem); font-weight: 800; letter-spacing: -.03em; }}
+  header p {{ color: var(--muted); margin-top: 8px; max-width: 54ch; line-height: 1.5; }}
+  .meta {{ display:flex; flex-wrap:wrap; gap:8px; margin-top:16px; }}
+  .meta span {{ background:var(--panel); border-radius:999px; padding:5px 12px; font-size:.8rem; color:var(--muted); }}
+  .hero {{ max-width:1100px; margin:0 auto 40px; background:var(--panel); border-radius:20px; padding:10px; }}
+  .hero img {{ width:100%; border-radius:14px; display:block; image-rendering:auto; }}
+  section {{ max-width:1100px; margin:0 auto 36px; }}
+  h2 {{ font-size:1.15rem; margin-bottom:12px; padding-bottom:6px; border-bottom:2px solid #c4d8c6; }}
+  .grid {{ display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:14px; }}
+  .card {{ background:var(--panel); border-radius:16px; padding:12px; display:flex; flex-direction:column; align-items:center; gap:8px; }}
+  .tile {{ width:100%; aspect-ratio:1; background:var(--check); border-radius:10px; display:grid; place-items:center; }}
+  .tile img {{ max-width:88%; max-height:88%; image-rendering:auto; }}
+  figcaption {{ font-size:.72rem; font-weight:600; text-align:center; display:flex; flex-direction:column; gap:2px; }}
+  figcaption span {{ font-weight:500; color:var(--muted); font-size:.65rem; }}
 </style>
 </head>
 <body>
   <header>
-    <h1>Singapore Neighbourhood Pack</h1>
-    <p>Modular game-ready vector tiles — clean Nintendo-like style, soft pastels, no outlines, dimetric 3/4 view. Transparent backgrounds, {TILE}px / {BUILDING}px grid.</p>
+    <h1>Singapore 64px Modular Tileset</h1>
+    <p>Game-ready Nintendo-like vector tiles. Seamless 64×64 ground, modular architecture pieces, multi-tile locations. Transparent SVG + PNG.</p>
     <div class="meta">
-      <span>No outlines</span>
-      <span>Two-tone shading</span>
-      <span>Rounded corners</span>
-      <span>Transparent SVG + PNG</span>
-      <span>Unity / Figma</span>
+      <span>64×64 grid</span><span>No outlines</span><span>Soft pastel</span>
+      <span>Dimetric 3/4</span><span>Unity / Figma</span>
     </div>
   </header>
-  <div class="hero">
-    <img src="renders/sample-neighbourhood.png" alt="Sample neighbourhood composition"/>
-  </div>
+  <div class="hero"><img src="renders/sample-neighbourhood.png" alt="Sample scene"/></div>
   {''.join(sections)}
 </body>
-</html>
-"""
+</html>"""
     write(ROOT / "preview" / "index.html", html)
 
 
-def _svg_inner(path: Path) -> str:
-    """Extract drawable content from an asset SVG (strip xml/svg wrappers)."""
+def _inner(path: Path) -> str:
     text = path.read_text(encoding="utf-8")
     start = text.find(">", text.find("<svg")) + 1
     end = text.rfind("</svg>")
@@ -1253,183 +977,194 @@ def _svg_inner(path: Path) -> str:
 
 
 def make_sample_scene():
-    """Compose a neighbourhood demo by inlining modular tiles (no external refs)."""
-    W, H = 1280, 960
-    s = svg_open(W, H, "Sample Neighbourhood Scene")
-    s += f'  <rect width="{W}" height="{H}" fill="#E5F0E6"/>\n'
+    W, H = 20 * T, 14 * T  # 1280×896
+    s = f'  <rect width="{W}" height="{H}" fill="#DCECDC"/>\n'
 
-    def place(rel: str, x: float, y: float, size: float):
+    def place(rel, x, y, nw=None, nh=None):
         src = ROOT / rel
         if not src.exists():
             return ""
-        # Detect native size
-        native = BUILDING if f'width="{BUILDING}"' in src.read_text(encoding="utf-8")[:300] else TILE
-        scale = size / native
-        inner = _svg_inner(src)
-        return (
-            f'  <g transform="translate({x},{y}) scale({scale:.4f})">\n'
-            f"{inner}\n"
-            f"  </g>\n"
-        )
+        import re
+        text = src.read_text(encoding="utf-8")
+        m = re.search(r'width="(\d+)".*?height="(\d+)"', text)
+        sw = int(m.group(1)) if m else T
+        sh = int(m.group(2)) if m else T
+        sx = (nw or sw) / sw
+        sy = (nh or sh) / sh
+        return f'  <g transform="translate({x},{y}) scale({sx:.4f},{sy:.4f})">\n{_inner(src)}\n  </g>\n'
 
-    # Grass grid
-    for gy in range(0, H, 256):
-        for gx in range(0, W, 256):
-            s += place("assets/modular/nature/grass.svg", gx, gy, 256)
+    # grass field
+    for gy in range(0, H, T):
+        for gx in range(0, W, T):
+            s += place("tileset/ground/grass.svg", gx, gy)
 
-    # Roads
-    for x in range(0, W, 256):
-        s += place("assets/modular/roads/road-straight-h.svg", x, 352, 256)
-    for y in range(0, H, 256):
-        s += place("assets/modular/roads/road-straight.svg", 512, y, 256)
-    s += place("assets/modular/roads/road-crossroads.svg", 512, 352, 256)
-    s += place("assets/modular/roads/zebra-crossing.svg", 256, 352, 256)
+    # roads
+    road_y = 6 * T
+    road_x = 10 * T
+    for x in range(0, W, T):
+        s += place("tileset/ground/road-h.svg", x, road_y)
+    for y in range(0, H, T):
+        s += place("tileset/ground/road-v.svg", road_x, y)
+    s += place("tileset/ground/road-cross.svg", road_x, road_y)
+    s += place("tileset/ground/zebra-h.svg", 6 * T, road_y)
 
-    # Locations
-    s += place("assets/food-retail/hawker-centre.svg", 20, 20, 340)
-    s += place("assets/food-retail/ntuc-fairprice.svg", 780, 20, 320)
-    s += place("assets/transportation/mrt-station.svg", 760, 500, 320)
-    s += place("assets/residential/hdb-void-deck.svg", 20, 540, 300)
-    s += place("assets/community/community-club.svg", 300, 560, 260)
-    s += place("assets/modular/nature/tree.svg", 680, 180, 130)
-    s += place("assets/modular/nature/tree.svg", 180, 260, 110)
-    s += place("assets/modular/nature/bush.svg", 620, 280, 90)
-    s += place("assets/modular/props/bench.svg", 400, 240, 100)
-    s += place("assets/modular/props/lamp-post.svg", 470, 260, 90)
-    s += place("assets/modular/props/dustbin.svg", 640, 300, 80)
-    s += place("assets/transportation/bus-stop.svg", 720, 280, 150)
-    s += place("assets/healthcare/guardian.svg", 900, 300, 160)
+    # pavement strip near road
+    for x in range(0, W, T):
+        if abs(x - road_x) > T:
+            s += place("tileset/ground/pavement.svg", x, road_y - T)
+            s += place("tileset/ground/pavement.svg", x, road_y + T)
 
-    s += svg_close()
-    write(ROOT / "preview" / "sample-neighbourhood.svg", s)
+    # locations
+    s += place("tileset/locations/food-retail/hawker-centre.svg", T, T)
+    s += place("tileset/locations/food-retail/ntuc-fairprice.svg", 13 * T, T)
+    s += place("tileset/locations/transportation/mrt-station.svg", 13 * T, 8 * T)
+    s += place("tileset/locations/residential/hdb-void-deck.svg", T, 8 * T)
+    s += place("tileset/locations/community/community-club.svg", 5 * T, 8 * T)
+    s += place("tileset/locations/healthcare/guardian.svg", 16 * T, 5 * T)
+
+    # props
+    s += place("tileset/nature/tree.svg", 9 * T, 3 * T)
+    s += place("tileset/nature/tree.svg", 4 * T, 4 * T)
+    s += place("tileset/nature/bush.svg", 8 * T, 4 * T)
+    s += place("tileset/props/bench.svg", 7 * T, 3 * T)
+    s += place("tileset/props/lamp.svg", 9 * T, 5 * T)
+    s += place("tileset/props/bin.svg", 8 * T, 5 * T)
+    s += place("tileset/locations/transportation/bus-stop.svg", 11 * T, 5 * T)
+    s += place("tileset/props/flagpole.svg", 8 * T, 9 * T)
+    s += place("tileset/props/notice-board.svg", 4 * T, 10 * T)
+
+    write(ROOT / "preview" / "sample-neighbourhood.svg", svg(W, H, "Sample Neighbourhood", s))
 
 
 def export_pngs():
     try:
         import cairosvg
     except ImportError:
-        print("  (cairosvg not installed — skipping PNG export)")
+        print("  (skip PNG — install cairosvg)")
         return
 
-    png_root = ASSETS / "png"
+    png_root = TILESET / "png"
     renders = ROOT / "preview" / "renders"
     renders.mkdir(parents=True, exist_ok=True)
 
-    for svg in sorted(ASSETS.rglob("*.svg")):
-        if "png" in svg.parts:
+    for svg_path in sorted(TILESET.rglob("*.svg")):
+        if "png" in svg_path.parts:
             continue
-        rel = svg.relative_to(ASSETS)
+        rel = svg_path.relative_to(TILESET)
         out = png_root / rel.with_suffix(".png")
         out.parent.mkdir(parents=True, exist_ok=True)
-        text = svg.read_text(encoding="utf-8")
-        size = BUILDING if f'width="{BUILDING}"' in text else TILE
-        cairosvg.svg2png(url=str(svg), write_to=str(out), output_width=size, output_height=size)
+        import re
+        text = svg_path.read_text(encoding="utf-8")
+        m = re.search(r'width="(\d+)".*?height="(\d+)"', text)
+        w = int(m.group(1)) if m else T
+        h = int(m.group(2)) if m else T
+        # export at 2× for crisp Unity import option, but also native
+        cairosvg.svg2png(url=str(svg_path), write_to=str(out), output_width=w, output_height=h)
 
     sample = ROOT / "preview" / "sample-neighbourhood.svg"
     if sample.exists():
-        cairosvg.svg2png(
-            url=str(sample),
-            write_to=str(renders / "sample-neighbourhood.png"),
-            output_width=1280,
-            output_height=960,
-        )
+        cairosvg.svg2png(url=str(sample), write_to=str(renders / "sample-neighbourhood.png"),
+                         output_width=1280, output_height=896)
 
-    # Key QA renders
     for rel in [
-        "food-retail/hawker-centre.svg",
-        "food-retail/ntuc-fairprice.svg",
-        "transportation/mrt-station.svg",
-        "residential/neighbourhood-park.svg",
-        "residential/hdb-void-deck.svg",
-        "community/community-club.svg",
-        "modular/roads/road-crossroads.svg",
-        "modular/nature/tree.svg",
-        "modular/props/bench.svg",
-        "healthcare/polyclinic.svg",
+        "locations/food-retail/hawker-centre.svg",
+        "locations/food-retail/ntuc-fairprice.svg",
+        "locations/transportation/mrt-station.svg",
+        "locations/residential/hdb-void-deck.svg",
+        "locations/residential/neighbourhood-park.svg",
+        "locations/community/community-club.svg",
+        "ground/road-cross.svg",
+        "ground/grass.svg",
+        "nature/tree.svg",
+        "props/bench.svg",
+        "architecture/wall-hdb-window.svg",
     ]:
-        src = ASSETS / rel
+        src = TILESET / rel
         if src.exists():
-            cairosvg.svg2png(
-                url=str(src),
-                write_to=str(renders / f"{src.stem}.png"),
-                output_width=512,
-                output_height=512,
-            )
-    print("  ✓ assets/png/** + preview/renders/**")
+            import re
+            text = src.read_text(encoding="utf-8")
+            m = re.search(r'width="(\d+)".*?height="(\d+)"', text)
+            w = int(m.group(1)) if m else T
+            h = int(m.group(2)) if m else T
+            scale = max(2, 256 // max(w, h))
+            cairosvg.svg2png(url=str(src), write_to=str(renders / f"{src.stem}.png"),
+                             output_width=w * scale, output_height=h * scale)
+    print("  ✓ tileset/png/** + preview/renders/**")
 
 
 def main():
-    print("Generating Singapore Neighbourhood Asset Pack...\n")
+    print("Generating 64×64 Singapore Modular Tileset...\n")
 
-    # Food & Retail
-    make_hawker()
-    make_wet_market()
-    make_fairprice()
-    make_sheng_siong()
+    # Ground
+    ground_grass()
+    ground_pavement()
+    ground_road_h()
+    ground_road_v()
+    ground_road_corner()
+    ground_road_t()
+    ground_road_cross()
+    ground_road_roundabout()
+    ground_zebra_h()
+    ground_zebra_v()
 
-    # Transportation
-    make_mrt_station()
-    make_bus_interchange()
-    make_bus_stop()
-    make_taxi_pickup()
+    # Nature / props
+    prop_tree()
+    prop_bush()
+    prop_bench()
+    prop_lamp()
+    prop_bin()
+    prop_bus_shelter()
+    prop_mrt_entrance()
+    prop_table_set()
+    prop_notice_board()
+    prop_flagpole()
+    prop_letterbox()
+    prop_atm()
 
-    # Healthcare
-    make_polyclinic()
-    make_gp_clinic()
-    make_pharmacy("Guardian", C["guardian_green"], C["guardian_green_dark"], "guardian.svg", "G")
-    make_pharmacy("Watsons", C["watsons_blue"], C["watsons_blue_dark"], "watsons.svg", "W")
-    make_pharmacy("Unity Pharmacy", C["unity_orange"], C["unity_orange_dark"], "unity-pharmacy.svg", "U")
+    # Architecture
+    arch_wall()
+    arch_wall_window()
+    arch_wall_door()
+    arch_wall_blue_window()
+    arch_roof("Roof Red", "roof-red.svg", C["red_roof"], C["red_roof_side"])
+    arch_roof("Roof Orange", "roof-orange.svg", C["orange_roof"], C["orange_roof_side"])
+    arch_roof("Roof Blue", "roof-blue.svg", C["blue"], C["blue_dark"])
+    arch_door()
+    arch_window()
+    arch_awning()
+    arch_hdb_corridor()
+    arch_void_deck_pillar()
 
-    # Community
-    make_community_club()
-    make_singpost()
-    make_bank()
-    make_atm()
+    # Locations
+    loc_hawker()
+    loc_wet_market()
+    loc_fairprice()
+    loc_sheng()
+    loc_mrt()
+    loc_bus_interchange()
+    loc_bus_stop()
+    loc_taxi()
+    loc_polyclinic()
+    loc_gp()
+    loc_pharmacy("Guardian", "guardian.svg", C["guardian"], C["guardian_dark"], "G")
+    loc_pharmacy("Watsons", "watsons.svg", C["watsons"], C["watsons_dark"], "W")
+    loc_pharmacy("Unity Pharmacy", "unity.svg", C["unity"], C["unity_dark"], "U")
+    loc_cc()
+    loc_singpost()
+    loc_bank()
+    loc_hdb_void_deck()
+    loc_letterbox_area()
+    loc_park()
+    loc_pcn()
 
-    # Residential
-    make_hdb_void_deck()
-    make_letterbox()
-    make_neighbourhood_park()
-    make_pcn()
-
-    # Modular roads
-    make_road_straight()
-    make_road_straight_h()
-    make_road_corner()
-    make_road_t()
-    make_road_cross()
-    make_road_roundabout()
-    make_zebra()
-    make_zebra_v()
-
-    # Pavements / nature / props
-    make_pavement()
-    make_pavement_corner()
-    make_grass()
-    make_tree()
-    make_bush()
-    make_bench()
-    make_lamp_post()
-    make_dustbin()
-    make_bus_shelter()
-    make_mrt_entrance()
-
-    # Architecture modules
-    make_hdb_corridor()
-    make_roof_red()
-    make_roof_orange()
-    make_roof_blue()
-    make_wall()
-    make_wall_side()
-    make_door()
-    make_window()
-    make_window_blue_accent()
-    make_awning()
-
+    cats = collect_assets()
+    manifest = write_manifest(cats)
     make_sample_scene()
-    make_preview_html()
+    make_preview(manifest)
     export_pngs()
-    print("\nDone.")
+
+    total = sum(len(v) for v in cats.values())
+    print(f"\nDone — {total} tiles on a {T}px grid.")
 
 
 if __name__ == "__main__":

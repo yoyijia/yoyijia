@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" fill="none">
+  <!-- Bank Branch | 128x128 | 64-grid modular tileset -->
+  <rect x="6.00" y="92.00" width="116.00" height="30.00" rx="8" ry="8" fill="#E6E9EE"/>
+  <ellipse cx="60.20" cy="82.00" rx="34.44" ry="6.00" fill="#3A4A3828"/>
+  <rect x="16.00" y="14.00" width="82.00" height="62.00" rx="6" ry="6" fill="#FFFEFB"/>
+  <path d="M98.0,17.0 L98.0,76.0 L114.0,66.4 L114.0,7.4 Z" fill="#F0EBE3"/>
+  <path d="M20.0,14.0 L98.0,14.0 L114.0,4.4 L36.0,4.4 Z" fill="#003DA5"/>
+  <rect x="16.00" y="14.00" width="82.00" height="5.00" rx="2.4000000000000004" ry="2.4000000000000004" fill="#002E7A"/>
+  <rect x="16.00" y="28.00" width="82.00" height="14.00" rx="3" ry="3" fill="#003DA5"/>
+  <rect x="28.00" y="50.00" width="6.00" height="24.00" rx="2" ry="2" fill="#D4CDC0"/>
+  <rect x="44.00" y="50.00" width="6.00" height="24.00" rx="2" ry="2" fill="#D4CDC0"/>
+  <rect x="60.00" y="50.00" width="6.00" height="24.00" rx="2" ry="2" fill="#D4CDC0"/>
+  <rect x="76.00" y="50.00" width="6.00" height="24.00" rx="2" ry="2" fill="#D4CDC0"/>
+  <rect x="50.00" y="58.00" width="14.00" height="20.00" rx="3" ry="3" fill="#5A6270"/>
+</svg>

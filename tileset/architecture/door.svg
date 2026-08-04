@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" fill="none">
+  <!-- Door | 64x64 | 64-grid modular tileset -->
+  <ellipse cx="32.00" cy="56.00" rx="10.00" ry="3.00" fill="#3A4A3828"/>
+  <rect x="18.00" y="8.00" width="28.00" height="46.00" rx="5" ry="5" fill="#5A6270"/>
+  <rect x="22.00" y="12.00" width="20.00" height="16.00" rx="3" ry="3" fill="#8EC4E8"/>
+  <circle cx="38.00" cy="36.00" r="2.50" fill="#F5D56A"/>
+</svg>

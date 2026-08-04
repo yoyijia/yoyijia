@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" fill="none">
+  <!-- Bush | 64x64 | 64-grid modular tileset -->
+  <ellipse cx="32.00" cy="50.00" rx="18.00" ry="5.00" fill="#3A4A3828"/>
+  <circle cx="24.00" cy="38.00" r="14.00" fill="#4F9A4A"/>
+  <circle cx="40.00" cy="40.00" r="15.00" fill="#3E7D3A"/>
+  <circle cx="32.00" cy="30.00" r="13.00" fill="#6BB366"/>
+  <circle cx="28.00" cy="36.00" r="2.50" fill="#E9A06A"/>
+  <circle cx="42.00" cy="38.00" r="2.00" fill="#F5D56A"/>
+</svg>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="192" viewBox="0 0 256 192" fill="none">
+  <!-- Bus Interchange | 256x192 | 64-grid modular tileset -->
+  <rect x="4.00" y="40.00" width="248.00" height="144.00" rx="12" ry="12" fill="#B7BEC8"/>
+  <ellipse cx="123.50" cy="77.00" rx="42.00" ry="6.00" fill="#3A4A3828"/>
+  <rect x="70.00" y="16.00" width="100.00" height="55.00" rx="7" ry="7" fill="#F5F1E8"/>
+  <path d="M170.0,19.0 L170.0,71.0 L187.5,60.5 L187.5,8.5 Z" fill="#E6E0D4"/>
+  <path d="M74.0,16.0 L170.0,16.0 L187.5,5.5 L91.5,5.5 Z" fill="#5B9FD4"/>
+  <rect x="70.00" y="16.00" width="100.00" height="5.00" rx="2.8000000000000003" ry="2.8000000000000003" fill="#4788BB"/>
+  <rect x="70.00" y="28.00" width="100.00" height="14.00" rx="3" ry="3" fill="#5B9FD4"/>
+  <rect x="100.00" y="32.00" width="40.00" height="6.00" rx="2" ry="2" fill="#FFFEFB"/>
+  <rect x="16.00" y="70.00" width="224.00" height="28.00" rx="8" ry="8" fill="#A4ACB8"/>
+  <rect x="28.00" y="80.00" width="24.00" height="6.00" rx="2" ry="2" fill="#F2F5F8"/>
+  <rect x="70.00" y="80.00" width="24.00" height="6.00" rx="2" ry="2" fill="#F2F5F8"/>
+  <rect x="180.00" y="66.00" width="50.00" height="12.00" rx="4" ry="4" fill="#5B9FD4"/>
+  <rect x="188.00" y="80.00" width="34.00" height="10.00" rx="3" ry="3" fill="#F5F1E8"/>
+  <rect x="16.00" y="110.00" width="224.00" height="28.00" rx="8" ry="8" fill="#A4ACB8"/>
+  <rect x="28.00" y="120.00" width="24.00" height="6.00" rx="2" ry="2" fill="#F2F5F8"/>
+  <rect x="70.00" y="120.00" width="24.00" height="6.00" rx="2" ry="2" fill="#F2F5F8"/>
+  <rect x="180.00" y="106.00" width="50.00" height="12.00" rx="4" ry="4" fill="#5B9FD4"/>
+  <rect x="188.00" y="120.00" width="34.00" height="10.00" rx="3" ry="3" fill="#F5F1E8"/>
+  <rect x="16.00" y="150.00" width="224.00" height="28.00" rx="8" ry="8" fill="#A4ACB8"/>
+  <rect x="28.00" y="160.00" width="24.00" height="6.00" rx="2" ry="2" fill="#F2F5F8"/>
+  <rect x="70.00" y="160.00" width="24.00" height="6.00" rx="2" ry="2" fill="#F2F5F8"/>
+  <rect x="180.00" y="146.00" width="50.00" height="12.00" rx="4" ry="4" fill="#5B9FD4"/>
+  <rect x="188.00" y="160.00" width="34.00" height="10.00" rx="3" ry="3" fill="#F5F1E8"/>
+</svg>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" viewBox="0 0 192 192" fill="none">
+  <!-- Wet Market | 192x192 | 64-grid modular tileset -->
+  <rect x="6.00" y="6.00" width="180.00" height="180.00" rx="12" ry="12" fill="#E6E9EE"/>
+  <ellipse cx="88.50" cy="100.10" rx="50.40" ry="6.00" fill="#3A4A3828"/>
+  <rect x="24.00" y="24.10" width="120.00" height="70.00" rx="8" ry="8" fill="#F5F1E8"/>
+  <path d="M144.0,27.1 L144.0,94.1 L166.5,80.6 L166.5,13.6 Z" fill="#E6E0D4"/>
+  <path d="M28.0,24.1 L144.0,24.1 L166.5,10.6 L50.5,10.6 Z" fill="#5B9FD4"/>
+  <rect x="24.00" y="24.10" width="120.00" height="5.00" rx="3.2" ry="3.2" fill="#4788BB"/>
+  <rect x="12.00" y="70.00" width="40.00" height="14.00" rx="4" ry="4" fill="#5B9FD4"/>
+  <rect x="120.00" y="70.00" width="40.00" height="14.00" rx="4" ry="4" fill="#5B9FD4"/>
+  <rect x="28.00" y="100.00" width="36.00" height="24.00" rx="5" ry="5" fill="#F0EBE3"/>
+  <rect x="32.00" y="104.00" width="28.00" height="10.00" rx="3" ry="3" fill="#E56B6B"/>
+  <circle cx="38.00" cy="118.00" r="3.00" fill="#E56B6B"/>
+  <circle cx="50.00" cy="118.00" r="3.00" fill="#F5D56A"/>
+  <rect x="70.00" y="100.00" width="36.00" height="24.00" rx="5" ry="5" fill="#F0EBE3"/>
+  <rect x="74.00" y="104.00" width="28.00" height="10.00" rx="3" ry="3" fill="#F5D56A"/>
+  <circle cx="80.00" cy="118.00" r="3.00" fill="#F5D56A"/>
+  <circle cx="92.00" cy="118.00" r="3.00" fill="#E56B6B"/>
+  <rect x="112.00" y="100.00" width="36.00" height="24.00" rx="5" ry="5" fill="#F0EBE3"/>
+  <rect x="116.00" y="104.00" width="28.00" height="10.00" rx="3" ry="3" fill="#7BC96F"/>
+  <circle cx="122.00" cy="118.00" r="3.00" fill="#7BC96F"/>
+  <circle cx="134.00" cy="118.00" r="3.00" fill="#F5D56A"/>
+  <rect x="28.00" y="136.00" width="36.00" height="24.00" rx="5" ry="5" fill="#F0EBE3"/>
+  <rect x="32.00" y="140.00" width="28.00" height="10.00" rx="3" ry="3" fill="#E9A06A"/>
+  <circle cx="38.00" cy="154.00" r="3.00" fill="#E9A06A"/>
+  <circle cx="50.00" cy="154.00" r="3.00" fill="#F5D56A"/>
+  <rect x="70.00" y="136.00" width="36.00" height="24.00" rx="5" ry="5" fill="#F0EBE3"/>
+  <rect x="74.00" y="140.00" width="28.00" height="10.00" rx="3" ry="3" fill="#5B9FD4"/>
+  <circle cx="80.00" cy="154.00" r="3.00" fill="#5B9FD4"/>
+  <circle cx="92.00" cy="154.00" r="3.00" fill="#F5D56A"/>
+  <rect x="112.00" y="136.00" width="36.00" height="24.00" rx="5" ry="5" fill="#F0EBE3"/>
+  <rect x="116.00" y="140.00" width="28.00" height="10.00" rx="3" ry="3" fill="#ED2939"/>
+  <circle cx="122.00" cy="154.00" r="3.00" fill="#ED2939"/>
+  <circle cx="134.00" cy="154.00" r="3.00" fill="#F5D56A"/>
+</svg>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="64" viewBox="0 0 128 64" fill="none">
+  <!-- Bus Stop | 128x64 | 64-grid modular tileset -->
+  <ellipse cx="64.00" cy="56.00" rx="40.00" ry="5.00" fill="#3A4A3828"/>
+  <rect x="8.00" y="44.00" width="112.00" height="16.00" rx="5" ry="5" fill="#E6E9EE"/>
+  <rect x="16.00" y="8.00" width="80.00" height="14.00" rx="5" ry="5" fill="#5B9FD4"/>
+  <rect x="18.00" y="20.00" width="76.00" height="5.00" rx="2" ry="2" fill="#4788BB"/>
+  <rect x="22.00" y="24.00" width="5.00" height="22.00" rx="2" ry="2" fill="#5A6270"/>
+  <rect x="85.00" y="24.00" width="5.00" height="22.00" rx="2" ry="2" fill="#5A6270"/>
+  <rect x="32.00" y="34.00" width="40.00" height="8.00" rx="3" ry="3" fill="#E56B6B"/>
+  <rect x="108.00" y="4.00" width="6.00" height="48.00" rx="2" ry="2" fill="#5A6270"/>
+  <rect x="100.00" y="2.00" width="22.00" height="18.00" rx="4" ry="4" fill="#5B9FD4"/>
+  <rect x="104.00" y="6.00" width="14.00" height="5.00" rx="1.5" ry="1.5" fill="#FFFEFB"/>
+  <circle cx="111.00" cy="14.00" r="3.50" fill="#FFFEFB"/>
+</svg>

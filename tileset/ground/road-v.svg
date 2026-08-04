@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" fill="none">
+  <!-- Road Vertical | 64x64 | 64-grid modular tileset -->
+  <rect x="0.00" y="0.00" width="64.00" height="64.00" rx="0" ry="0" fill="#B7BEC8"/>
+  <rect x="29.00" y="6.00" width="5.00" height="18.00" rx="2" ry="2" fill="#F2F5F8"/>
+  <rect x="29.00" y="40.00" width="5.00" height="18.00" rx="2" ry="2" fill="#F2F5F8"/>
+</svg>

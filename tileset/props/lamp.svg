@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" fill="none">
+  <!-- Lamp Post | 64x64 | 64-grid modular tileset -->
+  <ellipse cx="32.00" cy="58.00" rx="6.00" ry="3.00" fill="#3A4A3828"/>
+  <rect x="29.00" y="14.00" width="6.00" height="42.00" rx="2" ry="2" fill="#5A6270"/>
+  <rect x="30.00" y="16.00" width="4.00" height="38.00" rx="1.5" ry="1.5" fill="#3D4450"/>
+  <ellipse cx="32.00" cy="12.00" rx="10.00" ry="7.00" fill="#F5D56A"/>
+  <ellipse cx="32.00" cy="11.00" rx="6.00" ry="4.00" fill="#F8E28C"/>
+</svg>

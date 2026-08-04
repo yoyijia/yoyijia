@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" viewBox="0 0 192 192" fill="none">
+  <!-- NTUC FairPrice | 192x192 | 64-grid modular tileset -->
+  <rect x="8.00" y="136.00" width="176.00" height="48.00" rx="10" ry="10" fill="#E6E9EE"/>
+  <ellipse cx="92.00" cy="116.00" rx="50.40" ry="6.00" fill="#3A4A3828"/>
+  <rect x="28.00" y="20.00" width="120.00" height="90.00" rx="8" ry="8" fill="#FFFEFB"/>
+  <path d="M148.0,23.0 L148.0,110.0 L168.0,98.0 L168.0,11.0 Z" fill="#F0EBE3"/>
+  <path d="M32.0,20.0 L148.0,20.0 L168.0,8.0 L52.0,8.0 Z" fill="#E31C23"/>
+  <rect x="28.00" y="20.00" width="120.00" height="5.00" rx="3.2" ry="3.2" fill="#C0151B"/>
+  <rect x="28.00" y="40.00" width="120.00" height="22.00" rx="4" ry="4" fill="#E31C23"/>
+  <rect x="78.00" y="44.00" width="18.00" height="12.00" rx="2" ry="2" fill="#FFFEFB"/>
+  <path d="M76,43 L72,43 L70,48 L76,48 Z" fill="#FFFEFB"/>
+  <circle cx="82.00" cy="58.00" r="3.00" fill="#FFFEFB"/>
+  <circle cx="92.00" cy="58.00" r="3.00" fill="#FFFEFB"/>
+  <rect x="40.00" y="75.00" width="40.00" height="30.00" rx="5" ry="5" fill="#8EC4E8"/>
+  <rect x="96.00" y="75.00" width="40.00" height="30.00" rx="5" ry="5" fill="#8EC4E8"/>
+  <rect x="78.00" y="80.00" width="16.00" height="28.00" rx="4" ry="4" fill="#5A6270"/>
+</svg>

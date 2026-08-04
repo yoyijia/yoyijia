@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" fill="none">
+  <!-- Letterbox Area | 128x128 | 64-grid modular tileset -->
+  <rect x="6.00" y="6.00" width="116.00" height="116.00" rx="10" ry="10" fill="#E6E9EE"/>
+  <ellipse cx="64.00" cy="100.00" rx="36.00" ry="6.00" fill="#3A4A3828"/>
+  <rect x="24.00" y="24.00" width="80.00" height="70.00" rx="6" ry="6" fill="#5A6270"/>
+  <rect x="28.00" y="28.00" width="72.00" height="62.00" rx="4" ry="4" fill="#3D4450"/>
+  <rect x="34.00" y="34.00" width="12.00" height="10.00" rx="2" ry="2" fill="#F5F1E8"/>
+  <rect x="38.00" y="38.00" width="4.00" height="2.00" rx="0.5" ry="0.5" fill="#5A6270"/>
+  <rect x="50.00" y="34.00" width="12.00" height="10.00" rx="2" ry="2" fill="#FFFEFB"/>
+  <rect x="54.00" y="38.00" width="4.00" height="2.00" rx="0.5" ry="0.5" fill="#5A6270"/>
+  <rect x="66.00" y="34.00" width="12.00" height="10.00" rx="2" ry="2" fill="#F5F1E8"/>
+  <rect x="70.00" y="38.00" width="4.00" height="2.00" rx="0.5" ry="0.5" fill="#5A6270"/>
+  <rect x="82.00" y="34.00" width="12.00" height="10.00" rx="2" ry="2" fill="#FFFEFB"/>
+  <rect x="86.00" y="38.00" width="4.00" height="2.00" rx="0.5" ry="0.5" fill="#5A6270"/>
+  <rect x="34.00" y="48.00" width="12.00" height="10.00" rx="2" ry="2" fill="#FFFEFB"/>
+  <rect x="38.00" y="52.00" width="4.00" height="2.00" rx="0.5" ry="0.5" fill="#5A6270"/>
+  <rect x="50.00" y="48.00" width="12.00" height="10.00" rx="2" ry="2" fill="#F5F1E8"/>
+  <rect x="54.00" y="52.00" width="4.00" height="2.00" rx="0.5" ry="0.5" fill="#5A6270"/>
+  <rect x="66.00" y="48.00" width="12.00" height="10.00" rx="2" ry="2" fill="#FFFEFB"/>
+  <rect x="70.00" y="52.00" width="4.00" height="2.00" rx="0.5" ry="0.5" fill="#5A6270"/>
+  <rect x="82.00" y="48.00" width="12.00" height="10.00" rx="2" ry="2" fill="#F5F1E8"/>
+  <rect x="86.00" y="52.00" width="4.00" height="2.00" rx="0.5" ry="0.5" fill="#5A6270"/>
+  <rect x="34.00" y="62.00" width="12.00" height="10.00" rx="2" ry="2" fill="#F5F1E8"/>
+  <rect x="38.00" y="66.00" width="4.00" height="2.00" rx="0.5" ry="0.5" fill="#5A6270"/>
+  <rect x="50.00" y="62.00" width="12.00" height="10.00" rx="2" ry="2" fill="#FFFEFB"/>
+  <rect x="54.00" y="66.00" width="4.00" height="2.00" rx="0.5" ry="0.5" fill="#5A6270"/>
+  <rect x="66.00" y="62.00" width="12.00" height="10.00" rx="2" ry="2" fill="#F5F1E8"/>
+  <rect x="70.00" y="66.00" width="4.00" height="2.00" rx="0.5" ry="0.5" fill="#5A6270"/>
+  <rect x="82.00" y="62.00" width="12.00" height="10.00" rx="2" ry="2" fill="#FFFEFB"/>
+  <rect x="86.00" y="66.00" width="4.00" height="2.00" rx="0.5" ry="0.5" fill="#5A6270"/>
+  <rect x="34.00" y="76.00" width="12.00" height="10.00" rx="2" ry="2" fill="#FFFEFB"/>
+  <rect x="38.00" y="80.00" width="4.00" height="2.00" rx="0.5" ry="0.5" fill="#5A6270"/>
+  <rect x="50.00" y="76.00" width="12.00" height="10.00" rx="2" ry="2" fill="#F5F1E8"/>
+  <rect x="54.00" y="80.00" width="4.00" height="2.00" rx="0.5" ry="0.5" fill="#5A6270"/>
+  <rect x="66.00" y="76.00" width="12.00" height="10.00" rx="2" ry="2" fill="#FFFEFB"/>
+  <rect x="70.00" y="80.00" width="4.00" height="2.00" rx="0.5" ry="0.5" fill="#5A6270"/>
+  <rect x="82.00" y="76.00" width="12.00" height="10.00" rx="2" ry="2" fill="#F5F1E8"/>
+  <rect x="86.00" y="80.00" width="4.00" height="2.00" rx="0.5" ry="0.5" fill="#5A6270"/>
+</svg>

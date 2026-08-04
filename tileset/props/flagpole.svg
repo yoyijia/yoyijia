@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" fill="none">
+  <!-- SG Flagpole | 64x64 | 64-grid modular tileset -->
+  <ellipse cx="20.00" cy="58.00" rx="5.00" ry="3.00" fill="#3A4A3828"/>
+  <rect x="17.00" y="8.00" width="4.00" height="50.00" rx="1.5" ry="1.5" fill="#5A6270"/>
+  <rect x="21.00" y="10.00" width="28.00" height="16.00" rx="2" ry="2" fill="#ED2939"/>
+  <circle cx="30.00" cy="16.00" r="3.50" fill="#FFFEFB"/>
+  <circle cx="31.50" cy="16.00" r="2.50" fill="#ED2939"/>
+</svg>

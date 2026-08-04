@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" fill="none">
+  <!-- Guardian | 128x128 | 64-grid modular tileset -->
+  <rect x="6.00" y="92.00" width="116.00" height="30.00" rx="8" ry="8" fill="#E6E9EE"/>
+  <ellipse cx="59.00" cy="82.00" rx="33.60" ry="6.00" fill="#3A4A3828"/>
+  <rect x="16.00" y="14.00" width="80.00" height="62.00" rx="6" ry="6" fill="#FFFEFB"/>
+  <path d="M96.0,17.0 L96.0,76.0 L111.0,67.0 L111.0,8.0 Z" fill="#F0EBE3"/>
+  <path d="M20.0,14.0 L96.0,14.0 L111.0,5.0 L35.0,5.0 Z" fill="#00A19A"/>
+  <rect x="16.00" y="14.00" width="80.00" height="5.00" rx="2.4000000000000004" ry="2.4000000000000004" fill="#008780"/>
+  <rect x="16.00" y="28.00" width="80.00" height="16.00" rx="3" ry="3" fill="#00A19A"/>
+  <rect x="44.00" y="32.00" width="24.00" height="8.00" rx="3" ry="3" fill="#FFFEFB"/>
+  <rect x="26.00" y="54.00" width="24.00" height="20.00" rx="3" ry="3" fill="#8EC4E8"/>
+  <rect x="60.00" y="56.00" width="16.00" height="22.00" rx="3" ry="3" fill="#5A6270"/>
+</svg>

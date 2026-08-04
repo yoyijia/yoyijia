@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" fill="none">
-  <!-- Pavement Corner | tile 256x256 | dimetric vector | transparent bg -->
-  <path d="M8,8 h240 v120 a112,112 0 0 1 -112,112 H8 Z" fill="#E8EBEF"/>
-</svg>

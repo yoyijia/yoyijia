@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" fill="none">
+  <!-- Roof Red | 64x64 | 64-grid modular tileset -->
+  <path d="M4,40 L32,10 L60,40 L50,44 L32,22 L14,44 Z" fill="#E88778"/>
+  <path d="M14,44 L32,22 L50,44 L60,40 L32,54 Z" fill="#D06E60"/>
+  <rect x="8.00" y="40.00" width="48.00" height="8.00" rx="3" ry="3" fill="#D06E60"/>
+</svg>

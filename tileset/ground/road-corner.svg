@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" fill="none">
+  <!-- Road Corner | 64x64 | 64-grid modular tileset -->
+  <rect x="0.00" y="0.00" width="64.00" height="64.00" rx="0" ry="0" fill="#7BC96F"/>
+  <rect x="0.00" y="16.00" width="64.00" height="32.00" rx="0" ry="0" fill="#B7BEC8"/>
+  <rect x="16.00" y="16.00" width="32.00" height="48.00" rx="0" ry="0" fill="#B7BEC8"/>
+  <circle cx="16.00" cy="16.00" r="0.00" fill="#B7BEC8"/>
+  <rect x="8.00" y="28.00" width="14.00" height="6.00" rx="2" ry="2" fill="#F2F5F8"/>
+  <rect x="28.00" y="40.00" width="6.00" height="14.00" rx="2" ry="2" fill="#F2F5F8"/>
+</svg>

@@ -1,100 +1,63 @@
-# Singapore Neighbourhood Modular Asset Pack
+# Singapore Neighbourhood — 64px Modular Tileset
 
-Clean Nintendo-like vector tiles for Singapore neighbourhood scenes — soft pastels, **no outlines**, minimal two-tone shading, rounded corners, dimetric 3/4 top-down view.
+Clean Nintendo-like vector tileset for Singapore neighbourhood maps.
 
-Designed for **Unity**, **Figma**, and grid-based map editors.
+**64×64 base grid** · soft pastels · no outlines · dimetric 3/4 · transparent SVG + PNG
 
 ## Quick start
 
 ```bash
+pip install -r requirements.txt
 python3 scripts/generate_assets.py
+open preview/index.html
 ```
 
-Requires Python 3.10+. Optional PNG export: `pip install cairosvg`.
-
-Open `preview/index.html` to browse the atlas.
-
-## Grid & format
+## Grid
 
 | | |
 |---|---|
-| Standard tile | **256×256** px |
-| Location / building tile | **512×512** px |
-| Format | SVG (source) + PNG (raster) |
+| Base tile | **64×64** px |
+| Locations | Multiples of 64 (128 / 192 / 256) |
+| Formats | SVG (source) + PNG (`tileset/png/`) |
 | Background | Transparent |
-| Pivot | Bottom-center (recommended) |
-| Perspective | Dimetric 3/4 (front + side + roof) |
+| Ground tiles | Seamless edge-to-edge (tileable) |
 
-## Style rules
+## Contents
 
-- No stroke outlines — shapes defined by colour blocks only
-- Soft pastel-plus palette (cream buildings, cherry/orange roofs, cornflower awnings, leaf grass)
-- Two-tone depth: front lighter, side slightly darker
-- Consistent corner radius across modules
-- Soft oval ground shadows baked under props
+### Ground (64×64 seamless)
+`grass` · `pavement` · `road-h` · `road-v` · `road-corner` · `road-t` · `road-cross` · `road-roundabout` · `zebra-h` · `zebra-v`
 
-## Contents (49 tiles)
+### Nature & props (64×64)
+`tree` · `bush` · `bench` · `lamp` · `bin` · `bus-shelter` · `mrt-entrance` · `table-set` · `notice-board` · `flagpole` · `letterbox` · `atm`
 
-### Food & Retail
-Hawker Centre / Kopitiam · Wet Market · NTUC FairPrice · Sheng Siong
+### Architecture modules (64×64)
+`wall` · `wall-window` · `wall-door` · `wall-hdb-window` (laundry poles) · `roof-red/orange/blue` · `door` · `window` · `awning` · `hdb-corridor` · `void-deck-pillar`
 
-### Transportation
-MRT Station · Bus Interchange · Bus Stop · Taxi / Ride-Hailing Pick-up
+### Locations (snap to 64 grid)
 
-### Healthcare
-Polyclinic · GP Clinic · Guardian · Watsons · Unity Pharmacy
-
-### Community
-Community Club (CC) · SingPost Office · Bank Branch · ATM
-
-### Residential
-HDB Void Deck · Letterbox Area · Neighbourhood Park · Park Connector Network (PCN)
-
-### Bonus modular
-- **Roads:** straight (V/H), corner, T-junction, crossroads, roundabout, zebra crossings
-- **Pavements** · **Grass** · **Trees** · **Bushes**
-- **Props:** benches, lamp posts, dustbins, bus shelters, MRT entrances
-- **Architecture:** HDB corridor, roofs (red/orange/blue), walls, doors, windows, awnings
-
-## Folder layout
-
-```
-assets/
-  food-retail/          # SVG location tiles
-  transportation/
-  healthcare/
-  community/
-  residential/
-  modular/
-    roads/
-    pavements/
-    nature/
-    props/
-    architecture/
-  png/                  # Raster twin of every SVG (same relative paths)
-preview/
-  index.html            # Interactive atlas
-  sample-neighbourhood.svg
-  renders/              # QA / demo PNGs
-manifest.json           # Machine-readable catalogue + palette
-scripts/generate_assets.py
-```
+| Category | Assets | Size |
+|---|---|---|
+| Food & Retail | Hawker, Wet Market, FairPrice, Sheng Siong | 256 / 192 |
+| Transport | MRT, Bus Interchange, Bus Stop, Taxi | 192 / 256×192 / 128×64 |
+| Healthcare | Polyclinic, GP, Guardian, Watsons, Unity | 192 / 128 |
+| Community | CC, SingPost, Bank | 192 / 128 |
+| Residential | HDB Void Deck, Letterbox, Park, PCN | 192×256 / 128 / 256 |
 
 ## Unity
 
-1. Import `assets/png/**` (or SVGs via a vector importer).
-2. Set **Pixels Per Unit** so 256px = 1 world unit (or your grid cell).
-3. Use sprite pivots at bottom-center for props/buildings.
-4. Snap placements to a 1×1 (or 2×2 for 512px locations) grid.
+1. Import `tileset/png/**`
+2. **Pixels Per Unit = 64** (1 tile = 1 unit)
+3. Ground sprites: mesh type Full Rect, wrap mode Clamp
+4. Snap transforms to integer coordinates
 
 ## Figma
 
-Drag SVGs into a 256px grid frame. Components stay editable vectors. Brand colours live in `manifest.json` → `palette`.
+Drop SVGs onto a 64px grid. Locations already sized to whole tiles.
 
 ## Regenerate
 
-Edit `scripts/generate_assets.py`, then re-run. All SVGs, PNGs, `manifest.json`, and the preview atlas are overwritten from the script — treat the script as source of truth.
+`scripts/generate_assets.py` is the source of truth — edit & re-run to rebuild everything.
 
 ## Licence note
 
-Brand marks (FairPrice, Sheng Siong, Guardian, Watsons, Unity, SingPost, MRT) are simplified **stylised placeholders** for game prototype use — not official logos.
+Brand marks are simplified stylised placeholders for prototypes, not official logos.

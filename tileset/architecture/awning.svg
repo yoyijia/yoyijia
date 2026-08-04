@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" fill="none">
+  <!-- Awning | 64x64 | 64-grid modular tileset -->
+  <ellipse cx="32.00" cy="40.00" rx="24.00" ry="4.00" fill="#3A4A3818"/>
+  <rect x="4.00" y="20.00" width="56.00" height="14.00" rx="5" ry="5" fill="#5B9FD4"/>
+  <rect x="6.00" y="32.00" width="52.00" height="6.00" rx="2" ry="2" fill="#4788BB"/>
+</svg>

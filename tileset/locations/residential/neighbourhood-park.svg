@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" fill="none">
+  <!-- Neighbourhood Park | 256x256 | 64-grid modular tileset -->
+  <rect x="4.00" y="4.00" width="248.00" height="248.00" rx="14" ry="14" fill="#7BC96F"/>
+  <rect x="112.00" y="16.00" width="32.00" height="224.00" rx="10" ry="10" fill="#E6E9EE"/>
+  <rect x="16.00" y="112.00" width="224.00" height="32.00" rx="10" ry="10" fill="#E6E9EE"/>
+  <ellipse cx="48.00" cy="66.00" rx="12.00" ry="4.00" fill="#3A4A3828"/>
+  <rect x="45.00" y="54.00" width="6.00" height="16.00" rx="2" ry="2" fill="#8B6848"/>
+  <circle cx="48.00" cy="48.00" r="16.00" fill="#5AAA54"/>
+  <circle cx="41.00" cy="52.00" r="8.00" fill="#478B42"/>
+  <circle cx="54.00" cy="43.00" r="7.00" fill="#78C072"/>
+  <ellipse cx="200.00" cy="70.00" rx="12.00" ry="4.00" fill="#3A4A3828"/>
+  <rect x="197.00" y="58.00" width="6.00" height="16.00" rx="2" ry="2" fill="#8B6848"/>
+  <circle cx="200.00" cy="52.00" r="16.00" fill="#5AAA54"/>
+  <circle cx="193.00" cy="56.00" r="8.00" fill="#478B42"/>
+  <circle cx="206.00" cy="47.00" r="7.00" fill="#78C072"/>
+  <ellipse cx="56.00" cy="208.00" rx="12.00" ry="4.00" fill="#3A4A3828"/>
+  <rect x="53.00" y="196.00" width="6.00" height="16.00" rx="2" ry="2" fill="#8B6848"/>
+  <circle cx="56.00" cy="190.00" r="16.00" fill="#5AAA54"/>
+  <circle cx="49.00" cy="194.00" r="8.00" fill="#478B42"/>
+  <circle cx="62.00" cy="185.00" r="7.00" fill="#78C072"/>
+  <ellipse cx="196.00" cy="206.00" rx="12.00" ry="4.00" fill="#3A4A3828"/>
+  <rect x="193.00" y="194.00" width="6.00" height="16.00" rx="2" ry="2" fill="#8B6848"/>
+  <circle cx="196.00" cy="188.00" r="16.00" fill="#5AAA54"/>
+  <circle cx="189.00" cy="192.00" r="8.00" fill="#478B42"/>
+  <circle cx="202.00" cy="183.00" r="7.00" fill="#78C072"/>
+  <ellipse cx="160.00" cy="98.00" rx="12.00" ry="4.00" fill="#3A4A3828"/>
+  <rect x="157.00" y="86.00" width="6.00" height="16.00" rx="2" ry="2" fill="#8B6848"/>
+  <circle cx="160.00" cy="80.00" r="16.00" fill="#5AAA54"/>
+  <circle cx="153.00" cy="84.00" r="8.00" fill="#478B42"/>
+  <circle cx="166.00" cy="75.00" r="7.00" fill="#78C072"/>
+  <circle cx="40.00" cy="120.00" r="12.00" fill="#4F9A4A"/>
+  <circle cx="48.00" cy="122.00" r="10.00" fill="#3E7D3A"/>
+  <circle cx="43.00" cy="117.00" r="2.50" fill="#E9A06A"/>
+  <circle cx="220.00" cy="130.00" r="12.00" fill="#4F9A4A"/>
+  <circle cx="228.00" cy="132.00" r="10.00" fill="#3E7D3A"/>
+  <circle cx="223.00" cy="127.00" r="2.50" fill="#E9A06A"/>
+  <rect x="120.00" y="150.00" width="36.00" height="10.00" rx="4" ry="4" fill="#E56B6B"/>
+  <rect x="124.00" y="160.00" width="4.00" height="6.00" rx="1" ry="1" fill="#2C3238"/>
+  <rect x="148.00" y="160.00" width="4.00" height="6.00" rx="1" ry="1" fill="#2C3238"/>
+  <rect x="170.00" y="160.00" width="5.00" height="24.00" rx="2" ry="2" fill="#5B9FD4"/>
+  <rect x="196.00" y="160.00" width="5.00" height="24.00" rx="2" ry="2" fill="#5B9FD4"/>
+  <rect x="170.00" y="156.00" width="31.00" height="5.00" rx="2" ry="2" fill="#4788BB"/>
+  <ellipse cx="220.00" cy="178.00" rx="10.00" ry="6.00" fill="#5B9FD4"/>
+  <rect x="16.00" y="170.00" width="56.00" height="64.00" rx="6" ry="6" fill="#6BB86A"/>
+  <rect x="16.00" y="190.00" width="20.00" height="24.00" rx="3" ry="3" fill="#E57373"/>
+  <rect x="68.00" y="188.00" width="4.00" height="28.00" rx="1.5" ry="1.5" fill="#5A6270"/>
+  <ellipse cx="70.00" cy="186.00" rx="8.00" ry="4.00" fill="#E56B6B"/>
+  <ellipse cx="70.00" cy="186.00" rx="5.00" ry="2.50" fill="#FFFEFB"/>
+</svg>
