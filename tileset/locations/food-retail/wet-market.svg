@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" fill="none">
   <!-- Wet Market | 256x256 | 64-grid modular tileset -->
-  <g transform="translate(32.00,64.00)">
+  <g transform="translate(8.00,8.00) scale(1.2500)">
   <rect x="6.00" y="6.00" width="180.00" height="180.00" rx="12" ry="12" fill="#E6E9EE"/>
   <ellipse cx="88.50" cy="100.10" rx="50.40" ry="6.00" fill="#3A4A3828"/>
   <rect x="24.00" y="24.10" width="120.00" height="70.00" rx="8" ry="8" fill="#F5F1E8"/>
@@ -34,5 +34,28 @@
   <rect x="116.00" y="140.00" width="28.00" height="10.00" rx="3" ry="3" fill="#ED2939"/>
   <circle cx="122.00" cy="154.00" r="3.00" fill="#ED2939"/>
   <circle cx="134.00" cy="154.00" r="3.00" fill="#F5D56A"/>
+  <rect x="18.00" y="154.00" width="28.00" height="20.00" rx="4" ry="4" fill="#D4CDC0"/>
+  <circle cx="25.00" cy="160.00" r="3.00" fill="#E9A06A"/>
+  <circle cx="25.00" cy="168.00" r="3.00" fill="#F5D56A"/>
+  <circle cx="32.00" cy="160.00" r="3.00" fill="#E9A06A"/>
+  <circle cx="32.00" cy="168.00" r="3.00" fill="#F5D56A"/>
+  <circle cx="39.00" cy="160.00" r="3.00" fill="#E9A06A"/>
+  <circle cx="39.00" cy="168.00" r="3.00" fill="#F5D56A"/>
+  <rect x="58.00" y="154.00" width="28.00" height="20.00" rx="4" ry="4" fill="#D4CDC0"/>
+  <circle cx="65.00" cy="160.00" r="3.00" fill="#5FAF55"/>
+  <circle cx="65.00" cy="168.00" r="3.00" fill="#F5D56A"/>
+  <circle cx="72.00" cy="160.00" r="3.00" fill="#5FAF55"/>
+  <circle cx="72.00" cy="168.00" r="3.00" fill="#F5D56A"/>
+  <circle cx="79.00" cy="160.00" r="3.00" fill="#5FAF55"/>
+  <circle cx="79.00" cy="168.00" r="3.00" fill="#F5D56A"/>
+  <rect x="138.00" y="154.00" width="28.00" height="20.00" rx="4" ry="4" fill="#D4CDC0"/>
+  <circle cx="145.00" cy="160.00" r="3.00" fill="#E56B6B"/>
+  <circle cx="145.00" cy="168.00" r="3.00" fill="#F5D56A"/>
+  <circle cx="152.00" cy="160.00" r="3.00" fill="#E56B6B"/>
+  <circle cx="152.00" cy="168.00" r="3.00" fill="#F5D56A"/>
+  <circle cx="159.00" cy="160.00" r="3.00" fill="#E56B6B"/>
+  <circle cx="159.00" cy="168.00" r="3.00" fill="#F5D56A"/>
+  <rect x="164.00" y="142.00" width="16.00" height="28.00" rx="6" ry="6" fill="#5B9FD4"/>
+  <rect x="167.00" y="146.00" width="10.00" height="6.00" rx="2" ry="2" fill="#FFFEFB"/>
   </g>
 </svg>

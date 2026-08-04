@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" fill="none">
   <!-- Letterbox Area | 256x256 | 64-grid modular tileset -->
-  <g transform="translate(64.00,128.00)">
+  <g transform="translate(8.00,8.00) scale(1.8750)">
   <rect x="6.00" y="6.00" width="116.00" height="116.00" rx="10" ry="10" fill="#E6E9EE"/>
   <ellipse cx="64.00" cy="100.00" rx="36.00" ry="6.00" fill="#3A4A3828"/>
   <rect x="24.00" y="24.00" width="80.00" height="70.00" rx="6" ry="6" fill="#5A6270"/>

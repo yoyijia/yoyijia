@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" fill="none">
   <!-- Hawker Centre | 256x256 | 64-grid modular tileset -->
-  <g transform="translate(0.00,0.00)">
+  <g transform="translate(8.00,8.00) scale(0.9375)">
   <rect x="8.00" y="8.00" width="240.00" height="240.00" rx="16" ry="16" fill="#E6E9EE"/>
   <ellipse cx="113.00" cy="115.00" rx="67.20" ry="6.00" fill="#3A4A3828"/>
   <rect x="28.00" y="29.00" width="160.00" height="80.00" rx="10" ry="10" fill="#F5F1E8"/>

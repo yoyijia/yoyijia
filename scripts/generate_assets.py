@@ -99,12 +99,14 @@ def svg(w: int, h: int, name: str, body: str) -> str:
 
 
 def location_svg(source_w: int, source_h: int, name: str, body: str) -> str:
-    """Place a location on a uniform 256×256 transparent, bottom-aligned canvas."""
+    """Scale a location to fill a uniform, transparent 256px canvas."""
     canvas = T * 4
-    x = (canvas - source_w) / 2
-    y = canvas - source_h
+    margin = 8
+    scale = min((canvas - margin * 2) / source_w, (canvas - margin * 2) / source_h)
+    x = (canvas - source_w * scale) / 2
+    y = canvas - margin - source_h * scale
     wrapped = (
-        f'  <g transform="translate({x:.2f},{y:.2f})">\n'
+        f'  <g transform="translate({x:.2f},{y:.2f}) scale({scale:.4f})">\n'
         f"{body}"
         f"  </g>\n"
     )
@@ -577,6 +579,14 @@ def loc_wet_market():
         b += rr(x + 4, y + 4, 28, 10, 3, col)
         b += cir(x + 10, y + 18, 3, col)
         b += cir(x + 22, y + 18, 3, C["yellow"] if col != C["yellow"] else C["red"])
+    # stacked produce crates along the open frontage
+    for x, col in [(18, C["orange_roof"]), (58, C["grass_dark"]), (138, C["red"])]:
+        b += rr(x, 154, 28, 20, 4, C["cream_dark"])
+        for px in (x + 7, x + 14, x + 21):
+            b += cir(px, 160, 3, col)
+            b += cir(px, 168, 3, C["yellow"])
+    b += rr(164, 142, 16, 28, 6, C["blue"])
+    b += rr(167, 146, 10, 6, 2, C["white"])
     write(TILESET / "locations" / "food-retail" / "wet-market.svg", location_svg(W, H, "Wet Market", b))
 
 
@@ -589,6 +599,19 @@ def loc_shop(name, file, brand, brand_dark, icon_body):
     b += rr(40, 75, 40, 30, 5, C["blue_window"])
     b += rr(96, 75, 40, 30, 5, C["blue_window"])
     b += rr(78, 80, 16, 28, 4, C["dark"])
+    # sale board, flower box and shopping trolleys
+    b += rr(16, 116, 28, 32, 4, C["white"])
+    b += rr(20, 120, 20, 18, 3, C["red"])
+    b += rr(23, 125, 14, 4, 1, C["white"])
+    b += rr(23, 132, 10, 3, 1, C["white"])
+    b += rr(48, 132, 34, 14, 5, C["grass_dark"])
+    for px in (54, 64, 74):
+        b += cir(px, 132, 4, C["yellow"] if px != 64 else C["red"])
+    for y in (122, 137):
+        b += rr(142, y, 30, 12, 3, C["cream_dark"])
+        b += rr(146, y + 2, 20, 7, 2, C["dark"])
+        b += cir(150, y + 13, 2.5, C["charcoal"])
+        b += cir(166, y + 13, 2.5, C["charcoal"])
     write(TILESET / "locations" / "food-retail" / file, location_svg(W, H, name, b))
 
 
@@ -625,11 +648,22 @@ def loc_mrt():
     b += rr(42, 68, 32, 26, 5, C["blue_window"])
     b += rr(96, 68, 32, 26, 5, C["blue_window"])
     b += rr(76, 72, 14, 24, 4, C["charcoal"])
-    b += rr(60, 118, 50, 12, 4, C["dark"])
-    b += rr(64, 122, 42, 5, 2, C["mrt_green"])
+    # descending station entrance with repeated stair treads
+    b += rr(54, 106, 62, 38, 6, C["cream_dark"])
+    b += rr(60, 108, 50, 34, 5, C["charcoal"])
+    for i in range(5):
+        b += rr(64 + i * 2, 112 + i * 5, 42 - i * 4, 4, 1, C["dark"])
+    b += rr(56, 102, 58, 8, 3, C["mrt_green"])
     b += rr(20, 140, 150, 20, 6, C["road"])
     for x in range(28, 160, 28):
         b += rr(x, 146, 16, 6, 2, C["yellow"])
+    # station name panel and transit post
+    b += rr(48, 18, 74, 14, 3, C["dark"])
+    b += rr(54, 22, 42, 6, 2, C["mrt_green"])
+    b += rr(100, 22, 16, 6, 2, C["mrt_red"])
+    b += rr(158, 52, 5, 54, 2, C["dark"])
+    b += pth("M163,54 L180,48 L180,66 L163,70 Z", C["yellow"])
+    b += pth("M168,55 L175,58 L168,64 Z", C["bank"])
     write(TILESET / "locations" / "transportation" / "mrt-station.svg", location_svg(W, H, "MRT Station", b))
 
 
@@ -645,6 +679,11 @@ def loc_bus_interchange():
         b += rr(70, y + 10, 24, 6, 2, C["road_line"])
         b += rr(180, y - 4, 50, 12, 4, C["blue"])
         b += rr(188, y + 10, 34, 10, 3, C["cream"])
+        # bench, route board and bay marking
+        b += rr(192, y + 12, 26, 5, 2, C["red"])
+        b += rr(236, y - 2, 6, 24, 2, C["dark"])
+        b += rr(231, y - 8, 16, 10, 3, C["blue"])
+        b += rr(112, y + 10, 34, 5, 2, C["yellow"])
     write(TILESET / "locations" / "transportation" / "bus-interchange.svg", location_svg(W, H, "Bus Interchange", b))
 
 
@@ -676,6 +715,11 @@ def loc_taxi():
     b += rr(44, 2, 34, 18, 5, C["yellow"])
     b += rr(50, 7, 22, 6, 2, C["charcoal"])
     b += rr(28, 24, 72, 10, 4, C["blue"])
+    # sheltered pick-up bay with four safety bollards
+    b += rr(16, 16, 96, 8, 3, C["blue_dark"])
+    for x in (20, 46, 82, 108):
+        b += rr(x, 38, 5, 18, 2, C["dark"])
+        b += cir(x + 2.5, 37, 3, C["yellow"])
     write(TILESET / "locations" / "transportation" / "taxi-pickup.svg", location_svg(W, H, "Taxi Pick-up", b))
 
 
@@ -690,6 +734,16 @@ def loc_polyclinic():
         for col in range(4):
             b += rr(36 + col * 28, 68 + row * 28, 18, 18, 3, C["blue_window"])
     b += rr(78, 118, 20, 28, 5, C["dark"])
+    # planted frontage and clinic sign
+    for x in (18, 150):
+        b += rr(x, 136, 28, 12, 4, C["grass_dark"])
+        b += cir(x + 8, 134, 7, C["bush"])
+        b += cir(x + 20, 134, 8, C["bush_light"])
+        b += cir(x + 14, 132, 2.5, C["yellow"])
+    b += rr(164, 102, 5, 46, 2, C["dark"])
+    b += rr(156, 98, 22, 18, 4, C["white"])
+    b += rr(164, 101, 6, 12, 1, C["blue"])
+    b += rr(161, 105, 12, 6, 1, C["blue"])
     write(TILESET / "locations" / "healthcare" / "polyclinic.svg", location_svg(W, H, "Polyclinic", b))
 
 
@@ -720,6 +774,14 @@ def loc_pharmacy(name, file, brand, brand_dark, mark):
         b += rr(51, 34, 10, 4, 1, brand)
     b += rr(26, 54, 24, 20, 3, C["blue_window"])
     b += rr(60, 56, 16, 22, 3, C["dark"])
+    # stocked display window and planter
+    for row in range(2):
+        for col in range(3):
+            b += rr(29 + col * 6, 57 + row * 7, 4, 5, 1, [C["red"], C["yellow"], C["grass"]][col])
+    b += rr(84, 82, 28, 16, 5, C["orange_roof_side"])
+    b += cir(90, 82, 7, C["bush"])
+    b += cir(103, 81, 8, C["bush_light"])
+    b += cir(98, 78, 2.5, C["yellow"])
     write(TILESET / "locations" / "healthcare" / file, location_svg(W, H, name, b))
 
 
@@ -752,6 +814,13 @@ def loc_singpost():
     b += pth("M44,32 L57,40 L70,32 Z", C["singpost"])
     b += rr(28, 52, 22, 18, 3, C["blue_window"])
     b += rr(62, 54, 16, 20, 3, C["dark"])
+    # iconic red posting box and small landscape bed
+    b += rr(8, 64, 16, 36, 5, C["singpost"])
+    b += rr(10, 68, 12, 5, 2, C["white"])
+    b += rr(9, 94, 14, 5, 2, C["sg_red_dark"])
+    b += rr(84, 86, 30, 14, 5, C["grass_dark"])
+    b += cir(92, 84, 7, C["bush"])
+    b += cir(105, 84, 8, C["bush_light"])
     write(TILESET / "locations" / "community" / "singpost.svg", location_svg(W, H, "SingPost", b))
 
 
@@ -804,6 +873,15 @@ def loc_hdb_void_deck():
     b += rr(53, 197, 7, 5, 1, C["blue"])
     b += rr(62, 197, 7, 5, 1, C["grass"])
     b += rr(90, 198, 28, 8, 3, C["red"])
+    # block number plaque, staircase and letterbox bank
+    b += rr(118, 22, 26, 18, 3, C["blue"])
+    b += rr(124, 27, 14, 8, 2, C["white"])
+    for i in range(4):
+        b += rr(76 + i * 3, 184 + i * 5, 26 - i * 6, 5, 1, C["blue_dark"])
+    b += rr(124, 184, 22, 24, 3, C["dark"])
+    for row in range(3):
+        for col in range(3):
+            b += rr(127 + col * 6, 187 + row * 6, 5, 5, 1, C["cream"])
     write(TILESET / "locations" / "residential" / "hdb-void-deck.svg", location_svg(W, H, "HDB Void Deck", b))
 
 
@@ -880,6 +958,19 @@ def loc_pcn():
     for lx, ly in [(90, 90), (190, 110)]:
         b += rr(lx, ly - 24, 4, 30, 1.5, C["dark"])
         b += el(lx + 2, ly - 26, 7, 5, C["yellow"])
+    # red-roof rest shelter and PCN wayfinding sign
+    b += shadow(118, 166, 24, 5)
+    b += rr(96, 126, 44, 32, 5, C["cream"])
+    b += pth("M88,130 L118,104 L148,130 L140,136 L118,118 L96,136 Z", C["red_roof"])
+    b += pth("M96,136 L118,118 L140,136 L148,130 L118,148 Z", C["red_roof_side"])
+    b += rr(100, 148, 36, 7, 3, C["trunk"])
+    b += rr(104, 155, 5, 10, 1.5, C["trunk_dark"])
+    b += rr(128, 155, 5, 10, 1.5, C["trunk_dark"])
+    b += rr(220, 112, 5, 42, 2, C["dark"])
+    b += rr(206, 104, 34, 20, 5, C["grass_dark"])
+    b += rr(212, 109, 22, 6, 2, C["white"])
+    b += cir(214, 119, 2.5, C["white"])
+    b += cir(230, 119, 2.5, C["white"])
     write(TILESET / "locations" / "residential" / "park-connector.svg", location_svg(W, H, "Park Connector", b))
 
 

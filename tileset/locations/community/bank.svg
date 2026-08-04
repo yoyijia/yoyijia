@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" fill="none">
   <!-- Bank Branch | 256x256 | 64-grid modular tileset -->
-  <g transform="translate(64.00,128.00)">
+  <g transform="translate(8.00,8.00) scale(1.8750)">
   <rect x="6.00" y="92.00" width="116.00" height="30.00" rx="8" ry="8" fill="#E6E9EE"/>
   <ellipse cx="60.20" cy="82.00" rx="34.44" ry="6.00" fill="#3A4A3828"/>
   <rect x="16.00" y="14.00" width="82.00" height="62.00" rx="6" ry="6" fill="#FFFEFB"/>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" fill="none">
   <!-- Community Club | 256x256 | 64-grid modular tileset -->
-  <g transform="translate(32.00,64.00)">
+  <g transform="translate(8.00,8.00) scale(1.2500)">
   <rect x="8.00" y="144.00" width="176.00" height="40.00" rx="10" ry="10" fill="#E6E9EE"/>
   <ellipse cx="92.20" cy="119.00" rx="50.40" ry="6.00" fill="#3A4A3828"/>
   <rect x="28.00" y="18.00" width="120.00" height="95.00" rx="8" ry="8" fill="#FFFEFB"/>

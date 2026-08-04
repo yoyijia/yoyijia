@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" fill="none">
   <!-- SingPost | 256x256 | 64-grid modular tileset -->
-  <g transform="translate(64.00,128.00)">
+  <g transform="translate(8.00,8.00) scale(1.8750)">
   <rect x="6.00" y="92.00" width="116.00" height="30.00" rx="8" ry="8" fill="#E6E9EE"/>
   <ellipse cx="60.00" cy="80.00" rx="32.76" ry="6.00" fill="#3A4A3828"/>
   <rect x="18.00" y="16.00" width="78.00" height="58.00" rx="6" ry="6" fill="#F5F1E8"/>
@@ -13,5 +13,11 @@
   <path d="M44,32 L57,40 L70,32 Z" fill="#ED1C24"/>
   <rect x="28.00" y="52.00" width="22.00" height="18.00" rx="3" ry="3" fill="#8EC4E8"/>
   <rect x="62.00" y="54.00" width="16.00" height="20.00" rx="3" ry="3" fill="#5A6270"/>
+  <rect x="8.00" y="64.00" width="16.00" height="36.00" rx="5" ry="5" fill="#ED1C24"/>
+  <rect x="10.00" y="68.00" width="12.00" height="5.00" rx="2" ry="2" fill="#FFFEFB"/>
+  <rect x="9.00" y="94.00" width="14.00" height="5.00" rx="2" ry="2" fill="#C41E2A"/>
+  <rect x="84.00" y="86.00" width="30.00" height="14.00" rx="5" ry="5" fill="#5FAF55"/>
+  <circle cx="92.00" cy="84.00" r="7.00" fill="#4F9A4A"/>
+  <circle cx="105.00" cy="84.00" r="8.00" fill="#6BB366"/>
   </g>
 </svg>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" fill="none">
   <!-- Park Connector | 256x256 | 64-grid modular tileset -->
-  <g transform="translate(0.00,64.00)">
+  <g transform="translate(8.00,68.00) scale(0.9375)">
   <rect x="4.00" y="4.00" width="248.00" height="184.00" rx="12" ry="12" fill="#7BC96F"/>
   <path d="M0,80 C60,70 90,50 130,60 C170,70 190,110 230,115 C250,118 256,100 256,100 L256,130 C240,145 210,155 180,145 C150,135 140,100 110,95 C70,88 30,110 0,115 Z" fill="#E6E9EE"/>
   <rect x="20.00" y="95.00" width="14.00" height="4.00" rx="2" ry="2" fill="#F2F5F8"/>
@@ -39,5 +39,17 @@
   <ellipse cx="92.00" cy="64.00" rx="7.00" ry="5.00" fill="#F5D56A"/>
   <rect x="190.00" y="86.00" width="4.00" height="30.00" rx="1.5" ry="1.5" fill="#5A6270"/>
   <ellipse cx="192.00" cy="84.00" rx="7.00" ry="5.00" fill="#F5D56A"/>
+  <ellipse cx="118.00" cy="166.00" rx="24.00" ry="5.00" fill="#3A4A3828"/>
+  <rect x="96.00" y="126.00" width="44.00" height="32.00" rx="5" ry="5" fill="#F5F1E8"/>
+  <path d="M88,130 L118,104 L148,130 L140,136 L118,118 L96,136 Z" fill="#E88778"/>
+  <path d="M96,136 L118,118 L140,136 L148,130 L118,148 Z" fill="#D06E60"/>
+  <rect x="100.00" y="148.00" width="36.00" height="7.00" rx="3" ry="3" fill="#8B6848"/>
+  <rect x="104.00" y="155.00" width="5.00" height="10.00" rx="1.5" ry="1.5" fill="#6E5238"/>
+  <rect x="128.00" y="155.00" width="5.00" height="10.00" rx="1.5" ry="1.5" fill="#6E5238"/>
+  <rect x="220.00" y="112.00" width="5.00" height="42.00" rx="2" ry="2" fill="#5A6270"/>
+  <rect x="206.00" y="104.00" width="34.00" height="20.00" rx="5" ry="5" fill="#5FAF55"/>
+  <rect x="212.00" y="109.00" width="22.00" height="6.00" rx="2" ry="2" fill="#FFFEFB"/>
+  <circle cx="214.00" cy="119.00" r="2.50" fill="#FFFEFB"/>
+  <circle cx="230.00" cy="119.00" r="2.50" fill="#FFFEFB"/>
   </g>
 </svg>
