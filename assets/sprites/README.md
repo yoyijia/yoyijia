@@ -1,6 +1,8 @@
 # Individual character sprite sheets
 
-Top-down / 3⁄4 chibi walk & action sheets. Equal-size cells within each sheet.
+Soft outline-free muted chibi style (no hard black outlines). Top-down / 3⁄4 camera. Equal-size cells within each sheet.
+
+Sheet sizes match across the set: walk sheets **1024×1024** (~6×6); wave/thinking **1024×1536**.
 
 ## Top Girl (4)
 | Sheet | File |
@@ -28,4 +30,4 @@ Top-down / 3⁄4 chibi walk & action sheets. Equal-size cells within each sheet.
 | Up | `boy/up.png` |
 | Down | `boy/down.png` |
 
-**Total: 14 sheets** (from the listed actions). Walk sheets are ~6×6 grids at 1024×1024; wave/thinking are taller grids at 1024×1536.
+**Total: 14 sheets**
