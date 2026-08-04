@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="256" height="192" viewBox="0 0 256 192" fill="none">
-  <!-- Bus Interchange | 256x192 | 64-grid modular tileset -->
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" fill="none">
+  <!-- Bus Interchange | 256x256 | 64-grid modular tileset -->
+  <g transform="translate(0.00,64.00)">
   <rect x="4.00" y="40.00" width="248.00" height="144.00" rx="12" ry="12" fill="#B7BEC8"/>
   <ellipse cx="123.50" cy="77.00" rx="42.00" ry="6.00" fill="#3A4A3828"/>
   <rect x="70.00" y="16.00" width="100.00" height="55.00" rx="7" ry="7" fill="#F5F1E8"/>
@@ -24,4 +25,5 @@
   <rect x="70.00" y="160.00" width="24.00" height="6.00" rx="2" ry="2" fill="#F2F5F8"/>
   <rect x="180.00" y="146.00" width="50.00" height="12.00" rx="4" ry="4" fill="#5B9FD4"/>
   <rect x="188.00" y="160.00" width="34.00" height="10.00" rx="3" ry="3" fill="#F5F1E8"/>
+  </g>
 </svg>

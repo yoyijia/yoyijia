@@ -2,7 +2,7 @@
 
 Clean Nintendo-like vector tileset for Singapore neighbourhood maps.
 
-**64×64 base grid** · soft pastels · no outlines · dimetric 3/4 · transparent SVG + PNG
+**64×64 base grid** · **uniform 256×256 location canvases** · soft pastels · no outlines · dimetric 3/4 · transparent SVG + PNG
 
 ## Quick start
 
@@ -17,15 +17,16 @@ open preview/index.html
 | | |
 |---|---|
 | Base tile | **64×64** px |
-| Locations | Multiples of 64 (128 / 192 / 256) |
+| Every location | **256×256** px transparent canvas |
 | Formats | SVG (source) + PNG (`tileset/png/`) |
 | Background | Transparent |
 | Ground tiles | Seamless edge-to-edge (tileable) |
+| Location pivot | Bottom-center |
 
 ## Contents
 
 ### Ground (64×64 seamless)
-`grass` · `pavement` · `road-h` · `road-v` · `road-corner` · `road-t` · `road-cross` · `road-roundabout` · `zebra-h` · `zebra-v`
+`grass` · `pavement` · `road-h` · `road-v` · four oriented corners · four oriented T-junctions · `road-cross` · `road-roundabout` · `zebra-h` · `zebra-v`
 
 ### Nature & props (64×64)
 `tree` · `bush` · `bench` · `lamp` · `bin` · `bus-shelter` · `mrt-entrance` · `table-set` · `notice-board` · `flagpole` · `letterbox` · `atm`
@@ -33,15 +34,17 @@ open preview/index.html
 ### Architecture modules (64×64)
 `wall` · `wall-window` · `wall-door` · `wall-hdb-window` (laundry poles) · `roof-red/orange/blue` · `door` · `window` · `awning` · `hdb-corridor` · `void-deck-pillar`
 
-### Locations (snap to 64 grid)
+### Locations (uniform 256×256 reusable tiles)
 
-| Category | Assets | Size |
-|---|---|---|
-| Food & Retail | Hawker, Wet Market, FairPrice, Sheng Siong | 256 / 192 |
-| Transport | MRT, Bus Interchange, Bus Stop, Taxi | 192 / 256×192 / 128×64 |
-| Healthcare | Polyclinic, GP, Guardian, Watsons, Unity | 192 / 128 |
-| Community | CC, SingPost, Bank | 192 / 128 |
-| Residential | HDB Void Deck, Letterbox, Park, PCN | 192×256 / 128 / 256 |
+| Category | Assets |
+|---|---|
+| Food & Retail | Hawker, Wet Market, FairPrice, Sheng Siong |
+| Transport | MRT, Bus Interchange, Bus Stop, Taxi / Ride-Hailing |
+| Healthcare | Polyclinic, GP, Guardian, Watsons, Unity |
+| Community | CC, SingPost, Bank, ATM |
+| Residential | HDB Void Deck, Letterbox Area, Park, PCN |
+
+Each location is bottom-aligned on the same transparent canvas, so it can share one Unity import/pivot configuration and one Figma component frame.
 
 ## Unity
 

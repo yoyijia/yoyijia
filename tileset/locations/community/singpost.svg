@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" fill="none">
-  <!-- SingPost | 128x128 | 64-grid modular tileset -->
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" fill="none">
+  <!-- SingPost | 256x256 | 64-grid modular tileset -->
+  <g transform="translate(64.00,128.00)">
   <rect x="6.00" y="92.00" width="116.00" height="30.00" rx="8" ry="8" fill="#E6E9EE"/>
   <ellipse cx="60.00" cy="80.00" rx="32.76" ry="6.00" fill="#3A4A3828"/>
   <rect x="18.00" y="16.00" width="78.00" height="58.00" rx="6" ry="6" fill="#F5F1E8"/>
@@ -12,4 +13,5 @@
   <path d="M44,32 L57,40 L70,32 Z" fill="#ED1C24"/>
   <rect x="28.00" y="52.00" width="22.00" height="18.00" rx="3" ry="3" fill="#8EC4E8"/>
   <rect x="62.00" y="54.00" width="16.00" height="20.00" rx="3" ry="3" fill="#5A6270"/>
+  </g>
 </svg>

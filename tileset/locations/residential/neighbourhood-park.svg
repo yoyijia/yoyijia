@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" fill="none">
   <!-- Neighbourhood Park | 256x256 | 64-grid modular tileset -->
+  <g transform="translate(0.00,0.00)">
   <rect x="4.00" y="4.00" width="248.00" height="248.00" rx="14" ry="14" fill="#7BC96F"/>
   <rect x="112.00" y="16.00" width="32.00" height="224.00" rx="10" ry="10" fill="#E6E9EE"/>
   <rect x="16.00" y="112.00" width="224.00" height="32.00" rx="10" ry="10" fill="#E6E9EE"/>
@@ -47,4 +48,5 @@
   <rect x="68.00" y="188.00" width="4.00" height="28.00" rx="1.5" ry="1.5" fill="#5A6270"/>
   <ellipse cx="70.00" cy="186.00" rx="8.00" ry="4.00" fill="#E56B6B"/>
   <ellipse cx="70.00" cy="186.00" rx="5.00" ry="2.50" fill="#FFFEFB"/>
+  </g>
 </svg>

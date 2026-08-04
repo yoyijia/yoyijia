@@ -4492,6 +4492,7 @@
   <g transform="translate(64,64) scale(1.0000,1.0000)">
 
   <!-- Hawker Centre | 256x256 | 64-grid modular tileset -->
+  <g transform="translate(0.00,0.00)">
   <rect x="8.00" y="8.00" width="240.00" height="240.00" rx="16" ry="16" fill="#E6E9EE"/>
   <ellipse cx="113.00" cy="115.00" rx="67.20" ry="6.00" fill="#3A4A3828"/>
   <rect x="28.00" y="29.00" width="160.00" height="80.00" rx="10" ry="10" fill="#F5F1E8"/>
@@ -4558,11 +4559,13 @@
   <rect x="214.00" y="144.00" width="12.00" height="6.00" rx="1.5" ry="1.5" fill="#FFFEFB"/>
   <rect x="220.00" y="168.00" width="14.00" height="20.00" rx="6" ry="6" fill="#4F9A4A"/>
   <rect x="223.00" y="171.00" width="8.00" height="6.00" rx="2" ry="2" fill="#F5D56A"/>
+  </g>
 
   </g>
   <g transform="translate(832,64) scale(1.0000,1.0000)">
 
-  <!-- NTUC FairPrice | 192x192 | 64-grid modular tileset -->
+  <!-- NTUC FairPrice | 256x256 | 64-grid modular tileset -->
+  <g transform="translate(32.00,64.00)">
   <rect x="8.00" y="136.00" width="176.00" height="48.00" rx="10" ry="10" fill="#E6E9EE"/>
   <ellipse cx="92.00" cy="116.00" rx="50.40" ry="6.00" fill="#3A4A3828"/>
   <rect x="28.00" y="20.00" width="120.00" height="90.00" rx="8" ry="8" fill="#FFFEFB"/>
@@ -4570,18 +4573,21 @@
   <path d="M32.0,20.0 L148.0,20.0 L168.0,8.0 L52.0,8.0 Z" fill="#E31C23"/>
   <rect x="28.00" y="20.00" width="120.00" height="5.00" rx="3.2" ry="3.2" fill="#C0151B"/>
   <rect x="28.00" y="40.00" width="120.00" height="22.00" rx="4" ry="4" fill="#E31C23"/>
-  <rect x="78.00" y="44.00" width="18.00" height="12.00" rx="2" ry="2" fill="#FFFEFB"/>
-  <path d="M76,43 L72,43 L70,48 L76,48 Z" fill="#FFFEFB"/>
-  <circle cx="82.00" cy="58.00" r="3.00" fill="#FFFEFB"/>
-  <circle cx="92.00" cy="58.00" r="3.00" fill="#FFFEFB"/>
+  <rect x="76.00" y="46.00" width="20.00" height="10.00" rx="2" ry="2" fill="#FFFEFB"/>
+  <path d="M74,44 L68,44 L66,50 L74,50 Z" fill="#FFFEFB"/>
+  <circle cx="80.00" cy="58.00" r="3.20" fill="#FFFEFB"/>
+  <circle cx="92.00" cy="58.00" r="3.20" fill="#FFFEFB"/>
+  <rect x="94.00" y="42.00" width="3.00" height="12.00" rx="1.2" ry="1.2" fill="#FFFEFB"/>
   <rect x="40.00" y="75.00" width="40.00" height="30.00" rx="5" ry="5" fill="#8EC4E8"/>
   <rect x="96.00" y="75.00" width="40.00" height="30.00" rx="5" ry="5" fill="#8EC4E8"/>
   <rect x="78.00" y="80.00" width="16.00" height="28.00" rx="4" ry="4" fill="#5A6270"/>
+  </g>
 
   </g>
   <g transform="translate(832,512) scale(1.0000,1.0000)">
 
-  <!-- MRT Station | 192x192 | 64-grid modular tileset -->
+  <!-- MRT Station | 256x256 | 64-grid modular tileset -->
+  <g transform="translate(32.00,64.00)">
   <rect x="8.00" y="128.00" width="176.00" height="56.00" rx="10" ry="10" fill="#E6E9EE"/>
   <ellipse cx="89.50" cy="109.10" rx="46.20" ry="6.00" fill="#3A4A3828"/>
   <rect x="30.00" y="18.10" width="110.00" height="85.00" rx="8" ry="8" fill="#FFFEFB"/>
@@ -4603,11 +4609,13 @@
   <rect x="84.00" y="146.00" width="16.00" height="6.00" rx="2" ry="2" fill="#F5D56A"/>
   <rect x="112.00" y="146.00" width="16.00" height="6.00" rx="2" ry="2" fill="#F5D56A"/>
   <rect x="140.00" y="146.00" width="16.00" height="6.00" rx="2" ry="2" fill="#F5D56A"/>
+  </g>
 
   </g>
   <g transform="translate(64,512) scale(1.0000,1.0000)">
 
-  <!-- HDB Void Deck | 192x256 | 64-grid modular tileset -->
+  <!-- HDB Void Deck | 256x256 | 64-grid modular tileset -->
+  <g transform="translate(32.00,0.00)">
   <rect x="8.00" y="216.00" width="176.00" height="32.00" rx="8" ry="8" fill="#E6E9EE"/>
   <ellipse cx="89.00" cy="202.00" rx="54.60" ry="6.00" fill="#3A4A3828"/>
   <rect x="20.00" y="16.00" width="130.00" height="180.00" rx="8" ry="8" fill="#F5F1E8"/>
@@ -4680,11 +4688,13 @@
   <rect x="53.00" y="197.00" width="7.00" height="5.00" rx="1" ry="1" fill="#5B9FD4"/>
   <rect x="62.00" y="197.00" width="7.00" height="5.00" rx="1" ry="1" fill="#7BC96F"/>
   <rect x="90.00" y="198.00" width="28.00" height="8.00" rx="3" ry="3" fill="#E56B6B"/>
+  </g>
 
   </g>
   <g transform="translate(320,512) scale(1.0000,1.0000)">
 
-  <!-- Community Club | 192x192 | 64-grid modular tileset -->
+  <!-- Community Club | 256x256 | 64-grid modular tileset -->
+  <g transform="translate(32.00,64.00)">
   <rect x="8.00" y="144.00" width="176.00" height="40.00" rx="10" ry="10" fill="#E6E9EE"/>
   <ellipse cx="92.20" cy="119.00" rx="50.40" ry="6.00" fill="#3A4A3828"/>
   <rect x="28.00" y="18.00" width="120.00" height="95.00" rx="8" ry="8" fill="#FFFEFB"/>
@@ -4706,11 +4716,13 @@
   <rect x="170.00" y="30.00" width="4.00" height="80.00" rx="1" ry="1" fill="#5A6270"/>
   <rect x="174.00" y="32.00" width="22.00" height="14.00" rx="2" ry="2" fill="#ED2939"/>
   <circle cx="182.00" cy="38.00" r="3.00" fill="#FFFEFB"/>
+  </g>
 
   </g>
   <g transform="translate(1024,320) scale(1.0000,1.0000)">
 
-  <!-- Guardian | 128x128 | 64-grid modular tileset -->
+  <!-- Guardian | 256x256 | 64-grid modular tileset -->
+  <g transform="translate(64.00,128.00)">
   <rect x="6.00" y="92.00" width="116.00" height="30.00" rx="8" ry="8" fill="#E6E9EE"/>
   <ellipse cx="59.00" cy="82.00" rx="33.60" ry="6.00" fill="#3A4A3828"/>
   <rect x="16.00" y="14.00" width="80.00" height="62.00" rx="6" ry="6" fill="#FFFEFB"/>
@@ -4721,6 +4733,7 @@
   <rect x="44.00" y="32.00" width="24.00" height="8.00" rx="3" ry="3" fill="#FFFEFB"/>
   <rect x="26.00" y="54.00" width="24.00" height="20.00" rx="3" ry="3" fill="#8EC4E8"/>
   <rect x="60.00" y="56.00" width="16.00" height="22.00" rx="3" ry="3" fill="#5A6270"/>
+  </g>
 
   </g>
   <g transform="translate(576,192) scale(1.0000,1.0000)">
@@ -4791,7 +4804,8 @@
   </g>
   <g transform="translate(704,320) scale(1.0000,1.0000)">
 
-  <!-- Bus Stop | 128x64 | 64-grid modular tileset -->
+  <!-- Bus Stop | 256x256 | 64-grid modular tileset -->
+  <g transform="translate(64.00,192.00)">
   <ellipse cx="64.00" cy="56.00" rx="40.00" ry="5.00" fill="#3A4A3828"/>
   <rect x="8.00" y="44.00" width="112.00" height="16.00" rx="5" ry="5" fill="#E6E9EE"/>
   <rect x="16.00" y="8.00" width="80.00" height="14.00" rx="5" ry="5" fill="#5B9FD4"/>
@@ -4803,6 +4817,7 @@
   <rect x="100.00" y="2.00" width="22.00" height="18.00" rx="4" ry="4" fill="#5B9FD4"/>
   <rect x="104.00" y="6.00" width="14.00" height="5.00" rx="1.5" ry="1.5" fill="#FFFEFB"/>
   <circle cx="111.00" cy="14.00" r="3.50" fill="#FFFEFB"/>
+  </g>
 
   </g>
   <g transform="translate(512,576) scale(1.0000,1.0000)">

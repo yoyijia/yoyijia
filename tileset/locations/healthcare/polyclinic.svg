@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" viewBox="0 0 192 192" fill="none">
-  <!-- Polyclinic | 192x192 | 64-grid modular tileset -->
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" fill="none">
+  <!-- Polyclinic | 256x256 | 64-grid modular tileset -->
+  <g transform="translate(32.00,64.00)">
   <rect x="8.00" y="144.00" width="176.00" height="40.00" rx="10" ry="10" fill="#E6E9EE"/>
   <ellipse cx="93.50" cy="122.10" rx="54.60" ry="6.00" fill="#3A4A3828"/>
   <rect x="24.00" y="16.10" width="130.00" height="100.00" rx="8" ry="8" fill="#FFFEFB"/>
@@ -19,4 +20,5 @@
   <rect x="92.00" y="96.00" width="18.00" height="18.00" rx="3" ry="3" fill="#8EC4E8"/>
   <rect x="120.00" y="96.00" width="18.00" height="18.00" rx="3" ry="3" fill="#8EC4E8"/>
   <rect x="78.00" y="118.00" width="20.00" height="28.00" rx="5" ry="5" fill="#5A6270"/>
+  </g>
 </svg>

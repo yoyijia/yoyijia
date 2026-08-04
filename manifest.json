@@ -2,6 +2,8 @@
   "name": "Singapore Neighbourhood 64px Modular Tileset",
   "version": "2.0.0",
   "tileSize": 64,
+  "locationCanvas": 256,
+  "locationPivot": "bottom-center",
   "style": {
     "perspective": "dimetric 3/4 top-down",
     "outlines": false,
@@ -97,6 +99,38 @@
           "tilesH": 1
         },
         {
+          "id": "road-corner-ne",
+          "file": "tileset/ground/road-corner-ne.svg",
+          "width": 64,
+          "height": 64,
+          "tilesW": 1,
+          "tilesH": 1
+        },
+        {
+          "id": "road-corner-nw",
+          "file": "tileset/ground/road-corner-nw.svg",
+          "width": 64,
+          "height": 64,
+          "tilesW": 1,
+          "tilesH": 1
+        },
+        {
+          "id": "road-corner-se",
+          "file": "tileset/ground/road-corner-se.svg",
+          "width": 64,
+          "height": 64,
+          "tilesW": 1,
+          "tilesH": 1
+        },
+        {
+          "id": "road-corner-sw",
+          "file": "tileset/ground/road-corner-sw.svg",
+          "width": 64,
+          "height": 64,
+          "tilesW": 1,
+          "tilesH": 1
+        },
+        {
           "id": "road-corner",
           "file": "tileset/ground/road-corner.svg",
           "width": 64,
@@ -123,6 +157,38 @@
         {
           "id": "road-roundabout",
           "file": "tileset/ground/road-roundabout.svg",
+          "width": 64,
+          "height": 64,
+          "tilesW": 1,
+          "tilesH": 1
+        },
+        {
+          "id": "road-t-e",
+          "file": "tileset/ground/road-t-e.svg",
+          "width": 64,
+          "height": 64,
+          "tilesW": 1,
+          "tilesH": 1
+        },
+        {
+          "id": "road-t-n",
+          "file": "tileset/ground/road-t-n.svg",
+          "width": 64,
+          "height": 64,
+          "tilesW": 1,
+          "tilesH": 1
+        },
+        {
+          "id": "road-t-s",
+          "file": "tileset/ground/road-t-s.svg",
+          "width": 64,
+          "height": 64,
+          "tilesW": 1,
+          "tilesH": 1
+        },
+        {
+          "id": "road-t-w",
+          "file": "tileset/ground/road-t-w.svg",
           "width": 64,
           "height": 64,
           "tilesW": 1,
@@ -383,26 +449,26 @@
         {
           "id": "ntuc-fairprice",
           "file": "tileset/locations/food-retail/ntuc-fairprice.svg",
-          "width": 192,
-          "height": 192,
-          "tilesW": 3,
-          "tilesH": 3
+          "width": 256,
+          "height": 256,
+          "tilesW": 4,
+          "tilesH": 4
         },
         {
           "id": "sheng-siong",
           "file": "tileset/locations/food-retail/sheng-siong.svg",
-          "width": 192,
-          "height": 192,
-          "tilesW": 3,
-          "tilesH": 3
+          "width": 256,
+          "height": 256,
+          "tilesW": 4,
+          "tilesH": 4
         },
         {
           "id": "wet-market",
           "file": "tileset/locations/food-retail/wet-market.svg",
-          "width": 192,
-          "height": 192,
-          "tilesW": 3,
-          "tilesH": 3
+          "width": 256,
+          "height": 256,
+          "tilesW": 4,
+          "tilesH": 4
         }
       ]
     },
@@ -413,33 +479,33 @@
           "id": "bus-interchange",
           "file": "tileset/locations/transportation/bus-interchange.svg",
           "width": 256,
-          "height": 192,
+          "height": 256,
           "tilesW": 4,
-          "tilesH": 3
+          "tilesH": 4
         },
         {
           "id": "bus-stop",
           "file": "tileset/locations/transportation/bus-stop.svg",
-          "width": 128,
-          "height": 64,
-          "tilesW": 2,
-          "tilesH": 1
+          "width": 256,
+          "height": 256,
+          "tilesW": 4,
+          "tilesH": 4
         },
         {
           "id": "mrt-station",
           "file": "tileset/locations/transportation/mrt-station.svg",
-          "width": 192,
-          "height": 192,
-          "tilesW": 3,
-          "tilesH": 3
+          "width": 256,
+          "height": 256,
+          "tilesW": 4,
+          "tilesH": 4
         },
         {
           "id": "taxi-pickup",
           "file": "tileset/locations/transportation/taxi-pickup.svg",
-          "width": 128,
-          "height": 64,
-          "tilesW": 2,
-          "tilesH": 1
+          "width": 256,
+          "height": 256,
+          "tilesW": 4,
+          "tilesH": 4
         }
       ]
     },
@@ -449,42 +515,42 @@
         {
           "id": "gp-clinic",
           "file": "tileset/locations/healthcare/gp-clinic.svg",
-          "width": 128,
-          "height": 128,
-          "tilesW": 2,
-          "tilesH": 2
+          "width": 256,
+          "height": 256,
+          "tilesW": 4,
+          "tilesH": 4
         },
         {
           "id": "guardian",
           "file": "tileset/locations/healthcare/guardian.svg",
-          "width": 128,
-          "height": 128,
-          "tilesW": 2,
-          "tilesH": 2
+          "width": 256,
+          "height": 256,
+          "tilesW": 4,
+          "tilesH": 4
         },
         {
           "id": "polyclinic",
           "file": "tileset/locations/healthcare/polyclinic.svg",
-          "width": 192,
-          "height": 192,
-          "tilesW": 3,
-          "tilesH": 3
+          "width": 256,
+          "height": 256,
+          "tilesW": 4,
+          "tilesH": 4
         },
         {
           "id": "unity",
           "file": "tileset/locations/healthcare/unity.svg",
-          "width": 128,
-          "height": 128,
-          "tilesW": 2,
-          "tilesH": 2
+          "width": 256,
+          "height": 256,
+          "tilesW": 4,
+          "tilesH": 4
         },
         {
           "id": "watsons",
           "file": "tileset/locations/healthcare/watsons.svg",
-          "width": 128,
-          "height": 128,
-          "tilesW": 2,
-          "tilesH": 2
+          "width": 256,
+          "height": 256,
+          "tilesW": 4,
+          "tilesH": 4
         }
       ]
     },
@@ -492,28 +558,36 @@
       "title": "Community",
       "assets": [
         {
+          "id": "atm",
+          "file": "tileset/locations/community/atm.svg",
+          "width": 256,
+          "height": 256,
+          "tilesW": 4,
+          "tilesH": 4
+        },
+        {
           "id": "bank",
           "file": "tileset/locations/community/bank.svg",
-          "width": 128,
-          "height": 128,
-          "tilesW": 2,
-          "tilesH": 2
+          "width": 256,
+          "height": 256,
+          "tilesW": 4,
+          "tilesH": 4
         },
         {
           "id": "community-club",
           "file": "tileset/locations/community/community-club.svg",
-          "width": 192,
-          "height": 192,
-          "tilesW": 3,
-          "tilesH": 3
+          "width": 256,
+          "height": 256,
+          "tilesW": 4,
+          "tilesH": 4
         },
         {
           "id": "singpost",
           "file": "tileset/locations/community/singpost.svg",
-          "width": 128,
-          "height": 128,
-          "tilesW": 2,
-          "tilesH": 2
+          "width": 256,
+          "height": 256,
+          "tilesW": 4,
+          "tilesH": 4
         }
       ]
     },
@@ -523,18 +597,18 @@
         {
           "id": "hdb-void-deck",
           "file": "tileset/locations/residential/hdb-void-deck.svg",
-          "width": 192,
+          "width": 256,
           "height": 256,
-          "tilesW": 3,
+          "tilesW": 4,
           "tilesH": 4
         },
         {
           "id": "letterbox-area",
           "file": "tileset/locations/residential/letterbox-area.svg",
-          "width": 128,
-          "height": 128,
-          "tilesW": 2,
-          "tilesH": 2
+          "width": 256,
+          "height": 256,
+          "tilesW": 4,
+          "tilesH": 4
         },
         {
           "id": "neighbourhood-park",
@@ -548,9 +622,9 @@
           "id": "park-connector",
           "file": "tileset/locations/residential/park-connector.svg",
           "width": 256,
-          "height": 192,
+          "height": 256,
           "tilesW": 4,
-          "tilesH": 3
+          "tilesH": 4
         }
       ]
     }

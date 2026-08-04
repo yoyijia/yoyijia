@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" fill="none">
   <!-- Hawker Centre | 256x256 | 64-grid modular tileset -->
+  <g transform="translate(0.00,0.00)">
   <rect x="8.00" y="8.00" width="240.00" height="240.00" rx="16" ry="16" fill="#E6E9EE"/>
   <ellipse cx="113.00" cy="115.00" rx="67.20" ry="6.00" fill="#3A4A3828"/>
   <rect x="28.00" y="29.00" width="160.00" height="80.00" rx="10" ry="10" fill="#F5F1E8"/>
@@ -67,4 +68,5 @@
   <rect x="214.00" y="144.00" width="12.00" height="6.00" rx="1.5" ry="1.5" fill="#FFFEFB"/>
   <rect x="220.00" y="168.00" width="14.00" height="20.00" rx="6" ry="6" fill="#4F9A4A"/>
   <rect x="223.00" y="171.00" width="8.00" height="6.00" rx="2" ry="2" fill="#F5D56A"/>
+  </g>
 </svg>

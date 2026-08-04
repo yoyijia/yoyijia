@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" fill="none">
+  <!-- ATM | 256x256 | 64-grid modular tileset -->
+  <g transform="translate(64.00,128.00)">
+  <rect x="8.00" y="94.00" width="112.00" height="28.00" rx="8" ry="8" fill="#E6E9EE"/>
+  <ellipse cx="64.00" cy="104.00" rx="22.00" ry="5.00" fill="#3A4A3828"/>
+  <rect x="42.00" y="18.00" width="44.00" height="84.00" rx="8" ry="8" fill="#FFFEFB"/>
+  <rect x="48.00" y="18.00" width="38.00" height="84.00" rx="7" ry="7" fill="#F0EBE3"/>
+  <rect x="42.00" y="18.00" width="44.00" height="22.00" rx="7" ry="7" fill="#003DA5"/>
+  <rect x="50.00" y="50.00" width="28.00" height="22.00" rx="4" ry="4" fill="#8EC4E8"/>
+  <rect x="54.00" y="78.00" width="20.00" height="5.00" rx="2" ry="2" fill="#5A6270"/>
+  <rect x="56.00" y="90.00" width="16.00" height="4.00" rx="1.5" ry="1.5" fill="#F5D56A"/>
+  </g>
+</svg>

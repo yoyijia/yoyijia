@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="192" height="256" viewBox="0 0 192 256" fill="none">
-  <!-- HDB Void Deck | 192x256 | 64-grid modular tileset -->
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" fill="none">
+  <!-- HDB Void Deck | 256x256 | 64-grid modular tileset -->
+  <g transform="translate(32.00,0.00)">
   <rect x="8.00" y="216.00" width="176.00" height="32.00" rx="8" ry="8" fill="#E6E9EE"/>
   <ellipse cx="89.00" cy="202.00" rx="54.60" ry="6.00" fill="#3A4A3828"/>
   <rect x="20.00" y="16.00" width="130.00" height="180.00" rx="8" ry="8" fill="#F5F1E8"/>
@@ -73,4 +74,5 @@
   <rect x="53.00" y="197.00" width="7.00" height="5.00" rx="1" ry="1" fill="#5B9FD4"/>
   <rect x="62.00" y="197.00" width="7.00" height="5.00" rx="1" ry="1" fill="#7BC96F"/>
   <rect x="90.00" y="198.00" width="28.00" height="8.00" rx="3" ry="3" fill="#E56B6B"/>
+  </g>
 </svg>

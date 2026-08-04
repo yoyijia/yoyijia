@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" viewBox="0 0 192 192" fill="none">
-  <!-- MRT Station | 192x192 | 64-grid modular tileset -->
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" fill="none">
+  <!-- MRT Station | 256x256 | 64-grid modular tileset -->
+  <g transform="translate(32.00,64.00)">
   <rect x="8.00" y="128.00" width="176.00" height="56.00" rx="10" ry="10" fill="#E6E9EE"/>
   <ellipse cx="89.50" cy="109.10" rx="46.20" ry="6.00" fill="#3A4A3828"/>
   <rect x="30.00" y="18.10" width="110.00" height="85.00" rx="8" ry="8" fill="#FFFEFB"/>
@@ -22,4 +23,5 @@
   <rect x="84.00" y="146.00" width="16.00" height="6.00" rx="2" ry="2" fill="#F5D56A"/>
   <rect x="112.00" y="146.00" width="16.00" height="6.00" rx="2" ry="2" fill="#F5D56A"/>
   <rect x="140.00" y="146.00" width="16.00" height="6.00" rx="2" ry="2" fill="#F5D56A"/>
+  </g>
 </svg>

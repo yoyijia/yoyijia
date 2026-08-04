@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="256" height="192" viewBox="0 0 256 192" fill="none">
-  <!-- Park Connector | 256x192 | 64-grid modular tileset -->
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" fill="none">
+  <!-- Park Connector | 256x256 | 64-grid modular tileset -->
+  <g transform="translate(0.00,64.00)">
   <rect x="4.00" y="4.00" width="248.00" height="184.00" rx="12" ry="12" fill="#7BC96F"/>
   <path d="M0,80 C60,70 90,50 130,60 C170,70 190,110 230,115 C250,118 256,100 256,100 L256,130 C240,145 210,155 180,145 C150,135 140,100 110,95 C70,88 30,110 0,115 Z" fill="#E6E9EE"/>
   <rect x="20.00" y="95.00" width="14.00" height="4.00" rx="2" ry="2" fill="#F2F5F8"/>
@@ -38,4 +39,5 @@
   <ellipse cx="92.00" cy="64.00" rx="7.00" ry="5.00" fill="#F5D56A"/>
   <rect x="190.00" y="86.00" width="4.00" height="30.00" rx="1.5" ry="1.5" fill="#5A6270"/>
   <ellipse cx="192.00" cy="84.00" rx="7.00" ry="5.00" fill="#F5D56A"/>
+  </g>
 </svg>

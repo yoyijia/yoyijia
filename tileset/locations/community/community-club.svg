@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" viewBox="0 0 192 192" fill="none">
-  <!-- Community Club | 192x192 | 64-grid modular tileset -->
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" fill="none">
+  <!-- Community Club | 256x256 | 64-grid modular tileset -->
+  <g transform="translate(32.00,64.00)">
   <rect x="8.00" y="144.00" width="176.00" height="40.00" rx="10" ry="10" fill="#E6E9EE"/>
   <ellipse cx="92.20" cy="119.00" rx="50.40" ry="6.00" fill="#3A4A3828"/>
   <rect x="28.00" y="18.00" width="120.00" height="95.00" rx="8" ry="8" fill="#FFFEFB"/>
@@ -22,4 +23,5 @@
   <rect x="170.00" y="30.00" width="4.00" height="80.00" rx="1" ry="1" fill="#5A6270"/>
   <rect x="174.00" y="32.00" width="22.00" height="14.00" rx="2" ry="2" fill="#ED2939"/>
   <circle cx="182.00" cy="38.00" r="3.00" fill="#FFFEFB"/>
+  </g>
 </svg>

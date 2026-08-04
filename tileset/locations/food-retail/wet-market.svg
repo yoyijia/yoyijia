@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" viewBox="0 0 192 192" fill="none">
-  <!-- Wet Market | 192x192 | 64-grid modular tileset -->
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" fill="none">
+  <!-- Wet Market | 256x256 | 64-grid modular tileset -->
+  <g transform="translate(32.00,64.00)">
   <rect x="6.00" y="6.00" width="180.00" height="180.00" rx="12" ry="12" fill="#E6E9EE"/>
   <ellipse cx="88.50" cy="100.10" rx="50.40" ry="6.00" fill="#3A4A3828"/>
   <rect x="24.00" y="24.10" width="120.00" height="70.00" rx="8" ry="8" fill="#F5F1E8"/>
@@ -33,4 +34,5 @@
   <rect x="116.00" y="140.00" width="28.00" height="10.00" rx="3" ry="3" fill="#ED2939"/>
   <circle cx="122.00" cy="154.00" r="3.00" fill="#ED2939"/>
   <circle cx="134.00" cy="154.00" r="3.00" fill="#F5D56A"/>
+  </g>
 </svg>
