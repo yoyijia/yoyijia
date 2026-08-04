@@ -1,33 +1,18 @@
 # Individual character sprite sheets
 
-Soft outline-free muted chibi style (no hard black outlines). Top-down / 3⁄4 camera. Equal-size cells within each sheet.
+Soft outline-free muted chibi style. Top-down / 3⁄4 camera.
 
-Sheet sizes match across the set: walk sheets **1024×1024** (~6×6); wave/thinking **1024×1536**.
+## Uniform sheet format (all 14)
+- **Image size:** 1024 × 1024 px
+- **Grid:** 6 columns × 6 rows
+- **Frames:** 36 equal cells per sheet
+- **Cell size:** ~170 × 170 px
 
 ## Top Girl (4)
-| Sheet | File |
-| --- | --- |
-| Left | `girl/left.png` |
-| Right | `girl/right.png` |
-| Up | `girl/up.png` |
-| Down | `girl/down.png` |
+`girl/left.png` · `girl/right.png` · `girl/up.png` · `girl/down.png`
 
 ## Middle Cashier (6)
-| Sheet | File |
-| --- | --- |
-| Left | `cashier/left.png` |
-| Right | `cashier/right.png` |
-| Up | `cashier/up.png` |
-| Down | `cashier/down.png` |
-| Wave | `cashier/wave.png` |
-| Thinking | `cashier/thinking.png` |
+`cashier/left.png` · `cashier/right.png` · `cashier/up.png` · `cashier/down.png` · `cashier/wave.png` · `cashier/thinking.png`
 
 ## Boy (4)
-| Sheet | File |
-| --- | --- |
-| Left | `boy/left.png` |
-| Right | `boy/right.png` |
-| Up | `boy/up.png` |
-| Down | `boy/down.png` |
-
-**Total: 14 sheets**
+`boy/left.png` · `boy/right.png` · `boy/up.png` · `boy/down.png`
