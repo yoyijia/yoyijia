@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" fill="none">
+  <!-- Roof Orange Tiled | tile 256x256 | dimetric vector | transparent bg -->
+  <path d="M30,140 L128,50 L226,140 L200,150 L128,80 L56,150 Z" fill="#E8A06A"/>
+  <path d="M56,150 L128,80 L200,150 L226,140 L128,180 Z" fill="#D48852"/>
+  <path d="M70,100 L128,70 L186,100 L128,108 Z" fill="#F0B07A"/>
+  <path d="M78,114 L128,84 L178,114 L128,122 Z" fill="#E8A06A"/>
+  <path d="M86,128 L128,98 L170,128 L128,136 Z" fill="#F0B07A"/>
+  <path d="M94,142 L128,112 L162,142 L128,150 Z" fill="#E8A06A"/>
+  <rect x="40.0" y="140.0" width="176.0" height="20.0" rx="6" ry="6" fill="#D48852"/>
+</svg>

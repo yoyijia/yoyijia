@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" fill="none">
+  <!-- Bank Branch | tile 256x256 | dimetric vector | transparent bg -->
+  <ellipse cx="128.0" cy="210.0" rx="90.0" ry="12.0" fill="#00000018"/>
+  <ellipse cx="128.1" cy="202.2" rx="77.0" ry="14.0" fill="#00000018"/>
+  <rect x="48.0" y="54.0" width="145.0" height="130.0" rx="10" ry="10" fill="#FFFEFB"/>
+  <path d="M193.0,58.0 L193.0,184.0 L223.2,166.4 L223.2,40.4 Z" fill="#F0EDE6"/>
+  <path d="M54.0,54.0 L193.0,54.0 L223.2,36.4 L84.2,36.4 Z" fill="#003DA5"/>
+  <rect x="48.0" y="54.0" width="145.0" height="13.0" rx="3.5" ry="3.5" fill="#002E7A"/>
+  <rect x="48.0" y="78.0" width="145.0" height="28.0" rx="5" ry="5" fill="#003DA5"/>
+  <rect x="70.0" y="120.0" width="10.0" height="50.0" rx="3" ry="3" fill="#D9D2C4"/>
+  <rect x="100.0" y="120.0" width="10.0" height="50.0" rx="3" ry="3" fill="#D9D2C4"/>
+  <rect x="130.0" y="120.0" width="10.0" height="50.0" rx="3" ry="3" fill="#D9D2C4"/>
+  <rect x="160.0" y="120.0" width="10.0" height="50.0" rx="3" ry="3" fill="#D9D2C4"/>
+  <rect x="105.0" y="140.0" width="30.0" height="42.0" rx="5" ry="5" fill="#5A6270"/>
+  <rect x="48.0" y="195.0" width="145.0" height="30.0" rx="10" ry="10" fill="#E8EBEF"/>
+</svg>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" fill="none">
+  <!-- Road Corner | tile 256x256 | dimetric vector | transparent bg -->
+  <path d="M16,16 h120 a100,100 0 0 1 100,100 v120 h-80 a40,40 0 0 0 -40,-40 H16 Z" fill="#B8BFC8"/>
+  <rect x="60.0" y="50.0" width="18.0" height="14.0" rx="5" ry="5" fill="#F5F7FA"/>
+  <rect x="100.0" y="70.0" width="18.0" height="14.0" rx="5" ry="5" fill="#F5F7FA"/>
+  <rect x="140.0" y="110.0" width="18.0" height="14.0" rx="5" ry="5" fill="#F5F7FA"/>
+  <rect x="160.0" y="150.0" width="18.0" height="14.0" rx="5" ry="5" fill="#F5F7FA"/>
+  <rect x="16.0" y="16.0" width="10.0" height="140.0" rx="4" ry="4" fill="#D4D9E0"/>
+  <rect x="140.0" y="230.0" width="100.0" height="10.0" rx="4" ry="4" fill="#D4D9E0"/>
+</svg>

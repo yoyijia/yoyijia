@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>SG Neighbourhood Asset Pack — Preview</title>
+<style>
+  :root {
+    --bg: #E8F0E9;
+    --ink: #2C3A2E;
+    --muted: #5A6B5C;
+    --panel: #F7FBF7;
+    --tile-bg: repeating-conic-gradient(#dfe8e0 0% 25%, #f4f8f4 0% 50%) 50% / 16px 16px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Avenir Next", "Segoe UI", "Nunito", sans-serif;
+    background:
+      radial-gradient(ellipse at 20% 0%, #d4ecd8 0%, transparent 50%),
+      radial-gradient(ellipse at 90% 10%, #fde8d8 0%, transparent 40%),
+      var(--bg);
+    color: var(--ink);
+    min-height: 100vh;
+    padding: 48px 32px 80px;
+  }
+  header { max-width: 1200px; margin: 0 auto 48px; }
+  header h1 {
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin-bottom: 8px;
+  }
+  header p { color: var(--muted); max-width: 52ch; line-height: 1.5; font-size: 1.05rem; }
+  .meta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+  .meta span {
+    background: var(--panel); border-radius: 999px; padding: 6px 14px;
+    font-size: 0.85rem; color: var(--muted);
+  }
+  section { max-width: 1200px; margin: 0 auto 40px; }
+  h2 {
+    font-size: 1.25rem; margin-bottom: 16px; padding-bottom: 8px;
+    border-bottom: 2px solid #c5d9c7;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 20px;
+  }
+  .card {
+    background: var(--panel); border-radius: 20px; padding: 16px;
+    display: flex; flex-direction: column; align-items: center; gap: 12px;
+  }
+  .tile {
+    width: 100%; aspect-ratio: 1; background: var(--tile-bg);
+    border-radius: 14px; display: grid; place-items: center; overflow: hidden;
+  }
+  .tile img { width: 90%; height: 90%; object-fit: contain; }
+  figcaption {
+    font-size: 0.8rem; font-weight: 600; text-align: center;
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  figcaption span { font-weight: 500; color: var(--muted); font-size: 0.7rem; }
+  .hero {
+    max-width: 1200px; margin: 0 auto 48px;
+    border-radius: 24px; overflow: hidden;
+    background: var(--panel); padding: 12px;
+  }
+  .hero img { width: 100%; height: auto; border-radius: 16px; display: block; }
+</style>
+</head>
+<body>
+  <header>
+    <h1>Singapore Neighbourhood Pack</h1>
+    <p>Modular game-ready vector tiles — clean Nintendo-like style, soft pastels, no outlines, dimetric 3/4 view. Transparent backgrounds, 256px / 512px grid.</p>
+    <div class="meta">
+      <span>No outlines</span>
+      <span>Two-tone shading</span>
+      <span>Rounded corners</span>
+      <span>Transparent SVG + PNG</span>
+      <span>Unity / Figma</span>
+    </div>
+  </header>
+  <div class="hero">
+    <img src="renders/sample-neighbourhood.png" alt="Sample neighbourhood composition"/>
+  </div>
+  
+      <section>
+        <h2>Food & Retail</h2>
+        <div class="grid">
+        <figure class="card">
+          <div class="tile" style="--s:512px">
+            <img src="../assets/food-retail/hawker-centre.svg" alt="hawker-centre" width="512" height="512"/>
+          </div>
+          <figcaption>hawker-centre<span>512×512</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile" style="--s:512px">
+            <img src="../assets/food-retail/ntuc-fairprice.svg" alt="ntuc-fairprice" width="512" height="512"/>
+          </div>
+          <figcaption>ntuc-fairprice<span>512×512</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile" style="--s:512px">
+            <img src="../assets/food-retail/sheng-siong.svg" alt="sheng-siong" width="512" height="512"/>
+          </div>
+          <figcaption>sheng-siong<span>512×512</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile" style="--s:512px">
+            <img src="../assets/food-retail/wet-market.svg" alt="wet-market" width="512" height="512"/>
+          </div>
+          <figcaption>wet-market<span>512×512</span></figcaption>
+        </figure>
+        </div>
+      </section>
+      <section>
+        <h2>Transportation</h2>
+        <div class="grid">
+        <figure class="card">
+          <div class="tile" style="--s:512px">
+            <img src="../assets/transportation/bus-interchange.svg" alt="bus-interchange" width="512" height="512"/>
+          </div>
+          <figcaption>bus-interchange<span>512×512</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile" style="--s:256px">
+            <img src="../assets/transportation/bus-stop.svg" alt="bus-stop" width="256" height="256"/>
+          </div>
+          <figcaption>bus-stop<span>256×256</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile" style="--s:512px">
+            <img src="../assets/transportation/mrt-station.svg" alt="mrt-station" width="512" height="512"/>
+          </div>
+          <figcaption>mrt-station<span>512×512</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile" style="--s:256px">
+            <img src="../assets/transportation/taxi-pickup.svg" alt="taxi-pickup" width="256" height="256"/>
+          </div>
+          <figcaption>taxi-pickup<span>256×256</span></figcaption>
+        </figure>
+        </div>
+      </section>
+      <section>
+        <h2>Healthcare</h2>
+        <div class="grid">
+        <figure class="card">
+          <div class="tile" style="--s:256px">
+            <img src="../assets/healthcare/gp-clinic.svg" alt="gp-clinic" width="256" height="256"/>
+          </div>
+          <figcaption>gp-clinic<span>256×256</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile" style="--s:256px">
+            <img src="../assets/healthcare/guardian.svg" alt="guardian" width="256" height="256"/>
+          </div>
+          <figcaption>guardian<span>256×256</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile" style="--s:512px">
+            <img src="../assets/healthcare/polyclinic.svg" alt="polyclinic" width="512" height="512"/>
+          </div>
+          <figcaption>polyclinic<span>512×512</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile" style="--s:256px">
+            <img src="../assets/healthcare/unity-pharmacy.svg" alt="unity-pharmacy" width="256" height="256"/>
+          </div>
+          <figcaption>unity-pharmacy<span>256×256</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile" style="--s:256px">
+            <img src="../assets/healthcare/watsons.svg" alt="watsons" width="256" height="256"/>
+          </div>
+          <figcaption>watsons<span>256×256</span></figcaption>
+        </figure>
+        </div>
+      </section>
+      <section>
+        <h2>Community</h2>
+        <div class="grid">
+        <figure class="card">
+          <div class="tile" style="--s:256px">
+            <img src="../assets/community/atm.svg" alt="atm" width="256" height="256"/>
+          </div>
+          <figcaption>atm<span>256×256</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile" style="--s:256px">
+            <img src="../assets/community/bank-branch.svg" alt="bank-branch" width="256" height="256"/>
+          </div>
+          <figcaption>bank-branch<span>256×256</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile" style="--s:512px">
+            <img src="../assets/community/community-club.svg" alt="community-club" width="512" height="512"/>
+          </div>
+          <figcaption>community-club<span>512×512</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile" style="--s:256px">
+            <img src="../assets/community/singpost-office.svg" alt="singpost-office" width="256" height="256"/>
+          </div>
+          <figcaption>singpost-office<span>256×256</span></figcaption>
+        </figure>
+        </div>
+      </section>
+      <section>
+        <h2>Residential</h2>
+        <div class="grid">
+        <figure class="card">
+          <div class="tile" style="--s:512px">
+            <img src="../assets/residential/hdb-void-deck.svg" alt="hdb-void-deck" width="512" height="512"/>
+          </div>
+          <figcaption>hdb-void-deck<span>512×512</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile" style="--s:256px">
+            <img src="../assets/residential/letterbox-area.svg" alt="letterbox-area" width="256" height="256"/>
+          </div>
+          <figcaption>letterbox-area<span>256×256</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile" style="--s:512px">
+            <img src="../assets/residential/neighbourhood-park.svg" alt="neighbourhood-park" width="512" height="512"/>
+          </div>
+          <figcaption>neighbourhood-park<span>512×512</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile" style="--s:512px">
+            <img src="../assets/residential/park-connector-network.svg" alt="park-connector-network" width="512" height="512"/>
+          </div>
+          <figcaption>park-connector-network<span>512×512</span></figcaption>
+        </figure>
+        </div>
+      </section>
+      <section>
+        <h2>Roads</h2>
+        <div class="grid">
+        <figure class="card">
+          <div class="tile" style="--s:256px">
+            <img src="../assets/modular/roads/road-corner.svg" alt="road-corner" width="256" height="256"/>
+          </div>
+          <figcaption>road-corner<span>256×256</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile" style="--s:256px">
+            <img src="../assets/modular/roads/road-crossroads.svg" alt="road-crossroads" width="256" height="256"/>
+          </div>
+          <figcaption>road-crossroads<span>256×256</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile" style="--s:256px">
+            <img src="../assets/modular/roads/road-roundabout.svg" alt="road-roundabout" width="256" height="256"/>
+          </div>
+          <figcaption>road-roundabout<span>256×256</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile" style="--s:256px">
+            <img src="../assets/modular/roads/road-straight-h.svg" alt="road-straight-h" width="256" height="256"/>
+          </div>
+          <figcaption>road-straight-h<span>256×256</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile" style="--s:256px">
+            <img src="../assets/modular/roads/road-straight.svg" alt="road-straight" width="256" height="256"/>
+          </div>
+          <figcaption>road-straight<span>256×256</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile" style="--s:256px">
+            <img src="../assets/modular/roads/road-t-junction.svg" alt="road-t-junction" width="256" height="256"/>
+          </div>
+          <figcaption>road-t-junction<span>256×256</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile" style="--s:256px">
+            <img src="../assets/modular/roads/zebra-crossing-v.svg" alt="zebra-crossing-v" width="256" height="256"/>
+          </div>
+          <figcaption>zebra-crossing-v<span>256×256</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile" style="--s:256px">
+            <img src="../assets/modular/roads/zebra-crossing.svg" alt="zebra-crossing" width="256" height="256"/>
+          </div>
+          <figcaption>zebra-crossing<span>256×256</span></figcaption>
+        </figure>
+        </div>
+      </section>
+      <section>
+        <h2>Pavements</h2>
+        <div class="grid">
+        <figure class="card">
+          <div class="tile" style="--s:256px">
+            <img src="../assets/modular/pavements/pavement-corner.svg" alt="pavement-corner" width="256" height="256"/>
+          </div>
+          <figcaption>pavement-corner<span>256×256</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile" style="--s:256px">
+            <img src="../assets/modular/pavements/pavement.svg" alt="pavement" width="256" height="256"/>
+          </div>
+          <figcaption>pavement<span>256×256</span></figcaption>
+        </figure>
+        </div>
+      </section>
+      <section>
+        <h2>Nature</h2>
+        <div class="grid">
+        <figure class="card">
+          <div class="tile" style="--s:256px">
+            <img src="../assets/modular/nature/bush.svg" alt="bush" width="256" height="256"/>
+          </div>
+          <figcaption>bush<span>256×256</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile" style="--s:256px">
+            <img src="../assets/modular/nature/grass.svg" alt="grass" width="256" height="256"/>
+          </div>
+          <figcaption>grass<span>256×256</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile" style="--s:256px">
+            <img src="../assets/modular/nature/tree.svg" alt="tree" width="256" height="256"/>
+          </div>
+          <figcaption>tree<span>256×256</span></figcaption>
+        </figure>
+        </div>
+      </section>
+      <section>
+        <h2>Props</h2>
+        <div class="grid">
+        <figure class="card">
+          <div class="tile" style="--s:256px">
+            <img src="../assets/modular/props/bench.svg" alt="bench" width="256" height="256"/>
+          </div>
+          <figcaption>bench<span>256×256</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile" style="--s:256px">
+            <img src="../assets/modular/props/bus-shelter.svg" alt="bus-shelter" width="256" height="256"/>
+          </div>
+          <figcaption>bus-shelter<span>256×256</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile" style="--s:256px">
+            <img src="../assets/modular/props/dustbin.svg" alt="dustbin" width="256" height="256"/>
+          </div>
+          <figcaption>dustbin<span>256×256</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile" style="--s:256px">
+            <img src="../assets/modular/props/lamp-post.svg" alt="lamp-post" width="256" height="256"/>
+          </div>
+          <figcaption>lamp-post<span>256×256</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile" style="--s:256px">
+            <img src="../assets/modular/props/mrt-entrance.svg" alt="mrt-entrance" width="256" height="256"/>
+          </div>
+          <figcaption>mrt-entrance<span>256×256</span></figcaption>
+        </figure>
+        </div>
+      </section>
+      <section>
+        <h2>Architecture Modules</h2>
+        <div class="grid">
+        <figure class="card">
+          <div class="tile" style="--s:256px">
+            <img src="../assets/modular/architecture/awning.svg" alt="awning" width="256" height="256"/>
+          </div>
+          <figcaption>awning<span>256×256</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile" style="--s:256px">
+            <img src="../assets/modular/architecture/door.svg" alt="door" width="256" height="256"/>
+          </div>
+          <figcaption>door<span>256×256</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile" style="--s:256px">
+            <img src="../assets/modular/architecture/hdb-corridor.svg" alt="hdb-corridor" width="256" height="256"/>
+          </div>
+          <figcaption>hdb-corridor<span>256×256</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile" style="--s:256px">
+            <img src="../assets/modular/architecture/roof-blue.svg" alt="roof-blue" width="256" height="256"/>
+          </div>
+          <figcaption>roof-blue<span>256×256</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile" style="--s:256px">
+            <img src="../assets/modular/architecture/roof-orange.svg" alt="roof-orange" width="256" height="256"/>
+          </div>
+          <figcaption>roof-orange<span>256×256</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile" style="--s:256px">
+            <img src="../assets/modular/architecture/roof-red.svg" alt="roof-red" width="256" height="256"/>
+          </div>
+          <figcaption>roof-red<span>256×256</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile" style="--s:256px">
+            <img src="../assets/modular/architecture/wall-side.svg" alt="wall-side" width="256" height="256"/>
+          </div>
+          <figcaption>wall-side<span>256×256</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile" style="--s:256px">
+            <img src="../assets/modular/architecture/wall.svg" alt="wall" width="256" height="256"/>
+          </div>
+          <figcaption>wall<span>256×256</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile" style="--s:256px">
+            <img src="../assets/modular/architecture/window-blue-accent.svg" alt="window-blue-accent" width="256" height="256"/>
+          </div>
+          <figcaption>window-blue-accent<span>256×256</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile" style="--s:256px">
+            <img src="../assets/modular/architecture/window.svg" alt="window" width="256" height="256"/>
+          </div>
+          <figcaption>window<span>256×256</span></figcaption>
+        </figure>
+        </div>
+      </section>
+</body>
+</html>

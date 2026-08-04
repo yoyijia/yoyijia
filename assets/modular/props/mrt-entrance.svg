@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" fill="none">
+  <!-- MRT Entrance | tile 256x256 | dimetric vector | transparent bg -->
+  <ellipse cx="128.0" cy="210.0" rx="70.0" ry="12.0" fill="#00000018"/>
+  <rect x="50.0" y="160.0" width="156.0" height="60.0" rx="14" ry="14" fill="#E8EBEF"/>
+  <rect x="70.0" y="70.0" width="116.0" height="40.0" rx="12" ry="12" fill="#009645"/>
+  <rect x="75.0" y="100.0" width="106.0" height="14.0" rx="5" ry="5" fill="#007A38"/>
+  <rect x="90.0" y="120.0" width="76.0" height="12.0" rx="3" ry="3" fill="#5A6270"/>
+  <rect x="94.0" y="130.0" width="68.0" height="12.0" rx="3" ry="3" fill="#3D4450"/>
+  <rect x="98.0" y="140.0" width="60.0" height="12.0" rx="3" ry="3" fill="#5A6270"/>
+  <rect x="102.0" y="150.0" width="52.0" height="12.0" rx="3" ry="3" fill="#3D4450"/>
+  <circle cx="128.0" cy="85.0" r="10.0" fill="#FFFEFB"/>
+  <circle cx="128.0" cy="85.0" r="6.0" fill="#D42E12"/>
+</svg>

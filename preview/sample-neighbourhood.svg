@@ -1,0 +1,627 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="960" viewBox="0 0 1280 960" fill="none">
+  <!-- Sample Neighbourhood Scene | tile 1280x960 | dimetric vector | transparent bg -->
+  <rect width="1280" height="960" fill="#E5F0E6"/>
+  <g transform="translate(0,0) scale(1.0000)">
+
+  <!-- Grass Tile | tile 256x256 | dimetric vector | transparent bg -->
+  <rect x="8.0" y="8.0" width="240.0" height="240.0" rx="22" ry="22" fill="#7BC47F"/>
+  <circle cx="28.0" cy="26.0" r="3.0" fill="#91D494"/>
+  <circle cx="220.0" cy="226.0" r="3.0" fill="#91D494"/>
+  <circle cx="116.0" cy="104.0" r="3.0" fill="#91D494"/>
+
+  </g>
+  <g transform="translate(256,0) scale(1.0000)">
+
+  <!-- Grass Tile | tile 256x256 | dimetric vector | transparent bg -->
+  <rect x="8.0" y="8.0" width="240.0" height="240.0" rx="22" ry="22" fill="#7BC47F"/>
+  <circle cx="28.0" cy="26.0" r="3.0" fill="#91D494"/>
+  <circle cx="220.0" cy="226.0" r="3.0" fill="#91D494"/>
+  <circle cx="116.0" cy="104.0" r="3.0" fill="#91D494"/>
+
+  </g>
+  <g transform="translate(512,0) scale(1.0000)">
+
+  <!-- Grass Tile | tile 256x256 | dimetric vector | transparent bg -->
+  <rect x="8.0" y="8.0" width="240.0" height="240.0" rx="22" ry="22" fill="#7BC47F"/>
+  <circle cx="28.0" cy="26.0" r="3.0" fill="#91D494"/>
+  <circle cx="220.0" cy="226.0" r="3.0" fill="#91D494"/>
+  <circle cx="116.0" cy="104.0" r="3.0" fill="#91D494"/>
+
+  </g>
+  <g transform="translate(768,0) scale(1.0000)">
+
+  <!-- Grass Tile | tile 256x256 | dimetric vector | transparent bg -->
+  <rect x="8.0" y="8.0" width="240.0" height="240.0" rx="22" ry="22" fill="#7BC47F"/>
+  <circle cx="28.0" cy="26.0" r="3.0" fill="#91D494"/>
+  <circle cx="220.0" cy="226.0" r="3.0" fill="#91D494"/>
+  <circle cx="116.0" cy="104.0" r="3.0" fill="#91D494"/>
+
+  </g>
+  <g transform="translate(1024,0) scale(1.0000)">
+
+  <!-- Grass Tile | tile 256x256 | dimetric vector | transparent bg -->
+  <rect x="8.0" y="8.0" width="240.0" height="240.0" rx="22" ry="22" fill="#7BC47F"/>
+  <circle cx="28.0" cy="26.0" r="3.0" fill="#91D494"/>
+  <circle cx="220.0" cy="226.0" r="3.0" fill="#91D494"/>
+  <circle cx="116.0" cy="104.0" r="3.0" fill="#91D494"/>
+
+  </g>
+  <g transform="translate(0,256) scale(1.0000)">
+
+  <!-- Grass Tile | tile 256x256 | dimetric vector | transparent bg -->
+  <rect x="8.0" y="8.0" width="240.0" height="240.0" rx="22" ry="22" fill="#7BC47F"/>
+  <circle cx="28.0" cy="26.0" r="3.0" fill="#91D494"/>
+  <circle cx="220.0" cy="226.0" r="3.0" fill="#91D494"/>
+  <circle cx="116.0" cy="104.0" r="3.0" fill="#91D494"/>
+
+  </g>
+  <g transform="translate(256,256) scale(1.0000)">
+
+  <!-- Grass Tile | tile 256x256 | dimetric vector | transparent bg -->
+  <rect x="8.0" y="8.0" width="240.0" height="240.0" rx="22" ry="22" fill="#7BC47F"/>
+  <circle cx="28.0" cy="26.0" r="3.0" fill="#91D494"/>
+  <circle cx="220.0" cy="226.0" r="3.0" fill="#91D494"/>
+  <circle cx="116.0" cy="104.0" r="3.0" fill="#91D494"/>
+
+  </g>
+  <g transform="translate(512,256) scale(1.0000)">
+
+  <!-- Grass Tile | tile 256x256 | dimetric vector | transparent bg -->
+  <rect x="8.0" y="8.0" width="240.0" height="240.0" rx="22" ry="22" fill="#7BC47F"/>
+  <circle cx="28.0" cy="26.0" r="3.0" fill="#91D494"/>
+  <circle cx="220.0" cy="226.0" r="3.0" fill="#91D494"/>
+  <circle cx="116.0" cy="104.0" r="3.0" fill="#91D494"/>
+
+  </g>
+  <g transform="translate(768,256) scale(1.0000)">
+
+  <!-- Grass Tile | tile 256x256 | dimetric vector | transparent bg -->
+  <rect x="8.0" y="8.0" width="240.0" height="240.0" rx="22" ry="22" fill="#7BC47F"/>
+  <circle cx="28.0" cy="26.0" r="3.0" fill="#91D494"/>
+  <circle cx="220.0" cy="226.0" r="3.0" fill="#91D494"/>
+  <circle cx="116.0" cy="104.0" r="3.0" fill="#91D494"/>
+
+  </g>
+  <g transform="translate(1024,256) scale(1.0000)">
+
+  <!-- Grass Tile | tile 256x256 | dimetric vector | transparent bg -->
+  <rect x="8.0" y="8.0" width="240.0" height="240.0" rx="22" ry="22" fill="#7BC47F"/>
+  <circle cx="28.0" cy="26.0" r="3.0" fill="#91D494"/>
+  <circle cx="220.0" cy="226.0" r="3.0" fill="#91D494"/>
+  <circle cx="116.0" cy="104.0" r="3.0" fill="#91D494"/>
+
+  </g>
+  <g transform="translate(0,512) scale(1.0000)">
+
+  <!-- Grass Tile | tile 256x256 | dimetric vector | transparent bg -->
+  <rect x="8.0" y="8.0" width="240.0" height="240.0" rx="22" ry="22" fill="#7BC47F"/>
+  <circle cx="28.0" cy="26.0" r="3.0" fill="#91D494"/>
+  <circle cx="220.0" cy="226.0" r="3.0" fill="#91D494"/>
+  <circle cx="116.0" cy="104.0" r="3.0" fill="#91D494"/>
+
+  </g>
+  <g transform="translate(256,512) scale(1.0000)">
+
+  <!-- Grass Tile | tile 256x256 | dimetric vector | transparent bg -->
+  <rect x="8.0" y="8.0" width="240.0" height="240.0" rx="22" ry="22" fill="#7BC47F"/>
+  <circle cx="28.0" cy="26.0" r="3.0" fill="#91D494"/>
+  <circle cx="220.0" cy="226.0" r="3.0" fill="#91D494"/>
+  <circle cx="116.0" cy="104.0" r="3.0" fill="#91D494"/>
+
+  </g>
+  <g transform="translate(512,512) scale(1.0000)">
+
+  <!-- Grass Tile | tile 256x256 | dimetric vector | transparent bg -->
+  <rect x="8.0" y="8.0" width="240.0" height="240.0" rx="22" ry="22" fill="#7BC47F"/>
+  <circle cx="28.0" cy="26.0" r="3.0" fill="#91D494"/>
+  <circle cx="220.0" cy="226.0" r="3.0" fill="#91D494"/>
+  <circle cx="116.0" cy="104.0" r="3.0" fill="#91D494"/>
+
+  </g>
+  <g transform="translate(768,512) scale(1.0000)">
+
+  <!-- Grass Tile | tile 256x256 | dimetric vector | transparent bg -->
+  <rect x="8.0" y="8.0" width="240.0" height="240.0" rx="22" ry="22" fill="#7BC47F"/>
+  <circle cx="28.0" cy="26.0" r="3.0" fill="#91D494"/>
+  <circle cx="220.0" cy="226.0" r="3.0" fill="#91D494"/>
+  <circle cx="116.0" cy="104.0" r="3.0" fill="#91D494"/>
+
+  </g>
+  <g transform="translate(1024,512) scale(1.0000)">
+
+  <!-- Grass Tile | tile 256x256 | dimetric vector | transparent bg -->
+  <rect x="8.0" y="8.0" width="240.0" height="240.0" rx="22" ry="22" fill="#7BC47F"/>
+  <circle cx="28.0" cy="26.0" r="3.0" fill="#91D494"/>
+  <circle cx="220.0" cy="226.0" r="3.0" fill="#91D494"/>
+  <circle cx="116.0" cy="104.0" r="3.0" fill="#91D494"/>
+
+  </g>
+  <g transform="translate(0,768) scale(1.0000)">
+
+  <!-- Grass Tile | tile 256x256 | dimetric vector | transparent bg -->
+  <rect x="8.0" y="8.0" width="240.0" height="240.0" rx="22" ry="22" fill="#7BC47F"/>
+  <circle cx="28.0" cy="26.0" r="3.0" fill="#91D494"/>
+  <circle cx="220.0" cy="226.0" r="3.0" fill="#91D494"/>
+  <circle cx="116.0" cy="104.0" r="3.0" fill="#91D494"/>
+
+  </g>
+  <g transform="translate(256,768) scale(1.0000)">
+
+  <!-- Grass Tile | tile 256x256 | dimetric vector | transparent bg -->
+  <rect x="8.0" y="8.0" width="240.0" height="240.0" rx="22" ry="22" fill="#7BC47F"/>
+  <circle cx="28.0" cy="26.0" r="3.0" fill="#91D494"/>
+  <circle cx="220.0" cy="226.0" r="3.0" fill="#91D494"/>
+  <circle cx="116.0" cy="104.0" r="3.0" fill="#91D494"/>
+
+  </g>
+  <g transform="translate(512,768) scale(1.0000)">
+
+  <!-- Grass Tile | tile 256x256 | dimetric vector | transparent bg -->
+  <rect x="8.0" y="8.0" width="240.0" height="240.0" rx="22" ry="22" fill="#7BC47F"/>
+  <circle cx="28.0" cy="26.0" r="3.0" fill="#91D494"/>
+  <circle cx="220.0" cy="226.0" r="3.0" fill="#91D494"/>
+  <circle cx="116.0" cy="104.0" r="3.0" fill="#91D494"/>
+
+  </g>
+  <g transform="translate(768,768) scale(1.0000)">
+
+  <!-- Grass Tile | tile 256x256 | dimetric vector | transparent bg -->
+  <rect x="8.0" y="8.0" width="240.0" height="240.0" rx="22" ry="22" fill="#7BC47F"/>
+  <circle cx="28.0" cy="26.0" r="3.0" fill="#91D494"/>
+  <circle cx="220.0" cy="226.0" r="3.0" fill="#91D494"/>
+  <circle cx="116.0" cy="104.0" r="3.0" fill="#91D494"/>
+
+  </g>
+  <g transform="translate(1024,768) scale(1.0000)">
+
+  <!-- Grass Tile | tile 256x256 | dimetric vector | transparent bg -->
+  <rect x="8.0" y="8.0" width="240.0" height="240.0" rx="22" ry="22" fill="#7BC47F"/>
+  <circle cx="28.0" cy="26.0" r="3.0" fill="#91D494"/>
+  <circle cx="220.0" cy="226.0" r="3.0" fill="#91D494"/>
+  <circle cx="116.0" cy="104.0" r="3.0" fill="#91D494"/>
+
+  </g>
+  <g transform="translate(0,352) scale(1.0000)">
+
+  <!-- Road Straight Horizontal | tile 256x256 | dimetric vector | transparent bg -->
+  <rect x="16.0" y="16.0" width="224.0" height="224.0" rx="28" ry="28" fill="#B8BFC8"/>
+  <rect x="40.0" y="118.0" width="28.0" height="20.0" rx="6" ry="6" fill="#F5F7FA"/>
+  <rect x="80.0" y="118.0" width="28.0" height="20.0" rx="6" ry="6" fill="#F5F7FA"/>
+  <rect x="120.0" y="118.0" width="28.0" height="20.0" rx="6" ry="6" fill="#F5F7FA"/>
+  <rect x="160.0" y="118.0" width="28.0" height="20.0" rx="6" ry="6" fill="#F5F7FA"/>
+  <rect x="200.0" y="118.0" width="28.0" height="20.0" rx="6" ry="6" fill="#F5F7FA"/>
+  <rect x="16.0" y="16.0" width="224.0" height="10.0" rx="4" ry="4" fill="#D4D9E0"/>
+  <rect x="16.0" y="230.0" width="224.0" height="10.0" rx="4" ry="4" fill="#D4D9E0"/>
+
+  </g>
+  <g transform="translate(256,352) scale(1.0000)">
+
+  <!-- Road Straight Horizontal | tile 256x256 | dimetric vector | transparent bg -->
+  <rect x="16.0" y="16.0" width="224.0" height="224.0" rx="28" ry="28" fill="#B8BFC8"/>
+  <rect x="40.0" y="118.0" width="28.0" height="20.0" rx="6" ry="6" fill="#F5F7FA"/>
+  <rect x="80.0" y="118.0" width="28.0" height="20.0" rx="6" ry="6" fill="#F5F7FA"/>
+  <rect x="120.0" y="118.0" width="28.0" height="20.0" rx="6" ry="6" fill="#F5F7FA"/>
+  <rect x="160.0" y="118.0" width="28.0" height="20.0" rx="6" ry="6" fill="#F5F7FA"/>
+  <rect x="200.0" y="118.0" width="28.0" height="20.0" rx="6" ry="6" fill="#F5F7FA"/>
+  <rect x="16.0" y="16.0" width="224.0" height="10.0" rx="4" ry="4" fill="#D4D9E0"/>
+  <rect x="16.0" y="230.0" width="224.0" height="10.0" rx="4" ry="4" fill="#D4D9E0"/>
+
+  </g>
+  <g transform="translate(512,352) scale(1.0000)">
+
+  <!-- Road Straight Horizontal | tile 256x256 | dimetric vector | transparent bg -->
+  <rect x="16.0" y="16.0" width="224.0" height="224.0" rx="28" ry="28" fill="#B8BFC8"/>
+  <rect x="40.0" y="118.0" width="28.0" height="20.0" rx="6" ry="6" fill="#F5F7FA"/>
+  <rect x="80.0" y="118.0" width="28.0" height="20.0" rx="6" ry="6" fill="#F5F7FA"/>
+  <rect x="120.0" y="118.0" width="28.0" height="20.0" rx="6" ry="6" fill="#F5F7FA"/>
+  <rect x="160.0" y="118.0" width="28.0" height="20.0" rx="6" ry="6" fill="#F5F7FA"/>
+  <rect x="200.0" y="118.0" width="28.0" height="20.0" rx="6" ry="6" fill="#F5F7FA"/>
+  <rect x="16.0" y="16.0" width="224.0" height="10.0" rx="4" ry="4" fill="#D4D9E0"/>
+  <rect x="16.0" y="230.0" width="224.0" height="10.0" rx="4" ry="4" fill="#D4D9E0"/>
+
+  </g>
+  <g transform="translate(768,352) scale(1.0000)">
+
+  <!-- Road Straight Horizontal | tile 256x256 | dimetric vector | transparent bg -->
+  <rect x="16.0" y="16.0" width="224.0" height="224.0" rx="28" ry="28" fill="#B8BFC8"/>
+  <rect x="40.0" y="118.0" width="28.0" height="20.0" rx="6" ry="6" fill="#F5F7FA"/>
+  <rect x="80.0" y="118.0" width="28.0" height="20.0" rx="6" ry="6" fill="#F5F7FA"/>
+  <rect x="120.0" y="118.0" width="28.0" height="20.0" rx="6" ry="6" fill="#F5F7FA"/>
+  <rect x="160.0" y="118.0" width="28.0" height="20.0" rx="6" ry="6" fill="#F5F7FA"/>
+  <rect x="200.0" y="118.0" width="28.0" height="20.0" rx="6" ry="6" fill="#F5F7FA"/>
+  <rect x="16.0" y="16.0" width="224.0" height="10.0" rx="4" ry="4" fill="#D4D9E0"/>
+  <rect x="16.0" y="230.0" width="224.0" height="10.0" rx="4" ry="4" fill="#D4D9E0"/>
+
+  </g>
+  <g transform="translate(1024,352) scale(1.0000)">
+
+  <!-- Road Straight Horizontal | tile 256x256 | dimetric vector | transparent bg -->
+  <rect x="16.0" y="16.0" width="224.0" height="224.0" rx="28" ry="28" fill="#B8BFC8"/>
+  <rect x="40.0" y="118.0" width="28.0" height="20.0" rx="6" ry="6" fill="#F5F7FA"/>
+  <rect x="80.0" y="118.0" width="28.0" height="20.0" rx="6" ry="6" fill="#F5F7FA"/>
+  <rect x="120.0" y="118.0" width="28.0" height="20.0" rx="6" ry="6" fill="#F5F7FA"/>
+  <rect x="160.0" y="118.0" width="28.0" height="20.0" rx="6" ry="6" fill="#F5F7FA"/>
+  <rect x="200.0" y="118.0" width="28.0" height="20.0" rx="6" ry="6" fill="#F5F7FA"/>
+  <rect x="16.0" y="16.0" width="224.0" height="10.0" rx="4" ry="4" fill="#D4D9E0"/>
+  <rect x="16.0" y="230.0" width="224.0" height="10.0" rx="4" ry="4" fill="#D4D9E0"/>
+
+  </g>
+  <g transform="translate(512,0) scale(1.0000)">
+
+  <!-- Road Straight | tile 256x256 | dimetric vector | transparent bg -->
+  <rect x="16.0" y="16.0" width="224.0" height="224.0" rx="28" ry="28" fill="#B8BFC8"/>
+  <rect x="118.0" y="40.0" width="20.0" height="28.0" rx="6" ry="6" fill="#F5F7FA"/>
+  <rect x="118.0" y="80.0" width="20.0" height="28.0" rx="6" ry="6" fill="#F5F7FA"/>
+  <rect x="118.0" y="120.0" width="20.0" height="28.0" rx="6" ry="6" fill="#F5F7FA"/>
+  <rect x="118.0" y="160.0" width="20.0" height="28.0" rx="6" ry="6" fill="#F5F7FA"/>
+  <rect x="118.0" y="200.0" width="20.0" height="28.0" rx="6" ry="6" fill="#F5F7FA"/>
+  <rect x="16.0" y="16.0" width="10.0" height="224.0" rx="4" ry="4" fill="#D4D9E0"/>
+  <rect x="230.0" y="16.0" width="10.0" height="224.0" rx="4" ry="4" fill="#D4D9E0"/>
+
+  </g>
+  <g transform="translate(512,256) scale(1.0000)">
+
+  <!-- Road Straight | tile 256x256 | dimetric vector | transparent bg -->
+  <rect x="16.0" y="16.0" width="224.0" height="224.0" rx="28" ry="28" fill="#B8BFC8"/>
+  <rect x="118.0" y="40.0" width="20.0" height="28.0" rx="6" ry="6" fill="#F5F7FA"/>
+  <rect x="118.0" y="80.0" width="20.0" height="28.0" rx="6" ry="6" fill="#F5F7FA"/>
+  <rect x="118.0" y="120.0" width="20.0" height="28.0" rx="6" ry="6" fill="#F5F7FA"/>
+  <rect x="118.0" y="160.0" width="20.0" height="28.0" rx="6" ry="6" fill="#F5F7FA"/>
+  <rect x="118.0" y="200.0" width="20.0" height="28.0" rx="6" ry="6" fill="#F5F7FA"/>
+  <rect x="16.0" y="16.0" width="10.0" height="224.0" rx="4" ry="4" fill="#D4D9E0"/>
+  <rect x="230.0" y="16.0" width="10.0" height="224.0" rx="4" ry="4" fill="#D4D9E0"/>
+
+  </g>
+  <g transform="translate(512,512) scale(1.0000)">
+
+  <!-- Road Straight | tile 256x256 | dimetric vector | transparent bg -->
+  <rect x="16.0" y="16.0" width="224.0" height="224.0" rx="28" ry="28" fill="#B8BFC8"/>
+  <rect x="118.0" y="40.0" width="20.0" height="28.0" rx="6" ry="6" fill="#F5F7FA"/>
+  <rect x="118.0" y="80.0" width="20.0" height="28.0" rx="6" ry="6" fill="#F5F7FA"/>
+  <rect x="118.0" y="120.0" width="20.0" height="28.0" rx="6" ry="6" fill="#F5F7FA"/>
+  <rect x="118.0" y="160.0" width="20.0" height="28.0" rx="6" ry="6" fill="#F5F7FA"/>
+  <rect x="118.0" y="200.0" width="20.0" height="28.0" rx="6" ry="6" fill="#F5F7FA"/>
+  <rect x="16.0" y="16.0" width="10.0" height="224.0" rx="4" ry="4" fill="#D4D9E0"/>
+  <rect x="230.0" y="16.0" width="10.0" height="224.0" rx="4" ry="4" fill="#D4D9E0"/>
+
+  </g>
+  <g transform="translate(512,768) scale(1.0000)">
+
+  <!-- Road Straight | tile 256x256 | dimetric vector | transparent bg -->
+  <rect x="16.0" y="16.0" width="224.0" height="224.0" rx="28" ry="28" fill="#B8BFC8"/>
+  <rect x="118.0" y="40.0" width="20.0" height="28.0" rx="6" ry="6" fill="#F5F7FA"/>
+  <rect x="118.0" y="80.0" width="20.0" height="28.0" rx="6" ry="6" fill="#F5F7FA"/>
+  <rect x="118.0" y="120.0" width="20.0" height="28.0" rx="6" ry="6" fill="#F5F7FA"/>
+  <rect x="118.0" y="160.0" width="20.0" height="28.0" rx="6" ry="6" fill="#F5F7FA"/>
+  <rect x="118.0" y="200.0" width="20.0" height="28.0" rx="6" ry="6" fill="#F5F7FA"/>
+  <rect x="16.0" y="16.0" width="10.0" height="224.0" rx="4" ry="4" fill="#D4D9E0"/>
+  <rect x="230.0" y="16.0" width="10.0" height="224.0" rx="4" ry="4" fill="#D4D9E0"/>
+
+  </g>
+  <g transform="translate(512,352) scale(1.0000)">
+
+  <!-- Road Crossroads | tile 256x256 | dimetric vector | transparent bg -->
+  <rect x="16.0" y="70.0" width="224.0" height="116.0" rx="24" ry="24" fill="#B8BFC8"/>
+  <rect x="70.0" y="16.0" width="116.0" height="224.0" rx="24" ry="24" fill="#B8BFC8"/>
+  <rect x="40.0" y="118.0" width="24.0" height="16.0" rx="5" ry="5" fill="#F5F7FA"/>
+  <rect x="90.0" y="118.0" width="24.0" height="16.0" rx="5" ry="5" fill="#F5F7FA"/>
+  <rect x="150.0" y="118.0" width="24.0" height="16.0" rx="5" ry="5" fill="#F5F7FA"/>
+  <rect x="190.0" y="118.0" width="24.0" height="16.0" rx="5" ry="5" fill="#F5F7FA"/>
+  <rect x="118.0" y="40.0" width="16.0" height="24.0" rx="5" ry="5" fill="#F5F7FA"/>
+  <rect x="118.0" y="90.0" width="16.0" height="24.0" rx="5" ry="5" fill="#F5F7FA"/>
+  <rect x="118.0" y="150.0" width="16.0" height="24.0" rx="5" ry="5" fill="#F5F7FA"/>
+  <rect x="118.0" y="190.0" width="16.0" height="24.0" rx="5" ry="5" fill="#F5F7FA"/>
+
+  </g>
+  <g transform="translate(256,352) scale(1.0000)">
+
+  <!-- Zebra Crossing | tile 256x256 | dimetric vector | transparent bg -->
+  <rect x="16.0" y="70.0" width="224.0" height="116.0" rx="20" ry="20" fill="#B8BFC8"/>
+  <rect x="40.0" y="85.0" width="16.0" height="86.0" rx="4" ry="4" fill="#F5F7FA"/>
+  <rect x="66.0" y="85.0" width="16.0" height="86.0" rx="4" ry="4" fill="#F5F7FA"/>
+  <rect x="92.0" y="85.0" width="16.0" height="86.0" rx="4" ry="4" fill="#F5F7FA"/>
+  <rect x="118.0" y="85.0" width="16.0" height="86.0" rx="4" ry="4" fill="#F5F7FA"/>
+  <rect x="144.0" y="85.0" width="16.0" height="86.0" rx="4" ry="4" fill="#F5F7FA"/>
+  <rect x="170.0" y="85.0" width="16.0" height="86.0" rx="4" ry="4" fill="#F5F7FA"/>
+  <rect x="196.0" y="85.0" width="16.0" height="86.0" rx="4" ry="4" fill="#F5F7FA"/>
+
+  </g>
+  <g transform="translate(20,20) scale(0.6641)">
+
+  <!-- Hawker Centre / Kopitiam | tile 512x512 | dimetric vector | transparent bg -->
+  <rect x="36.0" y="70.0" width="440.0" height="400.0" rx="28" ry="28" fill="#E8EBEF"/>
+  <ellipse cx="256.0" cy="466.0" rx="184.8" ry="14.0" fill="#00000018"/>
+  <ellipse cx="233.8" cy="243.2" rx="158.2" ry="14.0" fill="#00000018"/>
+  <rect x="70.0" y="70.0" width="300.0" height="150.0" rx="14" ry="14" fill="#F7F4EE"/>
+  <path d="M370.0,74.0 L370.0,220.0 L425.0,188.0 L425.0,42.0 Z" fill="#E8E2D6"/>
+  <path d="M76.0,70.0 L370.0,70.0 L425.0,38.0 L131.0,38.0 Z" fill="#E8A06A"/>
+  <rect x="70.0" y="70.0" width="300.0" height="15.0" rx="4.8999999999999995" ry="4.8999999999999995" fill="#D48852"/>
+  <path d="M100,42 L350,42 L390,18 L140,18 Z" fill="#F0B07A"/>
+  <rect x="100.0" y="42.0" width="250.0" height="10.0" rx="4" ry="4" fill="#D48852"/>
+  <path d="M145,28 L320,28 L345,10 L170,10 Z" fill="#E8A06A"/>
+  <rect x="95.0" y="155.0" width="44.0" height="55.0" rx="8" ry="8" fill="#FFFEFB"/>
+  <rect x="100.0" y="161.0" width="34.0" height="12.0" rx="4" ry="4" fill="#E57373"/>
+  <rect x="105.0" y="181.0" width="24.0" height="20.0" rx="4" ry="4" fill="#D9D2C4"/>
+  <rect x="147.0" y="155.0" width="44.0" height="55.0" rx="8" ry="8" fill="#FFFEFB"/>
+  <rect x="152.0" y="161.0" width="34.0" height="12.0" rx="4" ry="4" fill="#6BA3D9"/>
+  <rect x="157.0" y="181.0" width="24.0" height="20.0" rx="4" ry="4" fill="#D9D2C4"/>
+  <rect x="199.0" y="155.0" width="44.0" height="55.0" rx="8" ry="8" fill="#FFFEFB"/>
+  <rect x="204.0" y="161.0" width="34.0" height="12.0" rx="4" ry="4" fill="#F5D76E"/>
+  <rect x="209.0" y="181.0" width="24.0" height="20.0" rx="4" ry="4" fill="#D9D2C4"/>
+  <rect x="251.0" y="155.0" width="44.0" height="55.0" rx="8" ry="8" fill="#FFFEFB"/>
+  <rect x="256.0" y="161.0" width="34.0" height="12.0" rx="4" ry="4" fill="#4A9B6E"/>
+  <rect x="261.0" y="181.0" width="24.0" height="20.0" rx="4" ry="4" fill="#D9D2C4"/>
+  <rect x="303.0" y="155.0" width="44.0" height="55.0" rx="8" ry="8" fill="#FFFEFB"/>
+  <rect x="308.0" y="161.0" width="34.0" height="12.0" rx="4" ry="4" fill="#ED2939"/>
+  <rect x="313.0" y="181.0" width="24.0" height="20.0" rx="4" ry="4" fill="#D9D2C4"/>
+  <ellipse cx="140.0" cy="140.0" rx="16.0" ry="5.0" fill="#F5F5F5"/>
+  <ellipse cx="140.0" cy="140.0" rx="5.0" ry="14.0" fill="#F5F5F5"/>
+  <circle cx="140.0" cy="140.0" r="4.0" fill="#5A6270"/>
+  <ellipse cx="230.0" cy="140.0" rx="16.0" ry="5.0" fill="#F5F5F5"/>
+  <ellipse cx="230.0" cy="140.0" rx="5.0" ry="14.0" fill="#F5F5F5"/>
+  <circle cx="230.0" cy="140.0" r="4.0" fill="#5A6270"/>
+  <ellipse cx="320.0" cy="140.0" rx="16.0" ry="5.0" fill="#F5F5F5"/>
+  <ellipse cx="320.0" cy="140.0" rx="5.0" ry="14.0" fill="#F5F5F5"/>
+  <circle cx="320.0" cy="140.0" r="4.0" fill="#5A6270"/>
+  <ellipse cx="100.0" cy="336.0" rx="26.0" ry="7.0" fill="#00000018"/>
+  <ellipse cx="100.0" cy="320.0" rx="24.0" ry="13.0" fill="#F7E08A"/>
+  <ellipse cx="100.0" cy="323.0" rx="24.0" ry="9.0" fill="#E0C255"/>
+  <ellipse cx="74.0" cy="328.0" rx="7.0" ry="5.0" fill="#E57373"/>
+  <ellipse cx="126.0" cy="328.0" rx="7.0" ry="5.0" fill="#6BA3D9"/>
+  <ellipse cx="92.0" cy="340.0" rx="7.0" ry="5.0" fill="#E57373"/>
+  <ellipse cx="110.0" cy="306.0" rx="7.0" ry="5.0" fill="#6BA3D9"/>
+  <ellipse cx="200.0" cy="366.0" rx="26.0" ry="7.0" fill="#00000018"/>
+  <ellipse cx="200.0" cy="350.0" rx="24.0" ry="13.0" fill="#F7E08A"/>
+  <ellipse cx="200.0" cy="353.0" rx="24.0" ry="9.0" fill="#E0C255"/>
+  <ellipse cx="174.0" cy="358.0" rx="7.0" ry="5.0" fill="#E57373"/>
+  <ellipse cx="226.0" cy="358.0" rx="7.0" ry="5.0" fill="#6BA3D9"/>
+  <ellipse cx="192.0" cy="370.0" rx="7.0" ry="5.0" fill="#E57373"/>
+  <ellipse cx="210.0" cy="336.0" rx="7.0" ry="5.0" fill="#6BA3D9"/>
+  <ellipse cx="310.0" cy="341.0" rx="26.0" ry="7.0" fill="#00000018"/>
+  <ellipse cx="310.0" cy="325.0" rx="24.0" ry="13.0" fill="#F7E08A"/>
+  <ellipse cx="310.0" cy="328.0" rx="24.0" ry="9.0" fill="#E0C255"/>
+  <ellipse cx="284.0" cy="333.0" rx="7.0" ry="5.0" fill="#E57373"/>
+  <ellipse cx="336.0" cy="333.0" rx="7.0" ry="5.0" fill="#6BA3D9"/>
+  <ellipse cx="302.0" cy="345.0" rx="7.0" ry="5.0" fill="#E57373"/>
+  <ellipse cx="320.0" cy="311.0" rx="7.0" ry="5.0" fill="#6BA3D9"/>
+  <ellipse cx="400.0" cy="371.0" rx="26.0" ry="7.0" fill="#00000018"/>
+  <ellipse cx="400.0" cy="355.0" rx="24.0" ry="13.0" fill="#F7E08A"/>
+  <ellipse cx="400.0" cy="358.0" rx="24.0" ry="9.0" fill="#E0C255"/>
+  <ellipse cx="374.0" cy="363.0" rx="7.0" ry="5.0" fill="#E57373"/>
+  <ellipse cx="426.0" cy="363.0" rx="7.0" ry="5.0" fill="#6BA3D9"/>
+  <ellipse cx="392.0" cy="375.0" rx="7.0" ry="5.0" fill="#E57373"/>
+  <ellipse cx="410.0" cy="341.0" rx="7.0" ry="5.0" fill="#6BA3D9"/>
+  <rect x="420.0" y="280.0" width="34.0" height="48.0" rx="8" ry="8" fill="#6BA3D9"/>
+  <rect x="426.0" y="288.0" width="22.0" height="9.0" rx="3" ry="3" fill="#FFFEFB"/>
+  <rect x="426.0" y="302.0" width="22.0" height="9.0" rx="3" ry="3" fill="#FFFEFB"/>
+  <ellipse cx="445.0" cy="360.0" rx="14.0" ry="5.0" fill="#00000018"/>
+  <rect x="434.0" y="340.0" width="24.0" height="30.0" rx="10" ry="10" fill="#5EAA62"/>
+  <rect x="438.0" y="345.0" width="16.0" height="10.0" rx="4" ry="4" fill="#F5D76E"/>
+
+  </g>
+  <g transform="translate(780,20) scale(0.6250)">
+
+  <!-- NTUC FairPrice | tile 512x512 | dimetric vector | transparent bg -->
+  <rect x="60.0" y="300.0" width="360.0" height="140.0" rx="24" ry="24" fill="#E8EBEF"/>
+  <ellipse cx="240.0" cy="436.0" rx="151.2" ry="14.0" fill="#00000018"/>
+  <ellipse cx="241.7" cy="308.5" rx="147.0" ry="14.0" fill="#00000018"/>
+  <rect x="90.0" y="87.0" width="280.0" height="200.0" rx="14" ry="14" fill="#FFFEFB"/>
+  <path d="M370.0,91.0 L370.0,287.0 L416.8,259.8 L416.8,63.8 Z" fill="#F0EDE6"/>
+  <path d="M96.0,87.0 L370.0,87.0 L416.8,59.8 L142.8,59.8 Z" fill="#E31C23"/>
+  <rect x="90.0" y="87.0" width="280.0" height="16.0" rx="4.8999999999999995" ry="4.8999999999999995" fill="#C0151B"/>
+  <rect x="90.0" y="110.0" width="280.0" height="48.0" rx="8" ry="8" fill="#E31C23"/>
+  <rect x="200.0" y="122.0" width="36.0" height="22.0" rx="4" ry="4" fill="#FFFEFB"/>
+  <path d="M198,120 L190,120 L186,128 L198,128 Z" fill="#FFFEFB"/>
+  <circle cx="208.0" cy="148.0" r="5.0" fill="#FFFEFB"/>
+  <circle cx="228.0" cy="148.0" r="5.0" fill="#FFFEFB"/>
+  <rect x="232.0" y="118.0" width="4.0" height="18.0" rx="2" ry="2" fill="#FFFEFB"/>
+  <rect x="110.0" y="185.0" width="100.0" height="70.0" rx="10" ry="10" fill="#7EB3E0"/>
+  <rect x="250.0" y="185.0" width="100.0" height="70.0" rx="10" ry="10" fill="#7EB3E0"/>
+  <rect x="200.0" y="200.0" width="36.0" height="55.0" rx="8" ry="8" fill="#5A6270"/>
+  <rect x="160.0" y="340.0" width="140.0" height="14.0" rx="5" ry="5" fill="#F5F7FA"/>
+
+  </g>
+  <g transform="translate(760,500) scale(0.6250)">
+
+  <!-- MRT Station | tile 512x512 | dimetric vector | transparent bg -->
+  <rect x="50.0" y="280.0" width="410.0" height="170.0" rx="24" ry="24" fill="#E8EBEF"/>
+  <ellipse cx="255.0" cy="446.0" rx="172.2" ry="14.0" fill="#00000018"/>
+  <ellipse cx="243.1" cy="271.6" rx="137.8" ry="14.0" fill="#00000018"/>
+  <rect x="100.0" y="69.0" width="260.0" height="180.0" rx="14" ry="14" fill="#FFFEFB"/>
+  <path d="M360.0,73.0 L360.0,249.0 L412.2,218.6 L412.2,42.6 Z" fill="#F0EDE6"/>
+  <path d="M106.0,69.0 L360.0,69.0 L412.2,38.6 L158.2,38.6 Z" fill="#009645"/>
+  <rect x="100.0" y="69.0" width="260.0" height="16.0" rx="4.8999999999999995" ry="4.8999999999999995" fill="#007A38"/>
+  <rect x="100.0" y="95.0" width="260.0" height="36.0" rx="6" ry="6" fill="#009645"/>
+  <circle cx="230.0" cy="113.0" r="14.0" fill="#FFFEFB"/>
+  <circle cx="230.0" cy="113.0" r="9.0" fill="#D42E12"/>
+  <circle cx="230.0" cy="113.0" r="4.0" fill="#FFFEFB"/>
+  <rect x="130.0" y="155.0" width="80.0" height="55.0" rx="10" ry="10" fill="#7EB3E0"/>
+  <rect x="250.0" y="155.0" width="80.0" height="55.0" rx="10" ry="10" fill="#7EB3E0"/>
+  <rect x="210.0" y="160.0" width="32.0" height="50.0" rx="8" ry="8" fill="#3D4450"/>
+  <rect x="180.0" y="280.0" width="100.0" height="22.0" rx="8" ry="8" fill="#5A6270"/>
+  <rect x="190.0" y="288.0" width="80.0" height="8.0" rx="3" ry="3" fill="#009645"/>
+  <rect x="70.0" y="340.0" width="370.0" height="40.0" rx="12" ry="12" fill="#B8BFC8"/>
+  <rect x="90.0" y="352.0" width="36.0" height="10.0" rx="4" ry="4" fill="#F5D76E"/>
+  <rect x="145.0" y="352.0" width="36.0" height="10.0" rx="4" ry="4" fill="#F5D76E"/>
+  <rect x="200.0" y="352.0" width="36.0" height="10.0" rx="4" ry="4" fill="#F5D76E"/>
+  <rect x="255.0" y="352.0" width="36.0" height="10.0" rx="4" ry="4" fill="#F5D76E"/>
+  <rect x="310.0" y="352.0" width="36.0" height="10.0" rx="4" ry="4" fill="#F5D76E"/>
+  <rect x="365.0" y="352.0" width="36.0" height="10.0" rx="4" ry="4" fill="#F5D76E"/>
+
+  </g>
+  <g transform="translate(20,540) scale(0.5859)">
+
+  <!-- HDB Void Deck | tile 512x512 | dimetric vector | transparent bg -->
+  <ellipse cx="256.0" cy="450.0" rx="180.0" ry="16.0" fill="#00000018"/>
+  <ellipse cx="241.0" cy="357.0" rx="156.6" ry="14.0" fill="#00000018"/>
+  <rect x="80.0" y="56.0" width="300.0" height="280.0" rx="12" ry="12" fill="#F7F4EE"/>
+  <path d="M380.0,60.0 L380.0,336.0 L424.0,310.4 L424.0,34.4 Z" fill="#E8E2D6"/>
+  <path d="M86.0,56.0 L380.0,56.0 L424.0,30.4 L130.0,30.4 Z" fill="#D9D2C4"/>
+  <rect x="80.0" y="56.0" width="300.0" height="16.0" rx="4.199999999999999" ry="4.199999999999999" fill="#D9D2C4"/>
+  <rect x="110.0" y="80.0" width="28.0" height="26.0" rx="5" ry="5" fill="#7EB3E0"/>
+  <rect x="156.0" y="80.0" width="28.0" height="26.0" rx="5" ry="5" fill="#7EB3E0"/>
+  <rect x="202.0" y="80.0" width="28.0" height="26.0" rx="5" ry="5" fill="#7EB3E0"/>
+  <rect x="248.0" y="80.0" width="28.0" height="26.0" rx="5" ry="5" fill="#7EB3E0"/>
+  <rect x="294.0" y="80.0" width="28.0" height="26.0" rx="5" ry="5" fill="#7EB3E0"/>
+  <rect x="110.0" y="122.0" width="28.0" height="26.0" rx="5" ry="5" fill="#7EB3E0"/>
+  <rect x="156.0" y="122.0" width="28.0" height="26.0" rx="5" ry="5" fill="#7EB3E0"/>
+  <rect x="202.0" y="122.0" width="28.0" height="26.0" rx="5" ry="5" fill="#7EB3E0"/>
+  <rect x="248.0" y="122.0" width="28.0" height="26.0" rx="5" ry="5" fill="#7EB3E0"/>
+  <rect x="294.0" y="122.0" width="28.0" height="26.0" rx="5" ry="5" fill="#7EB3E0"/>
+  <rect x="110.0" y="164.0" width="28.0" height="26.0" rx="5" ry="5" fill="#7EB3E0"/>
+  <rect x="156.0" y="164.0" width="28.0" height="26.0" rx="5" ry="5" fill="#7EB3E0"/>
+  <rect x="202.0" y="164.0" width="28.0" height="26.0" rx="5" ry="5" fill="#7EB3E0"/>
+  <rect x="248.0" y="164.0" width="28.0" height="26.0" rx="5" ry="5" fill="#7EB3E0"/>
+  <rect x="294.0" y="164.0" width="28.0" height="26.0" rx="5" ry="5" fill="#7EB3E0"/>
+  <rect x="110.0" y="206.0" width="28.0" height="26.0" rx="5" ry="5" fill="#7EB3E0"/>
+  <rect x="156.0" y="206.0" width="28.0" height="26.0" rx="5" ry="5" fill="#7EB3E0"/>
+  <rect x="202.0" y="206.0" width="28.0" height="26.0" rx="5" ry="5" fill="#7EB3E0"/>
+  <rect x="248.0" y="206.0" width="28.0" height="26.0" rx="5" ry="5" fill="#7EB3E0"/>
+  <rect x="294.0" y="206.0" width="28.0" height="26.0" rx="5" ry="5" fill="#7EB3E0"/>
+  <rect x="80.0" y="280.0" width="300.0" height="100.0" rx="10" ry="10" fill="#F7F4EE"/>
+  <rect x="100.0" y="280.0" width="18.0" height="100.0" rx="6" ry="6" fill="#E8E2D6"/>
+  <rect x="170.0" y="280.0" width="18.0" height="100.0" rx="6" ry="6" fill="#E8E2D6"/>
+  <rect x="240.0" y="280.0" width="18.0" height="100.0" rx="6" ry="6" fill="#E8E2D6"/>
+  <rect x="310.0" y="280.0" width="18.0" height="100.0" rx="6" ry="6" fill="#E8E2D6"/>
+  <rect x="120.0" y="295.0" width="200.0" height="70.0" rx="8" ry="8" fill="#D9D2C4"/>
+  <rect x="150.0" y="310.0" width="50.0" height="40.0" rx="6" ry="6" fill="#4A5160"/>
+  <rect x="156.0" y="316.0" width="16.0" height="12.0" rx="2" ry="2" fill="#E57373"/>
+  <rect x="176.0" y="316.0" width="16.0" height="12.0" rx="2" ry="2" fill="#F5D76E"/>
+  <rect x="156.0" y="332.0" width="16.0" height="10.0" rx="2" ry="2" fill="#6BA3D9"/>
+  <rect x="176.0" y="332.0" width="16.0" height="10.0" rx="2" ry="2" fill="#7BC47F"/>
+  <rect x="230.0" y="340.0" width="70.0" height="14.0" rx="6" ry="6" fill="#E57373"/>
+  <rect x="80.0" y="390.0" width="300.0" height="50.0" rx="14" ry="14" fill="#E8EBEF"/>
+
+  </g>
+  <g transform="translate(300,560) scale(0.5078)">
+
+  <!-- Community Club (CC) | tile 512x512 | dimetric vector | transparent bg -->
+  <ellipse cx="256.0" cy="440.0" rx="170.0" ry="18.0" fill="#00000018"/>
+  <ellipse cx="242.4" cy="320.1" rx="147.4" ry="14.0" fill="#00000018"/>
+  <rect x="90.0" y="88.0" width="280.0" height="210.0" rx="14" ry="14" fill="#FFFEFB"/>
+  <path d="M370.0,92.0 L370.0,298.0 L419.5,269.2 L419.5,63.2 Z" fill="#F0EDE6"/>
+  <path d="M96.0,88.0 L370.0,88.0 L419.5,59.2 L145.5,59.2 Z" fill="#E88B7A"/>
+  <rect x="90.0" y="88.0" width="280.0" height="16.0" rx="4.8999999999999995" ry="4.8999999999999995" fill="#D47262"/>
+  <circle cx="230.0" cy="160.0" r="22.0" fill="#ED2939"/>
+  <circle cx="248.0" cy="160.0" r="8.0" fill="#ED2939"/>
+  <circle cx="239.0" cy="172.1" r="8.0" fill="#ED2939"/>
+  <circle cx="221.0" cy="172.1" r="8.0" fill="#ED2939"/>
+  <circle cx="212.0" cy="160.0" r="8.0" fill="#ED2939"/>
+  <circle cx="221.0" cy="147.9" r="8.0" fill="#ED2939"/>
+  <circle cx="239.0" cy="147.9" r="8.0" fill="#ED2939"/>
+  <circle cx="230.0" cy="160.0" r="10.0" fill="#FFFEFB"/>
+  <rect x="120.0" y="210.0" width="32.0" height="36.0" rx="6" ry="6" fill="#7EB3E0"/>
+  <rect x="172.0" y="210.0" width="32.0" height="36.0" rx="6" ry="6" fill="#7EB3E0"/>
+  <rect x="224.0" y="210.0" width="32.0" height="36.0" rx="6" ry="6" fill="#7EB3E0"/>
+  <rect x="276.0" y="210.0" width="32.0" height="36.0" rx="6" ry="6" fill="#7EB3E0"/>
+  <rect x="210.0" y="270.0" width="40.0" height="55.0" rx="8" ry="8" fill="#5A6270"/>
+  <rect x="90.0" y="380.0" width="280.0" height="50.0" rx="14" ry="14" fill="#E8EBEF"/>
+  <rect x="400.0" y="100.0" width="6.0" height="160.0" rx="2" ry="2" fill="#5A6270"/>
+  <rect x="406.0" y="105.0" width="40.0" height="24.0" rx="3" ry="3" fill="#ED2939"/>
+  <circle cx="418.0" cy="117.0" r="5.0" fill="#FFFEFB"/>
+
+  </g>
+  <g transform="translate(680,180) scale(0.5078)">
+
+  <!-- Tree | tile 256x256 | dimetric vector | transparent bg -->
+  <ellipse cx="128.0" cy="210.0" rx="40.0" ry="12.0" fill="#00000018"/>
+  <rect x="118.0" y="140.0" width="20.0" height="70.0" rx="8" ry="8" fill="#8B6B4A"/>
+  <rect x="122.0" y="145.0" width="12.0" height="60.0" rx="5" ry="5" fill="#6F5338"/>
+  <circle cx="128.0" cy="110.0" r="55.0" fill="#6BB86F"/>
+  <circle cx="100.0" cy="120.0" r="30.0" fill="#549A58"/>
+  <circle cx="150.0" cy="95.0" r="28.0" fill="#91D494"/>
+  <circle cx="130.0" cy="85.0" r="22.0" fill="#6BB86F"/>
+
+  </g>
+  <g transform="translate(180,260) scale(0.4297)">
+
+  <!-- Tree | tile 256x256 | dimetric vector | transparent bg -->
+  <ellipse cx="128.0" cy="210.0" rx="40.0" ry="12.0" fill="#00000018"/>
+  <rect x="118.0" y="140.0" width="20.0" height="70.0" rx="8" ry="8" fill="#8B6B4A"/>
+  <rect x="122.0" y="145.0" width="12.0" height="60.0" rx="5" ry="5" fill="#6F5338"/>
+  <circle cx="128.0" cy="110.0" r="55.0" fill="#6BB86F"/>
+  <circle cx="100.0" cy="120.0" r="30.0" fill="#549A58"/>
+  <circle cx="150.0" cy="95.0" r="28.0" fill="#91D494"/>
+  <circle cx="130.0" cy="85.0" r="22.0" fill="#6BB86F"/>
+
+  </g>
+  <g transform="translate(620,280) scale(0.3516)">
+
+  <!-- Bush | tile 256x256 | dimetric vector | transparent bg -->
+  <ellipse cx="128.0" cy="180.0" rx="50.0" ry="12.0" fill="#00000018"/>
+  <circle cx="100.0" cy="140.0" r="40.0" fill="#5EAA62"/>
+  <circle cx="140.0" cy="145.0" r="42.0" fill="#4A8F4E"/>
+  <circle cx="120.0" cy="120.0" r="36.0" fill="#5EAA62"/>
+  <circle cx="110.0" cy="130.0" r="6.0" fill="#E8A06A"/>
+  <circle cx="145.0" cy="135.0" r="5.0" fill="#E8A06A"/>
+  <circle cx="125.0" cy="150.0" r="4.0" fill="#F5D76E"/>
+
+  </g>
+  <g transform="translate(400,240) scale(0.3906)">
+
+  <!-- Bench | tile 256x256 | dimetric vector | transparent bg -->
+  <ellipse cx="128.0" cy="170.0" rx="55.0" ry="10.0" fill="#00000018"/>
+  <rect x="60.0" y="120.0" width="136.0" height="28.0" rx="12" ry="12" fill="#E57373"/>
+  <rect x="60.0" y="120.0" width="136.0" height="10.0" rx="8" ry="8" fill="#C75A5A"/>
+  <rect x="72.0" y="148.0" width="10.0" height="22.0" rx="3" ry="3" fill="#2C2C2C"/>
+  <rect x="174.0" y="148.0" width="10.0" height="22.0" rx="3" ry="3" fill="#2C2C2C"/>
+
+  </g>
+  <g transform="translate(470,260) scale(0.3516)">
+
+  <!-- Lamp Post | tile 256x256 | dimetric vector | transparent bg -->
+  <ellipse cx="128.0" cy="220.0" rx="18.0" ry="8.0" fill="#00000018"/>
+  <rect x="122.0" y="60.0" width="12.0" height="160.0" rx="5" ry="5" fill="#5A6270"/>
+  <rect x="124.0" y="65.0" width="8.0" height="150.0" rx="4" ry="4" fill="#3D4450"/>
+  <ellipse cx="128.0" cy="50.0" rx="28.0" ry="18.0" fill="#F5D76E"/>
+  <ellipse cx="128.0" cy="48.0" rx="20.0" ry="12.0" fill="#F7E08A"/>
+  <circle cx="128.0" cy="48.0" r="6.0" fill="#FFFEFB"/>
+
+  </g>
+  <g transform="translate(640,300) scale(0.3125)">
+
+  <!-- Dustbin | tile 256x256 | dimetric vector | transparent bg -->
+  <ellipse cx="128.0" cy="200.0" rx="28.0" ry="10.0" fill="#00000018"/>
+  <rect x="100.0" y="90.0" width="56.0" height="100.0" rx="18" ry="18" fill="#5EAA62"/>
+  <rect x="108.0" y="90.0" width="48.0" height="100.0" rx="16" ry="16" fill="#4A8F4E"/>
+  <rect x="100.0" y="90.0" width="56.0" height="24.0" rx="12" ry="12" fill="#4A9B6E"/>
+  <rect x="114.0" y="125.0" width="28.0" height="28.0" rx="6" ry="6" fill="#F5D76E"/>
+  <path d="M120,132 L136,132 L128,148 Z" fill="#5EAA62"/>
+
+  </g>
+  <g transform="translate(720,280) scale(0.5859)">
+
+  <!-- Bus Stop | tile 256x256 | dimetric vector | transparent bg -->
+  <ellipse cx="128.0" cy="200.0" rx="70.0" ry="12.0" fill="#00000018"/>
+  <rect x="40.0" y="160.0" width="176.0" height="60.0" rx="14" ry="14" fill="#E8EBEF"/>
+  <rect x="55.0" y="70.0" width="146.0" height="28.0" rx="10" ry="10" fill="#5B9BD5"/>
+  <rect x="60.0" y="90.0" width="136.0" height="10.0" rx="4" ry="4" fill="#4A87BE"/>
+  <rect x="68.0" y="98.0" width="10.0" height="70.0" rx="4" ry="4" fill="#5A6270"/>
+  <rect x="178.0" y="98.0" width="10.0" height="70.0" rx="4" ry="4" fill="#5A6270"/>
+  <rect x="90.0" y="140.0" width="76.0" height="16.0" rx="6" ry="6" fill="#E57373"/>
+  <rect x="96.0" y="154.0" width="8.0" height="10.0" rx="2" ry="2" fill="#2C2C2C"/>
+  <rect x="152.0" y="154.0" width="8.0" height="10.0" rx="2" ry="2" fill="#2C2C2C"/>
+  <rect x="210.0" y="50.0" width="10.0" height="130.0" rx="4" ry="4" fill="#5A6270"/>
+  <rect x="195.0" y="40.0" width="40.0" height="36.0" rx="8" ry="8" fill="#6BA3D9"/>
+  <rect x="202.0" y="48.0" width="26.0" height="10.0" rx="3" ry="3" fill="#FFFEFB"/>
+  <circle cx="215.0" cy="68.0" r="6.0" fill="#FFFEFB"/>
+
+  </g>
+  <g transform="translate(900,300) scale(0.6250)">
+
+  <!-- Guardian | tile 256x256 | dimetric vector | transparent bg -->
+  <ellipse cx="128.0" cy="210.0" rx="90.0" ry="12.0" fill="#00000018"/>
+  <ellipse cx="127.4" cy="201.6" rx="76.6" ry="14.0" fill="#00000018"/>
+  <rect x="48.0" y="59.0" width="145.0" height="125.0" rx="10" ry="10" fill="#FFFEFB"/>
+  <path d="M193.0,63.0 L193.0,184.0 L220.5,168.0 L220.5,47.0 Z" fill="#F0EDE6"/>
+  <path d="M54.0,59.0 L193.0,59.0 L220.5,43.0 L81.5,43.0 Z" fill="#00A19A"/>
+  <rect x="48.0" y="59.0" width="145.0" height="12.5" rx="3.5" ry="3.5" fill="#008780"/>
+  <rect x="48.0" y="80.0" width="145.0" height="32.0" rx="6" ry="6" fill="#00A19A"/>
+  <rect x="100.0" y="88.0" width="40.0" height="16.0" rx="6" ry="6" fill="#FFFEFB"/>
+  <rect x="65.0" y="130.0" width="45.0" height="40.0" rx="6" ry="6" fill="#7EB3E0"/>
+  <rect x="130.0" y="135.0" width="28.0" height="40.0" rx="5" ry="5" fill="#5A6270"/>
+  <rect x="48.0" y="195.0" width="145.0" height="30.0" rx="10" ry="10" fill="#E8EBEF"/>
+
+  </g>
+</svg>

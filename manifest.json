@@ -1,0 +1,380 @@
+{
+  "name": "Singapore Neighbourhood Modular Asset Pack",
+  "version": "1.0.0",
+  "style": {
+    "description": "Clean Nintendo-like vector cartoon (Animal Crossing / Townscaper)",
+    "perspective": "dimetric 3/4 top-down",
+    "outlines": false,
+    "shading": "two-tone front/side only",
+    "corners": "soft rounded",
+    "background": "transparent"
+  },
+  "grid": {
+    "tileSize": 256,
+    "buildingSize": 512,
+    "units": "px",
+    "pivot": "bottom-center"
+  },
+  "palette": {
+    "cream": "#F7F4EE",
+    "cream_side": "#E8E2D6",
+    "cream_dark": "#D9D2C4",
+    "white": "#FFFEFB",
+    "white_side": "#F0EDE6",
+    "road": "#B8BFC8",
+    "road_dark": "#A5ADB8",
+    "road_line": "#F5F7FA",
+    "pavement": "#E8EBEF",
+    "pavement_edge": "#D4D9E0",
+    "grass": "#7BC47F",
+    "grass_light": "#91D494",
+    "grass_dark": "#5FA864",
+    "bush": "#5EAA62",
+    "bush_dark": "#4A8F4E",
+    "tree_canopy": "#6BB86F",
+    "tree_canopy_dark": "#549A58",
+    "trunk": "#8B6B4A",
+    "trunk_dark": "#6F5338",
+    "red": "#E57373",
+    "red_dark": "#C75A5A",
+    "red_roof": "#E88B7A",
+    "red_roof_side": "#D47262",
+    "orange_roof": "#E8A06A",
+    "orange_roof_side": "#D48852",
+    "orange_tile": "#F0B07A",
+    "blue": "#6BA3D9",
+    "blue_dark": "#5489BE",
+    "blue_awning": "#5B9BD5",
+    "blue_awning_side": "#4A87BE",
+    "blue_window": "#7EB3E0",
+    "yellow": "#F5D76E",
+    "yellow_dark": "#E0C255",
+    "lemon": "#F7E08A",
+    "green_dark": "#4A9B6E",
+    "sg_red": "#ED2939",
+    "sg_red_dark": "#C41E2A",
+    "mrt_green": "#009645",
+    "mrt_green_dark": "#007A38",
+    "mrt_red": "#D42E12",
+    "fairprice_red": "#E31C23",
+    "fairprice_red_dark": "#C0151B",
+    "sheng_green": "#00A651",
+    "sheng_green_dark": "#008C44",
+    "guardian_green": "#00A19A",
+    "guardian_green_dark": "#008780",
+    "watsons_blue": "#0077C8",
+    "watsons_blue_dark": "#0060A3",
+    "unity_orange": "#F36C00",
+    "unity_orange_dark": "#D45E00",
+    "singpost_red": "#ED1C24",
+    "bank_blue": "#003DA5",
+    "bank_blue_dark": "#002E7A",
+    "shadow": "#00000018",
+    "soft_shadow": "#00000010",
+    "dark_grey": "#5A6270",
+    "dark_grey_side": "#4A5160",
+    "notice": "#4A5160",
+    "stool_red": "#E57373",
+    "stool_blue": "#6BA3D9",
+    "fan": "#F5F5F5",
+    "black": "#2C2C2C",
+    "charcoal": "#3D4450"
+  },
+  "categories": {
+    "food-retail": {
+      "title": "Food & Retail",
+      "assets": [
+        {
+          "id": "hawker-centre",
+          "file": "assets/food-retail/hawker-centre.svg",
+          "size": 512
+        },
+        {
+          "id": "ntuc-fairprice",
+          "file": "assets/food-retail/ntuc-fairprice.svg",
+          "size": 512
+        },
+        {
+          "id": "sheng-siong",
+          "file": "assets/food-retail/sheng-siong.svg",
+          "size": 512
+        },
+        {
+          "id": "wet-market",
+          "file": "assets/food-retail/wet-market.svg",
+          "size": 512
+        }
+      ]
+    },
+    "transportation": {
+      "title": "Transportation",
+      "assets": [
+        {
+          "id": "bus-interchange",
+          "file": "assets/transportation/bus-interchange.svg",
+          "size": 512
+        },
+        {
+          "id": "bus-stop",
+          "file": "assets/transportation/bus-stop.svg",
+          "size": 256
+        },
+        {
+          "id": "mrt-station",
+          "file": "assets/transportation/mrt-station.svg",
+          "size": 512
+        },
+        {
+          "id": "taxi-pickup",
+          "file": "assets/transportation/taxi-pickup.svg",
+          "size": 256
+        }
+      ]
+    },
+    "healthcare": {
+      "title": "Healthcare",
+      "assets": [
+        {
+          "id": "gp-clinic",
+          "file": "assets/healthcare/gp-clinic.svg",
+          "size": 256
+        },
+        {
+          "id": "guardian",
+          "file": "assets/healthcare/guardian.svg",
+          "size": 256
+        },
+        {
+          "id": "polyclinic",
+          "file": "assets/healthcare/polyclinic.svg",
+          "size": 512
+        },
+        {
+          "id": "unity-pharmacy",
+          "file": "assets/healthcare/unity-pharmacy.svg",
+          "size": 256
+        },
+        {
+          "id": "watsons",
+          "file": "assets/healthcare/watsons.svg",
+          "size": 256
+        }
+      ]
+    },
+    "community": {
+      "title": "Community",
+      "assets": [
+        {
+          "id": "atm",
+          "file": "assets/community/atm.svg",
+          "size": 256
+        },
+        {
+          "id": "bank-branch",
+          "file": "assets/community/bank-branch.svg",
+          "size": 256
+        },
+        {
+          "id": "community-club",
+          "file": "assets/community/community-club.svg",
+          "size": 512
+        },
+        {
+          "id": "singpost-office",
+          "file": "assets/community/singpost-office.svg",
+          "size": 256
+        }
+      ]
+    },
+    "residential": {
+      "title": "Residential",
+      "assets": [
+        {
+          "id": "hdb-void-deck",
+          "file": "assets/residential/hdb-void-deck.svg",
+          "size": 512
+        },
+        {
+          "id": "letterbox-area",
+          "file": "assets/residential/letterbox-area.svg",
+          "size": 256
+        },
+        {
+          "id": "neighbourhood-park",
+          "file": "assets/residential/neighbourhood-park.svg",
+          "size": 512
+        },
+        {
+          "id": "park-connector-network",
+          "file": "assets/residential/park-connector-network.svg",
+          "size": 512
+        }
+      ]
+    },
+    "modular/roads": {
+      "title": "Roads",
+      "assets": [
+        {
+          "id": "road-corner",
+          "file": "assets/modular/roads/road-corner.svg",
+          "size": 256
+        },
+        {
+          "id": "road-crossroads",
+          "file": "assets/modular/roads/road-crossroads.svg",
+          "size": 256
+        },
+        {
+          "id": "road-roundabout",
+          "file": "assets/modular/roads/road-roundabout.svg",
+          "size": 256
+        },
+        {
+          "id": "road-straight-h",
+          "file": "assets/modular/roads/road-straight-h.svg",
+          "size": 256
+        },
+        {
+          "id": "road-straight",
+          "file": "assets/modular/roads/road-straight.svg",
+          "size": 256
+        },
+        {
+          "id": "road-t-junction",
+          "file": "assets/modular/roads/road-t-junction.svg",
+          "size": 256
+        },
+        {
+          "id": "zebra-crossing-v",
+          "file": "assets/modular/roads/zebra-crossing-v.svg",
+          "size": 256
+        },
+        {
+          "id": "zebra-crossing",
+          "file": "assets/modular/roads/zebra-crossing.svg",
+          "size": 256
+        }
+      ]
+    },
+    "modular/pavements": {
+      "title": "Pavements",
+      "assets": [
+        {
+          "id": "pavement-corner",
+          "file": "assets/modular/pavements/pavement-corner.svg",
+          "size": 256
+        },
+        {
+          "id": "pavement",
+          "file": "assets/modular/pavements/pavement.svg",
+          "size": 256
+        }
+      ]
+    },
+    "modular/nature": {
+      "title": "Nature",
+      "assets": [
+        {
+          "id": "bush",
+          "file": "assets/modular/nature/bush.svg",
+          "size": 256
+        },
+        {
+          "id": "grass",
+          "file": "assets/modular/nature/grass.svg",
+          "size": 256
+        },
+        {
+          "id": "tree",
+          "file": "assets/modular/nature/tree.svg",
+          "size": 256
+        }
+      ]
+    },
+    "modular/props": {
+      "title": "Props",
+      "assets": [
+        {
+          "id": "bench",
+          "file": "assets/modular/props/bench.svg",
+          "size": 256
+        },
+        {
+          "id": "bus-shelter",
+          "file": "assets/modular/props/bus-shelter.svg",
+          "size": 256
+        },
+        {
+          "id": "dustbin",
+          "file": "assets/modular/props/dustbin.svg",
+          "size": 256
+        },
+        {
+          "id": "lamp-post",
+          "file": "assets/modular/props/lamp-post.svg",
+          "size": 256
+        },
+        {
+          "id": "mrt-entrance",
+          "file": "assets/modular/props/mrt-entrance.svg",
+          "size": 256
+        }
+      ]
+    },
+    "modular/architecture": {
+      "title": "Architecture Modules",
+      "assets": [
+        {
+          "id": "awning",
+          "file": "assets/modular/architecture/awning.svg",
+          "size": 256
+        },
+        {
+          "id": "door",
+          "file": "assets/modular/architecture/door.svg",
+          "size": 256
+        },
+        {
+          "id": "hdb-corridor",
+          "file": "assets/modular/architecture/hdb-corridor.svg",
+          "size": 256
+        },
+        {
+          "id": "roof-blue",
+          "file": "assets/modular/architecture/roof-blue.svg",
+          "size": 256
+        },
+        {
+          "id": "roof-orange",
+          "file": "assets/modular/architecture/roof-orange.svg",
+          "size": 256
+        },
+        {
+          "id": "roof-red",
+          "file": "assets/modular/architecture/roof-red.svg",
+          "size": 256
+        },
+        {
+          "id": "wall-side",
+          "file": "assets/modular/architecture/wall-side.svg",
+          "size": 256
+        },
+        {
+          "id": "wall",
+          "file": "assets/modular/architecture/wall.svg",
+          "size": 256
+        },
+        {
+          "id": "window-blue-accent",
+          "file": "assets/modular/architecture/window-blue-accent.svg",
+          "size": 256
+        },
+        {
+          "id": "window",
+          "file": "assets/modular/architecture/window.svg",
+          "size": 256
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" fill="none">
+  <!-- Pavement Tile | tile 256x256 | dimetric vector | transparent bg -->
+  <rect x="8.0" y="8.0" width="240.0" height="240.0" rx="20" ry="20" fill="#E8EBEF"/>
+  <rect x="8.0" y="124.0" width="240.0" height="4.0" rx="1" ry="1" fill="#D4D9E0" opacity="0.5"/>
+  <rect x="124.0" y="8.0" width="4.0" height="240.0" rx="1" ry="1" fill="#D4D9E0" opacity="0.5"/>
+</svg>

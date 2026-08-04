@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" fill="none">
+  <!-- HDB Corridor | tile 256x256 | dimetric vector | transparent bg -->
+  <ellipse cx="128.0" cy="200.0" rx="100.0" ry="10.0" fill="#00000018"/>
+  <rect x="20.0" y="140.0" width="216.0" height="60.0" rx="10" ry="10" fill="#E8EBEF"/>
+  <rect x="20.0" y="60.0" width="216.0" height="90.0" rx="8" ry="8" fill="#F7F4EE"/>
+  <rect x="20.0" y="140.0" width="216.0" height="12.0" rx="4" ry="4" fill="#6BA3D9"/>
+  <rect x="50.0" y="85.0" width="36.0" height="55.0" rx="6" ry="6" fill="#5A6270"/>
+  <rect x="56.0" y="95.0" width="24.0" height="20.0" rx="3" ry="3" fill="#7EB3E0"/>
+  <rect x="110.0" y="85.0" width="36.0" height="55.0" rx="6" ry="6" fill="#5A6270"/>
+  <rect x="116.0" y="95.0" width="24.0" height="20.0" rx="3" ry="3" fill="#7EB3E0"/>
+  <rect x="170.0" y="85.0" width="36.0" height="55.0" rx="6" ry="6" fill="#5A6270"/>
+  <rect x="176.0" y="95.0" width="24.0" height="20.0" rx="3" ry="3" fill="#7EB3E0"/>
+</svg>

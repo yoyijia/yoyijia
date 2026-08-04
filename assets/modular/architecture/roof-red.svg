@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" fill="none">
+  <!-- Roof Red | tile 256x256 | dimetric vector | transparent bg -->
+  <path d="M30,140 L128,50 L226,140 L200,150 L128,80 L56,150 Z" fill="#E88B7A"/>
+  <path d="M56,150 L128,80 L200,150 L226,140 L128,180 Z" fill="#D47262"/>
+  <rect x="40.0" y="140.0" width="176.0" height="20.0" rx="6" ry="6" fill="#C75A5A"/>
+</svg>

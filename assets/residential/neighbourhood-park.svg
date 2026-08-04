@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" fill="none">
+  <!-- Neighbourhood Park | tile 512x512 | dimetric vector | transparent bg -->
+  <rect x="40.0" y="40.0" width="430.0" height="430.0" rx="28" ry="28" fill="#7BC47F"/>
+  <circle cx="60.0" cy="58.0" r="3.0" fill="#91D494"/>
+  <circle cx="442.0" cy="448.0" r="3.0" fill="#91D494"/>
+  <circle cx="233.5" cy="212.0" r="3.0" fill="#91D494"/>
+  <ellipse cx="256.0" cy="460.0" rx="160.0" ry="12.0" fill="#00000018"/>
+  <rect x="200.0" y="60.0" width="50.0" height="390.0" rx="16" ry="16" fill="#E8EBEF"/>
+  <rect x="60.0" y="220.0" width="390.0" height="45.0" rx="16" ry="16" fill="#E8EBEF"/>
+  <ellipse cx="100.0" cy="150.0" rx="28.0" ry="8.0" fill="#00000018"/>
+  <rect x="94.0" y="130.0" width="12.0" height="28.0" rx="4" ry="4" fill="#8B6B4A"/>
+  <circle cx="100.0" cy="120.0" r="28.0" fill="#6BB86F"/>
+  <circle cx="88.0" cy="126.0" r="16.0" fill="#549A58"/>
+  <circle cx="110.0" cy="112.0" r="14.0" fill="#91D494"/>
+  <ellipse cx="380.0" cy="140.0" rx="28.0" ry="8.0" fill="#00000018"/>
+  <rect x="374.0" y="120.0" width="12.0" height="28.0" rx="4" ry="4" fill="#8B6B4A"/>
+  <circle cx="380.0" cy="110.0" r="28.0" fill="#6BB86F"/>
+  <circle cx="368.0" cy="116.0" r="16.0" fill="#549A58"/>
+  <circle cx="390.0" cy="102.0" r="14.0" fill="#91D494"/>
+  <ellipse cx="120.0" cy="370.0" rx="28.0" ry="8.0" fill="#00000018"/>
+  <rect x="114.0" y="350.0" width="12.0" height="28.0" rx="4" ry="4" fill="#8B6B4A"/>
+  <circle cx="120.0" cy="340.0" r="28.0" fill="#6BB86F"/>
+  <circle cx="108.0" cy="346.0" r="16.0" fill="#549A58"/>
+  <circle cx="130.0" cy="332.0" r="14.0" fill="#91D494"/>
+  <ellipse cx="370.0" cy="380.0" rx="28.0" ry="8.0" fill="#00000018"/>
+  <rect x="364.0" y="360.0" width="12.0" height="28.0" rx="4" ry="4" fill="#8B6B4A"/>
+  <circle cx="370.0" cy="350.0" r="28.0" fill="#6BB86F"/>
+  <circle cx="358.0" cy="356.0" r="16.0" fill="#549A58"/>
+  <circle cx="380.0" cy="342.0" r="14.0" fill="#91D494"/>
+  <ellipse cx="300.0" cy="210.0" rx="28.0" ry="8.0" fill="#00000018"/>
+  <rect x="294.0" y="190.0" width="12.0" height="28.0" rx="4" ry="4" fill="#8B6B4A"/>
+  <circle cx="300.0" cy="180.0" r="28.0" fill="#6BB86F"/>
+  <circle cx="288.0" cy="186.0" r="16.0" fill="#549A58"/>
+  <circle cx="310.0" cy="172.0" r="14.0" fill="#91D494"/>
+  <circle cx="80.0" cy="250.0" r="18.0" fill="#5EAA62"/>
+  <circle cx="94.0" cy="254.0" r="14.0" fill="#4A8F4E"/>
+  <circle cx="86.0" cy="244.0" r="4.0" fill="#E8A06A"/>
+  <circle cx="400.0" cy="260.0" r="18.0" fill="#5EAA62"/>
+  <circle cx="414.0" cy="264.0" r="14.0" fill="#4A8F4E"/>
+  <circle cx="406.0" cy="254.0" r="4.0" fill="#E8A06A"/>
+  <circle cx="180.0" cy="400.0" r="18.0" fill="#5EAA62"/>
+  <circle cx="194.0" cy="404.0" r="14.0" fill="#4A8F4E"/>
+  <circle cx="186.0" cy="394.0" r="4.0" fill="#E8A06A"/>
+  <rect x="230.0" y="280.0" width="70.0" height="16.0" rx="8" ry="8" fill="#E57373"/>
+  <rect x="238.0" y="294.0" width="8.0" height="10.0" rx="2" ry="2" fill="#2C2C2C"/>
+  <rect x="284.0" y="294.0" width="8.0" height="10.0" rx="2" ry="2" fill="#2C2C2C"/>
+  <rect x="300.0" y="300.0" width="8.0" height="40.0" rx="3" ry="3" fill="#6BA3D9"/>
+  <rect x="340.0" y="300.0" width="8.0" height="40.0" rx="3" ry="3" fill="#6BA3D9"/>
+  <rect x="300.0" y="295.0" width="48.0" height="8.0" rx="3" ry="3" fill="#5489BE"/>
+  <ellipse cx="380.0" cy="330.0" rx="16.0" ry="10.0" fill="#6BA3D9"/>
+  <rect x="372.0" y="310.0" width="8.0" height="30.0" rx="3" ry="3" fill="#5489BE"/>
+</svg>

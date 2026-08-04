@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" fill="none">
+  <!-- Taxi / Ride-Hailing Pick-up | tile 256x256 | dimetric vector | transparent bg -->
+  <ellipse cx="128.0" cy="200.0" rx="80.0" ry="12.0" fill="#00000018"/>
+  <rect x="36.0" y="140.0" width="184.0" height="80.0" rx="16" ry="16" fill="#E8EBEF"/>
+  <rect x="50.0" y="155.0" width="156.0" height="50.0" rx="12" ry="12" fill="#B8BFC8"/>
+  <rect x="60.0" y="168.0" width="30.0" height="8.0" rx="3" ry="3" fill="#F5D76E"/>
+  <rect x="100.0" y="168.0" width="30.0" height="8.0" rx="3" ry="3" fill="#F5D76E"/>
+  <rect x="140.0" y="168.0" width="30.0" height="8.0" rx="3" ry="3" fill="#F5D76E"/>
+  <rect x="118.0" y="40.0" width="10.0" height="110.0" rx="4" ry="4" fill="#5A6270"/>
+  <rect x="95.0" y="30.0" width="56.0" height="40.0" rx="10" ry="10" fill="#F5D76E"/>
+  <rect x="105.0" y="40.0" width="36.0" height="10.0" rx="3" ry="3" fill="#3D4450"/>
+  <rect x="70.0" y="100.0" width="116.0" height="18.0" rx="8" ry="8" fill="#5B9BD5"/>
+</svg>

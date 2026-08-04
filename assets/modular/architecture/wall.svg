@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" fill="none">
+  <!-- Wall Front | tile 256x256 | dimetric vector | transparent bg -->
+  <ellipse cx="128.0" cy="210.0" rx="90.0" ry="10.0" fill="#00000018"/>
+  <rect x="40.0" y="50.0" width="160.0" height="160.0" rx="14" ry="14" fill="#F7F4EE"/>
+  <rect x="200.0" y="60.0" width="30.0" height="150.0" rx="8" ry="8" fill="#E8E2D6"/>
+</svg>

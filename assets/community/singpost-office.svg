@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" fill="none">
+  <!-- SingPost Office | tile 256x256 | dimetric vector | transparent bg -->
+  <ellipse cx="128.0" cy="210.0" rx="90.0" ry="12.0" fill="#00000018"/>
+  <ellipse cx="126.9" cy="201.6" rx="74.1" ry="14.0" fill="#00000018"/>
+  <rect x="50.0" y="59.0" width="140.0" height="125.0" rx="10" ry="10" fill="#F7F4EE"/>
+  <path d="M190.0,63.0 L190.0,184.0 L217.5,168.0 L217.5,47.0 Z" fill="#E8E2D6"/>
+  <path d="M56.0,59.0 L190.0,59.0 L217.5,43.0 L83.5,43.0 Z" fill="#ED1C24"/>
+  <rect x="50.0" y="59.0" width="140.0" height="12.5" rx="3.5" ry="3.5" fill="#C41E2A"/>
+  <rect x="50.0" y="80.0" width="140.0" height="28.0" rx="5" ry="5" fill="#ED1C24"/>
+  <rect x="100.0" y="86.0" width="40.0" height="18.0" rx="3" ry="3" fill="#FFFEFB"/>
+  <path d="M100,86 L120,98 L140,86 Z" fill="#ED1C24"/>
+  <rect x="70.0" y="125.0" width="40.0" height="36.0" rx="6" ry="6" fill="#7EB3E0"/>
+  <rect x="130.0" y="130.0" width="28.0" height="40.0" rx="5" ry="5" fill="#5A6270"/>
+  <rect x="50.0" y="195.0" width="140.0" height="30.0" rx="10" ry="10" fill="#E8EBEF"/>
+</svg>

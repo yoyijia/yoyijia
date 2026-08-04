@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" fill="none">
+  <!-- Grass Tile | tile 256x256 | dimetric vector | transparent bg -->
+  <rect x="8.0" y="8.0" width="240.0" height="240.0" rx="22" ry="22" fill="#7BC47F"/>
+  <circle cx="28.0" cy="26.0" r="3.0" fill="#91D494"/>
+  <circle cx="220.0" cy="226.0" r="3.0" fill="#91D494"/>
+  <circle cx="116.0" cy="104.0" r="3.0" fill="#91D494"/>
+</svg>

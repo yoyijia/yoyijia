@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" fill="none">
+  <!-- Awning | tile 256x256 | dimetric vector | transparent bg -->
+  <ellipse cx="128.0" cy="150.0" rx="80.0" ry="10.0" fill="#00000018"/>
+  <rect x="40.0" y="90.0" width="176.0" height="40.0" rx="12" ry="12" fill="#5B9BD5"/>
+  <rect x="48.0" y="120.0" width="160.0" height="14.0" rx="5" ry="5" fill="#4A87BE"/>
+</svg>

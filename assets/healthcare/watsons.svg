@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" fill="none">
+  <!-- Watsons | tile 256x256 | dimetric vector | transparent bg -->
+  <ellipse cx="128.0" cy="210.0" rx="90.0" ry="12.0" fill="#00000018"/>
+  <ellipse cx="127.4" cy="201.6" rx="76.6" ry="14.0" fill="#00000018"/>
+  <rect x="48.0" y="59.0" width="145.0" height="125.0" rx="10" ry="10" fill="#FFFEFB"/>
+  <path d="M193.0,63.0 L193.0,184.0 L220.5,168.0 L220.5,47.0 Z" fill="#F0EDE6"/>
+  <path d="M54.0,59.0 L193.0,59.0 L220.5,43.0 L81.5,43.0 Z" fill="#0077C8"/>
+  <rect x="48.0" y="59.0" width="145.0" height="12.5" rx="3.5" ry="3.5" fill="#0060A3"/>
+  <rect x="48.0" y="80.0" width="145.0" height="32.0" rx="6" ry="6" fill="#0077C8"/>
+  <rect x="95.0" y="88.0" width="50.0" height="16.0" rx="6" ry="6" fill="#FFFEFB"/>
+  <path d="M105,92 L110,100 L115,92 L120,100 L125,92 L130,96 L120,104 L115,96 L110,104 L100,96 Z" fill="#0077C8"/>
+  <rect x="65.0" y="130.0" width="45.0" height="40.0" rx="6" ry="6" fill="#7EB3E0"/>
+  <rect x="130.0" y="135.0" width="28.0" height="40.0" rx="5" ry="5" fill="#5A6270"/>
+  <rect x="48.0" y="195.0" width="145.0" height="30.0" rx="10" ry="10" fill="#E8EBEF"/>
+</svg>

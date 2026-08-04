@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" fill="none">
+  <!-- Zebra Crossing | tile 256x256 | dimetric vector | transparent bg -->
+  <rect x="16.0" y="70.0" width="224.0" height="116.0" rx="20" ry="20" fill="#B8BFC8"/>
+  <rect x="40.0" y="85.0" width="16.0" height="86.0" rx="4" ry="4" fill="#F5F7FA"/>
+  <rect x="66.0" y="85.0" width="16.0" height="86.0" rx="4" ry="4" fill="#F5F7FA"/>
+  <rect x="92.0" y="85.0" width="16.0" height="86.0" rx="4" ry="4" fill="#F5F7FA"/>
+  <rect x="118.0" y="85.0" width="16.0" height="86.0" rx="4" ry="4" fill="#F5F7FA"/>
+  <rect x="144.0" y="85.0" width="16.0" height="86.0" rx="4" ry="4" fill="#F5F7FA"/>
+  <rect x="170.0" y="85.0" width="16.0" height="86.0" rx="4" ry="4" fill="#F5F7FA"/>
+  <rect x="196.0" y="85.0" width="16.0" height="86.0" rx="4" ry="4" fill="#F5F7FA"/>
+</svg>

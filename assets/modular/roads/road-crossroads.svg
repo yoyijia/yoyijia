@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" fill="none">
+  <!-- Road Crossroads | tile 256x256 | dimetric vector | transparent bg -->
+  <rect x="16.0" y="70.0" width="224.0" height="116.0" rx="24" ry="24" fill="#B8BFC8"/>
+  <rect x="70.0" y="16.0" width="116.0" height="224.0" rx="24" ry="24" fill="#B8BFC8"/>
+  <rect x="40.0" y="118.0" width="24.0" height="16.0" rx="5" ry="5" fill="#F5F7FA"/>
+  <rect x="90.0" y="118.0" width="24.0" height="16.0" rx="5" ry="5" fill="#F5F7FA"/>
+  <rect x="150.0" y="118.0" width="24.0" height="16.0" rx="5" ry="5" fill="#F5F7FA"/>
+  <rect x="190.0" y="118.0" width="24.0" height="16.0" rx="5" ry="5" fill="#F5F7FA"/>
+  <rect x="118.0" y="40.0" width="16.0" height="24.0" rx="5" ry="5" fill="#F5F7FA"/>
+  <rect x="118.0" y="90.0" width="16.0" height="24.0" rx="5" ry="5" fill="#F5F7FA"/>
+  <rect x="118.0" y="150.0" width="16.0" height="24.0" rx="5" ry="5" fill="#F5F7FA"/>
+  <rect x="118.0" y="190.0" width="16.0" height="24.0" rx="5" ry="5" fill="#F5F7FA"/>
+</svg>
