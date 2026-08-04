@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" fill="none">
+  <!-- Wall | 64x64 | 64-grid modular tileset -->
+  <ellipse cx="32.00" cy="58.00" rx="22.00" ry="4.00" fill="#3A4A3818"/>
+  <rect x="6.00" y="8.00" width="42.00" height="48.00" rx="6" ry="6" fill="#F5F1E8"/>
+  <rect x="48.00" y="12.00" width="10.00" height="44.00" rx="3" ry="3" fill="#E6E0D4"/>
+</svg>

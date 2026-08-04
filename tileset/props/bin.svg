@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" fill="none">
+  <!-- Dustbin | 64x64 | 64-grid modular tileset -->
+  <ellipse cx="32.00" cy="54.00" rx="10.00" ry="4.00" fill="#3A4A3828"/>
+  <rect x="20.00" y="18.00" width="24.00" height="34.00" rx="8" ry="8" fill="#4F9A4A"/>
+  <rect x="24.00" y="18.00" width="18.00" height="34.00" rx="7" ry="7" fill="#3E7D3A"/>
+  <rect x="20.00" y="18.00" width="24.00" height="10.00" rx="6" ry="6" fill="#5FAF55"/>
+  <rect x="26.00" y="30.00" width="12.00" height="12.00" rx="3" ry="3" fill="#F5D56A"/>
+  <path d="M28,33 L36,33 L32,40 Z" fill="#4F9A4A"/>
+</svg>

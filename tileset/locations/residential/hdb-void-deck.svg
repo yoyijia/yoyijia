@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256" fill="none">
+  <!-- HDB Void Deck | 256x256 | 64-grid modular tileset -->
+  <g transform="translate(38.00,8.00) scale(0.9375)">
+  <rect x="8.00" y="216.00" width="176.00" height="32.00" rx="8" ry="8" fill="#E6E9EE"/>
+  <ellipse cx="89.00" cy="202.00" rx="54.60" ry="6.00" fill="#3A4A3828"/>
+  <rect x="20.00" y="16.00" width="130.00" height="180.00" rx="8" ry="8" fill="#F5F1E8"/>
+  <path d="M150.0,19.0 L150.0,196.0 L170.0,184.0 L170.0,7.0 Z" fill="#E6E0D4"/>
+  <path d="M24.0,16.0 L150.0,16.0 L170.0,4.0 L44.0,4.0 Z" fill="#D4CDC0"/>
+  <rect x="20.00" y="16.00" width="130.00" height="5.00" rx="3.2" ry="3.2" fill="#D4CDC0"/>
+  <rect x="32.00" y="28.00" width="18.00" height="16.00" rx="3" ry="3" fill="#5B9FD4"/>
+  <rect x="34.00" y="30.00" width="14.00" height="12.00" rx="2" ry="2" fill="#8EC4E8"/>
+  <rect x="48.00" y="32.00" width="10.00" height="2.00" rx="1" ry="1" fill="#E56B6B"/>
+  <rect x="48.00" y="36.00" width="8.00" height="2.00" rx="1" ry="1" fill="#F5D56A"/>
+  <rect x="60.00" y="28.00" width="18.00" height="16.00" rx="3" ry="3" fill="#5B9FD4"/>
+  <rect x="62.00" y="30.00" width="14.00" height="12.00" rx="2" ry="2" fill="#8EC4E8"/>
+  <rect x="88.00" y="28.00" width="18.00" height="16.00" rx="3" ry="3" fill="#5B9FD4"/>
+  <rect x="90.00" y="30.00" width="14.00" height="12.00" rx="2" ry="2" fill="#8EC4E8"/>
+  <rect x="116.00" y="28.00" width="18.00" height="16.00" rx="3" ry="3" fill="#5B9FD4"/>
+  <rect x="118.00" y="30.00" width="14.00" height="12.00" rx="2" ry="2" fill="#8EC4E8"/>
+  <rect x="132.00" y="32.00" width="10.00" height="2.00" rx="1" ry="1" fill="#E56B6B"/>
+  <rect x="132.00" y="36.00" width="8.00" height="2.00" rx="1" ry="1" fill="#F5D56A"/>
+  <rect x="32.00" y="54.00" width="18.00" height="16.00" rx="3" ry="3" fill="#5B9FD4"/>
+  <rect x="34.00" y="56.00" width="14.00" height="12.00" rx="2" ry="2" fill="#8EC4E8"/>
+  <rect x="60.00" y="54.00" width="18.00" height="16.00" rx="3" ry="3" fill="#5B9FD4"/>
+  <rect x="62.00" y="56.00" width="14.00" height="12.00" rx="2" ry="2" fill="#8EC4E8"/>
+  <rect x="88.00" y="54.00" width="18.00" height="16.00" rx="3" ry="3" fill="#5B9FD4"/>
+  <rect x="90.00" y="56.00" width="14.00" height="12.00" rx="2" ry="2" fill="#8EC4E8"/>
+  <rect x="104.00" y="58.00" width="10.00" height="2.00" rx="1" ry="1" fill="#E56B6B"/>
+  <rect x="104.00" y="62.00" width="8.00" height="2.00" rx="1" ry="1" fill="#F5D56A"/>
+  <rect x="116.00" y="54.00" width="18.00" height="16.00" rx="3" ry="3" fill="#5B9FD4"/>
+  <rect x="118.00" y="56.00" width="14.00" height="12.00" rx="2" ry="2" fill="#8EC4E8"/>
+  <rect x="32.00" y="80.00" width="18.00" height="16.00" rx="3" ry="3" fill="#5B9FD4"/>
+  <rect x="34.00" y="82.00" width="14.00" height="12.00" rx="2" ry="2" fill="#8EC4E8"/>
+  <rect x="60.00" y="80.00" width="18.00" height="16.00" rx="3" ry="3" fill="#5B9FD4"/>
+  <rect x="62.00" y="82.00" width="14.00" height="12.00" rx="2" ry="2" fill="#8EC4E8"/>
+  <rect x="76.00" y="84.00" width="10.00" height="2.00" rx="1" ry="1" fill="#E56B6B"/>
+  <rect x="76.00" y="88.00" width="8.00" height="2.00" rx="1" ry="1" fill="#F5D56A"/>
+  <rect x="88.00" y="80.00" width="18.00" height="16.00" rx="3" ry="3" fill="#5B9FD4"/>
+  <rect x="90.00" y="82.00" width="14.00" height="12.00" rx="2" ry="2" fill="#8EC4E8"/>
+  <rect x="116.00" y="80.00" width="18.00" height="16.00" rx="3" ry="3" fill="#5B9FD4"/>
+  <rect x="118.00" y="82.00" width="14.00" height="12.00" rx="2" ry="2" fill="#8EC4E8"/>
+  <rect x="32.00" y="106.00" width="18.00" height="16.00" rx="3" ry="3" fill="#5B9FD4"/>
+  <rect x="34.00" y="108.00" width="14.00" height="12.00" rx="2" ry="2" fill="#8EC4E8"/>
+  <rect x="48.00" y="110.00" width="10.00" height="2.00" rx="1" ry="1" fill="#E56B6B"/>
+  <rect x="48.00" y="114.00" width="8.00" height="2.00" rx="1" ry="1" fill="#F5D56A"/>
+  <rect x="60.00" y="106.00" width="18.00" height="16.00" rx="3" ry="3" fill="#5B9FD4"/>
+  <rect x="62.00" y="108.00" width="14.00" height="12.00" rx="2" ry="2" fill="#8EC4E8"/>
+  <rect x="88.00" y="106.00" width="18.00" height="16.00" rx="3" ry="3" fill="#5B9FD4"/>
+  <rect x="90.00" y="108.00" width="14.00" height="12.00" rx="2" ry="2" fill="#8EC4E8"/>
+  <rect x="116.00" y="106.00" width="18.00" height="16.00" rx="3" ry="3" fill="#5B9FD4"/>
+  <rect x="118.00" y="108.00" width="14.00" height="12.00" rx="2" ry="2" fill="#8EC4E8"/>
+  <rect x="132.00" y="110.00" width="10.00" height="2.00" rx="1" ry="1" fill="#E56B6B"/>
+  <rect x="132.00" y="114.00" width="8.00" height="2.00" rx="1" ry="1" fill="#F5D56A"/>
+  <rect x="32.00" y="132.00" width="18.00" height="16.00" rx="3" ry="3" fill="#5B9FD4"/>
+  <rect x="34.00" y="134.00" width="14.00" height="12.00" rx="2" ry="2" fill="#8EC4E8"/>
+  <rect x="60.00" y="132.00" width="18.00" height="16.00" rx="3" ry="3" fill="#5B9FD4"/>
+  <rect x="62.00" y="134.00" width="14.00" height="12.00" rx="2" ry="2" fill="#8EC4E8"/>
+  <rect x="88.00" y="132.00" width="18.00" height="16.00" rx="3" ry="3" fill="#5B9FD4"/>
+  <rect x="90.00" y="134.00" width="14.00" height="12.00" rx="2" ry="2" fill="#8EC4E8"/>
+  <rect x="104.00" y="136.00" width="10.00" height="2.00" rx="1" ry="1" fill="#E56B6B"/>
+  <rect x="104.00" y="140.00" width="8.00" height="2.00" rx="1" ry="1" fill="#F5D56A"/>
+  <rect x="116.00" y="132.00" width="18.00" height="16.00" rx="3" ry="3" fill="#5B9FD4"/>
+  <rect x="118.00" y="134.00" width="14.00" height="12.00" rx="2" ry="2" fill="#8EC4E8"/>
+  <rect x="20.00" y="170.00" width="130.00" height="50.00" rx="6" ry="6" fill="#F5F1E8"/>
+  <rect x="32.00" y="170.00" width="10.00" height="50.00" rx="3" ry="3" fill="#E6E0D4"/>
+  <rect x="60.00" y="170.00" width="10.00" height="50.00" rx="3" ry="3" fill="#E6E0D4"/>
+  <rect x="98.00" y="170.00" width="10.00" height="50.00" rx="3" ry="3" fill="#E6E0D4"/>
+  <rect x="126.00" y="170.00" width="10.00" height="50.00" rx="3" ry="3" fill="#E6E0D4"/>
+  <rect x="44.00" y="180.00" width="80.00" height="32.00" rx="4" ry="4" fill="#D4CDC0"/>
+  <rect x="50.00" y="186.00" width="22.00" height="20.00" rx="3" ry="3" fill="#4A5160"/>
+  <rect x="53.00" y="189.00" width="7.00" height="6.00" rx="1" ry="1" fill="#E56B6B"/>
+  <rect x="62.00" y="189.00" width="7.00" height="6.00" rx="1" ry="1" fill="#F5D56A"/>
+  <rect x="53.00" y="197.00" width="7.00" height="5.00" rx="1" ry="1" fill="#5B9FD4"/>
+  <rect x="62.00" y="197.00" width="7.00" height="5.00" rx="1" ry="1" fill="#7BC96F"/>
+  <rect x="90.00" y="198.00" width="28.00" height="8.00" rx="3" ry="3" fill="#E56B6B"/>
+  <rect x="118.00" y="22.00" width="26.00" height="18.00" rx="3" ry="3" fill="#5B9FD4"/>
+  <rect x="124.00" y="27.00" width="14.00" height="8.00" rx="2" ry="2" fill="#FFFEFB"/>
+  <rect x="76.00" y="184.00" width="26.00" height="5.00" rx="1" ry="1" fill="#4788BB"/>
+  <rect x="79.00" y="189.00" width="20.00" height="5.00" rx="1" ry="1" fill="#4788BB"/>
+  <rect x="82.00" y="194.00" width="14.00" height="5.00" rx="1" ry="1" fill="#4788BB"/>
+  <rect x="85.00" y="199.00" width="8.00" height="5.00" rx="1" ry="1" fill="#4788BB"/>
+  <rect x="124.00" y="184.00" width="22.00" height="24.00" rx="3" ry="3" fill="#5A6270"/>
+  <rect x="127.00" y="187.00" width="5.00" height="5.00" rx="1" ry="1" fill="#F5F1E8"/>
+  <rect x="133.00" y="187.00" width="5.00" height="5.00" rx="1" ry="1" fill="#F5F1E8"/>
+  <rect x="139.00" y="187.00" width="5.00" height="5.00" rx="1" ry="1" fill="#F5F1E8"/>
+  <rect x="127.00" y="193.00" width="5.00" height="5.00" rx="1" ry="1" fill="#F5F1E8"/>
+  <rect x="133.00" y="193.00" width="5.00" height="5.00" rx="1" ry="1" fill="#F5F1E8"/>
+  <rect x="139.00" y="193.00" width="5.00" height="5.00" rx="1" ry="1" fill="#F5F1E8"/>
+  <rect x="127.00" y="199.00" width="5.00" height="5.00" rx="1" ry="1" fill="#F5F1E8"/>
+  <rect x="133.00" y="199.00" width="5.00" height="5.00" rx="1" ry="1" fill="#F5F1E8"/>
+  <rect x="139.00" y="199.00" width="5.00" height="5.00" rx="1" ry="1" fill="#F5F1E8"/>
+  </g>
+</svg>

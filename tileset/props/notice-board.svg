@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" fill="none">
+  <!-- Notice Board | 64x64 | 64-grid modular tileset -->
+  <ellipse cx="32.00" cy="54.00" rx="14.00" ry="4.00" fill="#3A4A3828"/>
+  <rect x="14.00" y="10.00" width="36.00" height="40.00" rx="4" ry="4" fill="#4A5160"/>
+  <rect x="18.00" y="14.00" width="12.00" height="10.00" rx="2" ry="2" fill="#E56B6B"/>
+  <rect x="34.00" y="14.00" width="12.00" height="10.00" rx="2" ry="2" fill="#F5D56A"/>
+  <rect x="18.00" y="28.00" width="12.00" height="10.00" rx="2" ry="2" fill="#5B9FD4"/>
+  <rect x="34.00" y="28.00" width="12.00" height="10.00" rx="2" ry="2" fill="#7BC96F"/>
+</svg>

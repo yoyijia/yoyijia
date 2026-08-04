@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>SG 64px Modular Tileset</title>
+<style>
+  :root {
+    --bg: #E4EFE5; --ink: #2A3A2C; --muted: #5A6B5C; --panel: #F6FBF6;
+    --check: repeating-conic-gradient(#d8e4d9 0% 25%, #f3f8f3 0% 50%) 50%/14px 14px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Avenir Next","Segoe UI",Nunito,sans-serif;
+    background: radial-gradient(ellipse at 15% 0%,#cfe8d4,transparent 45%),
+                radial-gradient(ellipse at 90% 5%,#fde6d4,transparent 40%), var(--bg);
+    color: var(--ink); padding: 40px 28px 72px;
+  }
+  header { max-width: 1100px; margin: 0 auto 36px; }
+  h1 { font-size: clamp(1.8rem,3.5vw,2.6rem); font-weight: 800; letter-spacing: -.03em; }
+  header p { color: var(--muted); margin-top: 8px; max-width: 54ch; line-height: 1.5; }
+  .meta { display:flex; flex-wrap:wrap; gap:8px; margin-top:16px; }
+  .meta span { background:var(--panel); border-radius:999px; padding:5px 12px; font-size:.8rem; color:var(--muted); }
+  .hero { max-width:1100px; margin:0 auto 40px; background:var(--panel); border-radius:20px; padding:10px; }
+  .hero img { width:100%; border-radius:14px; display:block; image-rendering:auto; }
+  section { max-width:1100px; margin:0 auto 36px; }
+  h2 { font-size:1.15rem; margin-bottom:12px; padding-bottom:6px; border-bottom:2px solid #c4d8c6; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:14px; }
+  .card { background:var(--panel); border-radius:16px; padding:12px; display:flex; flex-direction:column; align-items:center; gap:8px; }
+  .tile { width:100%; aspect-ratio:1; background:var(--check); border-radius:10px; display:grid; place-items:center; }
+  .tile img { max-width:88%; max-height:88%; image-rendering:auto; }
+  figcaption { font-size:.72rem; font-weight:600; text-align:center; display:flex; flex-direction:column; gap:2px; }
+  figcaption span { font-weight:500; color:var(--muted); font-size:.65rem; }
+</style>
+</head>
+<body>
+  <header>
+    <h1>Singapore 64px Modular Tileset</h1>
+    <p>Game-ready Nintendo-like vector tiles. Seamless 64×64 ground, modular architecture pieces, multi-tile locations. Transparent SVG + PNG.</p>
+    <div class="meta">
+      <span>64×64 grid</span><span>No outlines</span><span>Soft pastel</span>
+      <span>Dimetric 3/4</span><span>Unity / Figma</span>
+    </div>
+  </header>
+  <div class="hero"><img src="renders/sample-neighbourhood.png" alt="Sample scene"/></div>
+  
+      <section>
+        <h2>Ground (64×64 seamless)</h2>
+        <div class="grid">
+        <figure class="card">
+          <div class="tile"><img src="../tileset/ground/grass.svg" alt="grass"/></div>
+          <figcaption>grass<span>64×64 · 1×1 tiles</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile"><img src="../tileset/ground/pavement.svg" alt="pavement"/></div>
+          <figcaption>pavement<span>64×64 · 1×1 tiles</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile"><img src="../tileset/ground/road-corner-ne.svg" alt="road-corner-ne"/></div>
+          <figcaption>road-corner-ne<span>64×64 · 1×1 tiles</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile"><img src="../tileset/ground/road-corner-nw.svg" alt="road-corner-nw"/></div>
+          <figcaption>road-corner-nw<span>64×64 · 1×1 tiles</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile"><img src="../tileset/ground/road-corner-se.svg" alt="road-corner-se"/></div>
+          <figcaption>road-corner-se<span>64×64 · 1×1 tiles</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile"><img src="../tileset/ground/road-corner-sw.svg" alt="road-corner-sw"/></div>
+          <figcaption>road-corner-sw<span>64×64 · 1×1 tiles</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile"><img src="../tileset/ground/road-corner.svg" alt="road-corner"/></div>
+          <figcaption>road-corner<span>64×64 · 1×1 tiles</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile"><img src="../tileset/ground/road-cross.svg" alt="road-cross"/></div>
+          <figcaption>road-cross<span>64×64 · 1×1 tiles</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile"><img src="../tileset/ground/road-h.svg" alt="road-h"/></div>
+          <figcaption>road-h<span>64×64 · 1×1 tiles</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile"><img src="../tileset/ground/road-roundabout.svg" alt="road-roundabout"/></div>
+          <figcaption>road-roundabout<span>64×64 · 1×1 tiles</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile"><img src="../tileset/ground/road-t-e.svg" alt="road-t-e"/></div>
+          <figcaption>road-t-e<span>64×64 · 1×1 tiles</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile"><img src="../tileset/ground/road-t-n.svg" alt="road-t-n"/></div>
+          <figcaption>road-t-n<span>64×64 · 1×1 tiles</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile"><img src="../tileset/ground/road-t-s.svg" alt="road-t-s"/></div>
+          <figcaption>road-t-s<span>64×64 · 1×1 tiles</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile"><img src="../tileset/ground/road-t-w.svg" alt="road-t-w"/></div>
+          <figcaption>road-t-w<span>64×64 · 1×1 tiles</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile"><img src="../tileset/ground/road-t.svg" alt="road-t"/></div>
+          <figcaption>road-t<span>64×64 · 1×1 tiles</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile"><img src="../tileset/ground/road-v.svg" alt="road-v"/></div>
+          <figcaption>road-v<span>64×64 · 1×1 tiles</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile"><img src="../tileset/ground/zebra-h.svg" alt="zebra-h"/></div>
+          <figcaption>zebra-h<span>64×64 · 1×1 tiles</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile"><img src="../tileset/ground/zebra-v.svg" alt="zebra-v"/></div>
+          <figcaption>zebra-v<span>64×64 · 1×1 tiles</span></figcaption>
+        </figure></div>
+      </section>
+      <section>
+        <h2>Nature</h2>
+        <div class="grid">
+        <figure class="card">
+          <div class="tile"><img src="../tileset/nature/bush.svg" alt="bush"/></div>
+          <figcaption>bush<span>64×64 · 1×1 tiles</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile"><img src="../tileset/nature/tree.svg" alt="tree"/></div>
+          <figcaption>tree<span>64×64 · 1×1 tiles</span></figcaption>
+        </figure></div>
+      </section>
+      <section>
+        <h2>Props</h2>
+        <div class="grid">
+        <figure class="card">
+          <div class="tile"><img src="../tileset/props/atm.svg" alt="atm"/></div>
+          <figcaption>atm<span>64×64 · 1×1 tiles</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile"><img src="../tileset/props/bench.svg" alt="bench"/></div>
+          <figcaption>bench<span>64×64 · 1×1 tiles</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile"><img src="../tileset/props/bin.svg" alt="bin"/></div>
+          <figcaption>bin<span>64×64 · 1×1 tiles</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile"><img src="../tileset/props/bus-shelter.svg" alt="bus-shelter"/></div>
+          <figcaption>bus-shelter<span>64×64 · 1×1 tiles</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile"><img src="../tileset/props/flagpole.svg" alt="flagpole"/></div>
+          <figcaption>flagpole<span>64×64 · 1×1 tiles</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile"><img src="../tileset/props/lamp.svg" alt="lamp"/></div>
+          <figcaption>lamp<span>64×64 · 1×1 tiles</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile"><img src="../tileset/props/letterbox.svg" alt="letterbox"/></div>
+          <figcaption>letterbox<span>64×64 · 1×1 tiles</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile"><img src="../tileset/props/mrt-entrance.svg" alt="mrt-entrance"/></div>
+          <figcaption>mrt-entrance<span>64×64 · 1×1 tiles</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile"><img src="../tileset/props/notice-board.svg" alt="notice-board"/></div>
+          <figcaption>notice-board<span>64×64 · 1×1 tiles</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile"><img src="../tileset/props/table-set.svg" alt="table-set"/></div>
+          <figcaption>table-set<span>64×64 · 1×1 tiles</span></figcaption>
+        </figure></div>
+      </section>
+      <section>
+        <h2>Architecture Modules</h2>
+        <div class="grid">
+        <figure class="card">
+          <div class="tile"><img src="../tileset/architecture/awning.svg" alt="awning"/></div>
+          <figcaption>awning<span>64×64 · 1×1 tiles</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile"><img src="../tileset/architecture/door.svg" alt="door"/></div>
+          <figcaption>door<span>64×64 · 1×1 tiles</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile"><img src="../tileset/architecture/hdb-corridor.svg" alt="hdb-corridor"/></div>
+          <figcaption>hdb-corridor<span>64×64 · 1×1 tiles</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile"><img src="../tileset/architecture/roof-blue.svg" alt="roof-blue"/></div>
+          <figcaption>roof-blue<span>64×64 · 1×1 tiles</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile"><img src="../tileset/architecture/roof-orange.svg" alt="roof-orange"/></div>
+          <figcaption>roof-orange<span>64×64 · 1×1 tiles</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile"><img src="../tileset/architecture/roof-red.svg" alt="roof-red"/></div>
+          <figcaption>roof-red<span>64×64 · 1×1 tiles</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile"><img src="../tileset/architecture/void-deck-pillar.svg" alt="void-deck-pillar"/></div>
+          <figcaption>void-deck-pillar<span>64×64 · 1×1 tiles</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile"><img src="../tileset/architecture/wall-door.svg" alt="wall-door"/></div>
+          <figcaption>wall-door<span>64×64 · 1×1 tiles</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile"><img src="../tileset/architecture/wall-hdb-window.svg" alt="wall-hdb-window"/></div>
+          <figcaption>wall-hdb-window<span>64×64 · 1×1 tiles</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile"><img src="../tileset/architecture/wall-window.svg" alt="wall-window"/></div>
+          <figcaption>wall-window<span>64×64 · 1×1 tiles</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile"><img src="../tileset/architecture/wall.svg" alt="wall"/></div>
+          <figcaption>wall<span>64×64 · 1×1 tiles</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile"><img src="../tileset/architecture/window.svg" alt="window"/></div>
+          <figcaption>window<span>64×64 · 1×1 tiles</span></figcaption>
+        </figure></div>
+      </section>
+      <section>
+        <h2>Food & Retail</h2>
+        <div class="grid">
+        <figure class="card">
+          <div class="tile"><img src="../tileset/locations/food-retail/hawker-centre.svg" alt="hawker-centre"/></div>
+          <figcaption>hawker-centre<span>256×256 · 4×4 tiles</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile"><img src="../tileset/locations/food-retail/ntuc-fairprice.svg" alt="ntuc-fairprice"/></div>
+          <figcaption>ntuc-fairprice<span>256×256 · 4×4 tiles</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile"><img src="../tileset/locations/food-retail/sheng-siong.svg" alt="sheng-siong"/></div>
+          <figcaption>sheng-siong<span>256×256 · 4×4 tiles</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile"><img src="../tileset/locations/food-retail/wet-market.svg" alt="wet-market"/></div>
+          <figcaption>wet-market<span>256×256 · 4×4 tiles</span></figcaption>
+        </figure></div>
+      </section>
+      <section>
+        <h2>Transportation</h2>
+        <div class="grid">
+        <figure class="card">
+          <div class="tile"><img src="../tileset/locations/transportation/bus-interchange.svg" alt="bus-interchange"/></div>
+          <figcaption>bus-interchange<span>256×256 · 4×4 tiles</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile"><img src="../tileset/locations/transportation/bus-stop.svg" alt="bus-stop"/></div>
+          <figcaption>bus-stop<span>256×256 · 4×4 tiles</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile"><img src="../tileset/locations/transportation/mrt-station.svg" alt="mrt-station"/></div>
+          <figcaption>mrt-station<span>256×256 · 4×4 tiles</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile"><img src="../tileset/locations/transportation/taxi-pickup.svg" alt="taxi-pickup"/></div>
+          <figcaption>taxi-pickup<span>256×256 · 4×4 tiles</span></figcaption>
+        </figure></div>
+      </section>
+      <section>
+        <h2>Healthcare</h2>
+        <div class="grid">
+        <figure class="card">
+          <div class="tile"><img src="../tileset/locations/healthcare/gp-clinic.svg" alt="gp-clinic"/></div>
+          <figcaption>gp-clinic<span>256×256 · 4×4 tiles</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile"><img src="../tileset/locations/healthcare/guardian.svg" alt="guardian"/></div>
+          <figcaption>guardian<span>256×256 · 4×4 tiles</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile"><img src="../tileset/locations/healthcare/polyclinic.svg" alt="polyclinic"/></div>
+          <figcaption>polyclinic<span>256×256 · 4×4 tiles</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile"><img src="../tileset/locations/healthcare/unity.svg" alt="unity"/></div>
+          <figcaption>unity<span>256×256 · 4×4 tiles</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile"><img src="../tileset/locations/healthcare/watsons.svg" alt="watsons"/></div>
+          <figcaption>watsons<span>256×256 · 4×4 tiles</span></figcaption>
+        </figure></div>
+      </section>
+      <section>
+        <h2>Community</h2>
+        <div class="grid">
+        <figure class="card">
+          <div class="tile"><img src="../tileset/locations/community/atm.svg" alt="atm"/></div>
+          <figcaption>atm<span>256×256 · 4×4 tiles</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile"><img src="../tileset/locations/community/bank.svg" alt="bank"/></div>
+          <figcaption>bank<span>256×256 · 4×4 tiles</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile"><img src="../tileset/locations/community/community-club.svg" alt="community-club"/></div>
+          <figcaption>community-club<span>256×256 · 4×4 tiles</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile"><img src="../tileset/locations/community/singpost.svg" alt="singpost"/></div>
+          <figcaption>singpost<span>256×256 · 4×4 tiles</span></figcaption>
+        </figure></div>
+      </section>
+      <section>
+        <h2>Residential</h2>
+        <div class="grid">
+        <figure class="card">
+          <div class="tile"><img src="../tileset/locations/residential/hdb-void-deck.svg" alt="hdb-void-deck"/></div>
+          <figcaption>hdb-void-deck<span>256×256 · 4×4 tiles</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile"><img src="../tileset/locations/residential/letterbox-area.svg" alt="letterbox-area"/></div>
+          <figcaption>letterbox-area<span>256×256 · 4×4 tiles</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile"><img src="../tileset/locations/residential/neighbourhood-park.svg" alt="neighbourhood-park"/></div>
+          <figcaption>neighbourhood-park<span>256×256 · 4×4 tiles</span></figcaption>
+        </figure>
+        <figure class="card">
+          <div class="tile"><img src="../tileset/locations/residential/park-connector.svg" alt="park-connector"/></div>
+          <figcaption>park-connector<span>256×256 · 4×4 tiles</span></figcaption>
+        </figure></div>
+      </section>
+</body>
+</html>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" fill="none">
+  <!-- Grass | 64x64 | 64-grid modular tileset -->
+  <rect x="0.00" y="0.00" width="64.00" height="64.00" rx="0" ry="0" fill="#7BC96F"/>
+  <circle cx="12.00" cy="14.00" r="1.60" fill="#93D988"/>
+  <circle cx="28.00" cy="40.00" r="1.60" fill="#93D988"/>
+  <circle cx="48.00" cy="18.00" r="1.60" fill="#93D988"/>
+  <circle cx="18.00" cy="50.00" r="1.60" fill="#93D988"/>
+  <circle cx="44.00" cy="46.00" r="1.60" fill="#93D988"/>
+  <circle cx="36.00" cy="10.00" r="1.60" fill="#93D988"/>
+  <circle cx="22.00" cy="28.00" r="1.20" fill="#F5D56A"/>
+  <circle cx="50.00" cy="34.00" r="1.20" fill="#F5D56A"/>
+</svg>

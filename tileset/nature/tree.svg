@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" fill="none">
+  <!-- Tree | 64x64 | 64-grid modular tileset -->
+  <ellipse cx="32.00" cy="56.00" rx="14.00" ry="5.00" fill="#3A4A3828"/>
+  <rect x="28.00" y="34.00" width="8.00" height="20.00" rx="3" ry="3" fill="#8B6848"/>
+  <rect x="30.00" y="36.00" width="4.00" height="16.00" rx="2" ry="2" fill="#6E5238"/>
+  <circle cx="32.00" cy="26.00" r="18.00" fill="#5AAA54"/>
+  <circle cx="22.00" cy="30.00" r="10.00" fill="#478B42"/>
+  <circle cx="40.00" cy="20.00" r="9.00" fill="#78C072"/>
+  <circle cx="34.00" cy="18.00" r="6.00" fill="#5AAA54"/>
+</svg>
