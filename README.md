@@ -1,27 +1,20 @@
 # Warm Care — Brand Colour Scheme
 
-Warm **60 · 30 · 10** branding for a stomach & liver clinic. No blue — cream, toasted tan, and spicy orange inspired by your mood-board references.
+Warm **60 · 30 · 10** branding for a stomach & liver clinic, structured like your social-post reference — **no blue**.
 
 ## Core palette
 
-| Role | Name | HEX | Use |
-|------|------|-----|-----|
-| **60%** Dominant | Champagne Glow | `#F5E5CD` | Backgrounds, post canvases |
-| **30%** Secondary | Toasted Tan | `#D89D5D` | Sections, soft panels |
-| **10%** Accent | Spicy | `#EA6903` | Buttons, links, smile moments |
+| Role | Name | HEX | Maps from reference |
+|------|------|-----|---------------------|
+| **60%** | Soft Cream | `#F6EFE4` | Light post background (warmed) |
+| **30%** | Soft Caramel | `#C9A87A` | Mid blue role → warm support |
+| **10%** | Smile Burgundy | `#6E2430` | Doctor’s tie accent |
 
 ## Supporting
 
-- **Espresso Crust** `#4D1A00` — text
-- **Soft Mocha** `#8A5A36` — secondary copy
-- **Oat Soft** `#FFF8EE` — elevated surfaces
-- **Linen Line** `#E8D2B0` — borders
+- **Deep Espresso** `#241810` — headlines (navy’s warm stand-in)
+- **Liver Gold** `#D4A53C` — organ art / mustard accent
+- **Soft Mocha** `#7A5A3C` — secondary copy
+- **Linen Line** `#E7D8C2` — borders
 
-## Optional extras (from your boards)
-
-- Citrus Fizz `#FFCC9B`
-- Brunch Tomato `#B22000`
-- Berry Pop `#7D0000`
-- Buttercup `#F5C421`
-
-Open `index.html` to preview the brand guide.
+Open `index.html` to preview.
