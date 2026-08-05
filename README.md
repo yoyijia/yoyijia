@@ -1,26 +1,23 @@
 # Warm Care — Brand Colour Scheme
 
-Warm branding colours for a **stomach & liver clinic**, built on the **60 · 30 · 10** rule to feel like a doctor’s warm smile.
+60 · 30 · 10 branding for a **stomach & liver clinic**, matched to clean clinical social posts: soft blues for trust, warm terracotta for a doctor’s smile.
 
 ## Palette
 
 | Role | Name | HEX | Use |
 |------|------|-----|-----|
-| **60%** Dominant | Peach Mist | `#FFE8DC` | Backgrounds, large surfaces |
-| **30%** Secondary | Coral Clay | `#E39A7A` | Sections, soft panels, nav emphasis |
-| **10%** Accent | Honey Amber | `#C45D2C` | Buttons, links, key highlights |
+| **60%** Dominant | Clinic Mist | `#F0F4F9` | Backgrounds, open space |
+| **30%** Secondary | Soft Sky | `#7AA3CF` | Badges, illustration fills, soft UI |
+| **10%** Accent | Liver Warm | `#C9844F` | Organ art, CTAs, warm highlights |
 
-### Supporting neutrals
+### Supporting
 
-- **Warm Ink** `#3A2A24` — headlines & body
-- **Soft Cocoa** `#7A5C52` — secondary copy
-- **Cream Soft** `#FFF9F6` — elevated surfaces
-- **Blush Line** `#F0D5C8` — borders & dividers
-
-## Why these colours
-
-Warm peach and coral read as approachable and human — closer to a caring smile than clinical blue. Honey amber is reserved for action, so the interface stays calm while CTAs stay clear.
+- **Deep Navy** `#1A2744` — headlines & name locks
+- **Soft Slate** `#5C708C` — secondary copy
+- **Pure Surface** `#FFFFFF` — cards & photo mats
+- **Cool Line** `#D7E2EE` — borders
+- **Smile Burgundy** `#7A2E3B` — optional portrait/tie accent
 
 ## Preview
 
-Open `index.html` in a browser to view the brand guide, interactive swatches, and CSS tokens.
+Open `index.html` in a browser.
