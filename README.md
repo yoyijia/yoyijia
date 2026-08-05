@@ -1,23 +1,27 @@
 # Warm Care — Brand Colour Scheme
 
-60 · 30 · 10 branding for a **stomach & liver clinic**, matched to clean clinical social posts: soft blues for trust, warm terracotta for a doctor’s smile.
+Warm **60 · 30 · 10** branding for a stomach & liver clinic. No blue — cream, toasted tan, and spicy orange inspired by your mood-board references.
 
-## Palette
+## Core palette
 
 | Role | Name | HEX | Use |
 |------|------|-----|-----|
-| **60%** Dominant | Clinic Mist | `#F0F4F9` | Backgrounds, open space |
-| **30%** Secondary | Soft Sky | `#7AA3CF` | Badges, illustration fills, soft UI |
-| **10%** Accent | Liver Warm | `#C9844F` | Organ art, CTAs, warm highlights |
+| **60%** Dominant | Champagne Glow | `#F5E5CD` | Backgrounds, post canvases |
+| **30%** Secondary | Toasted Tan | `#D89D5D` | Sections, soft panels |
+| **10%** Accent | Spicy | `#EA6903` | Buttons, links, smile moments |
 
-### Supporting
+## Supporting
 
-- **Deep Navy** `#1A2744` — headlines & name locks
-- **Soft Slate** `#5C708C` — secondary copy
-- **Pure Surface** `#FFFFFF` — cards & photo mats
-- **Cool Line** `#D7E2EE` — borders
-- **Smile Burgundy** `#7A2E3B` — optional portrait/tie accent
+- **Espresso Crust** `#4D1A00` — text
+- **Soft Mocha** `#8A5A36` — secondary copy
+- **Oat Soft** `#FFF8EE` — elevated surfaces
+- **Linen Line** `#E8D2B0` — borders
 
-## Preview
+## Optional extras (from your boards)
 
-Open `index.html` in a browser.
+- Citrus Fizz `#FFCC9B`
+- Brunch Tomato `#B22000`
+- Berry Pop `#7D0000`
+- Buttercup `#F5C421`
+
+Open `index.html` to preview the brand guide.
