@@ -107,6 +107,20 @@ footer {
   font-size: 1.05rem;
 }
 
+.hero-link {
+  margin: 1.1rem 0 0;
+}
+
+.hero-link a {
+  color: var(--color-accent);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.hero-link a:hover {
+  text-decoration: underline;
+}
+
 main {
   max-width: 1080px;
   margin: 0 auto;

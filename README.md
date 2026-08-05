@@ -17,4 +17,4 @@ Warm **60 · 30 · 10** branding for a stomach & liver clinic, structured like y
 - **Soft Mocha** `#7A5A3C` — secondary copy
 - **Linen Line** `#E7D8C2` — borders
 
-Open `index.html` to preview.
+Open `index.html` for the colour guide, or `social-posts.html` for sample social media posts.
