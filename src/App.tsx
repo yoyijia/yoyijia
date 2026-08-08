@@ -7,9 +7,9 @@ import { ItemsStudio } from './studios/ItemsStudio';
 import './App.css';
 
 const TABS: { id: AssetKind; label: string; blurb: string }[] = [
-  { id: 'character', label: 'Characters', blurb: 'Sized sprites + animation clips' },
+  { id: 'character', label: 'Characters', blurb: 'Chibi cast · 4-dir · wave/think' },
   { id: 'ui', label: 'UI', blurb: 'Modular HUD modules' },
-  { id: 'environment', label: 'Environment', blurb: 'Tiles & reference locations' },
+  { id: 'environment', label: 'Environment', blurb: 'Supermarket atlas · biomes' },
   { id: 'items', label: 'Items', blurb: 'Loot tilesheets' },
 ];
 
@@ -25,8 +25,8 @@ export default function App() {
           <p className="hero__mark">PIXFORGE</p>
           <h1>Pixel art, forged to grid.</h1>
           <p className="hero__lede">
-            Build characters, UI, environments, and item sheets — or drop a
-            real-world photo and turn it into a modular pixel location.
+            Chibi character sheets, supermarket modular tiles, UI modules, and
+            item atlases — or drop a real-world photo to forge a pixel location.
           </p>
           <div className="hero__cta">
             <button
@@ -34,14 +34,14 @@ export default function App() {
               className="btn btn--primary"
               onClick={() => setTab('character')}
             >
-              Start with characters
+              Character cast
             </button>
             <button
               type="button"
               className="btn btn--ghost"
               onClick={() => setTab('environment')}
             >
-              Generate from photo
+              Supermarket tileset
             </button>
           </div>
         </div>

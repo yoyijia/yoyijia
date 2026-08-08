@@ -12,10 +12,19 @@ import {
   clear,
   createBuffer,
   fillRect,
+  getPixel,
   outlineOpaque,
   setPixel,
   stitchRows,
 } from '../pixelEngine';
+
+/**
+ * Chibi reference style:
+ * - head ~45–50% of sprite height
+ * - short torso/legs
+ * - thick black outline
+ * - centered baseline for animation
+ */
 
 type CharColors = {
   outline: Rgba;
@@ -28,61 +37,66 @@ type CharColors = {
   shoes: Rgba;
   accent: Rgba;
   accent2: Rgba;
+  mouth: Rgba;
 };
 
 const PRESET_COLORS: Record<CharacterPreset, CharColors> = {
   curly: {
-    outline: hexToRgba('#1a1a1a'),
-    skin: hexToRgba('#f0c8a0'),
-    skinShade: hexToRgba('#d4a574'),
-    hair: hexToRgba('#1a1a1a'),
-    shirt: hexToRgba('#e87a7a'),
-    shirtShade: hexToRgba('#c45c5c'),
-    pants: hexToRgba('#2f4f8f'),
-    shoes: hexToRgba('#1a1a1a'),
-    accent: hexToRgba('#4caf6a'),
-    accent2: hexToRgba('#3d8f55'),
+    outline: hexToRgba('#1c1c1c'),
+    skin: hexToRgba('#f3c79a'),
+    skinShade: hexToRgba('#e0a978'),
+    hair: hexToRgba('#1c1c1c'),
+    shirt: hexToRgba('#e8837a'),
+    shirtShade: hexToRgba('#c96660'),
+    pants: hexToRgba('#2d4f8c'),
+    shoes: hexToRgba('#1c1c1c'),
+    accent: hexToRgba('#4faf6b'),
+    accent2: hexToRgba('#3a8f54'),
+    mouth: hexToRgba('#c96660'),
   },
   worker: {
-    outline: hexToRgba('#1a1a1a'),
-    skin: hexToRgba('#f0c8a0'),
-    skinShade: hexToRgba('#d4a574'),
-    hair: hexToRgba('#1a1a1a'),
-    shirt: hexToRgba('#d64545'),
-    shirtShade: hexToRgba('#a83232'),
+    outline: hexToRgba('#1c1c1c'),
+    skin: hexToRgba('#f3c79a'),
+    skinShade: hexToRgba('#e0a978'),
+    hair: hexToRgba('#1c1c1c'),
+    shirt: hexToRgba('#d83c3c'),
+    shirtShade: hexToRgba('#b02e2e'),
     pants: hexToRgba('#2a2a2a'),
-    shoes: hexToRgba('#1a1a1a'),
-    accent: hexToRgba('#1a1a1a'),
-    accent2: hexToRgba('#ffffff'),
+    shoes: hexToRgba('#1c1c1c'),
+    accent: hexToRgba('#222222'),
+    accent2: hexToRgba('#f5f5f5'),
+    mouth: hexToRgba('#c96660'),
   },
   cap: {
-    outline: hexToRgba('#1a1a1a'),
-    skin: hexToRgba('#f0c8a0'),
-    skinShade: hexToRgba('#d4a574'),
-    hair: hexToRgba('#5c4030'),
-    shirt: hexToRgba('#f2f2f2'),
-    shirtShade: hexToRgba('#d0d0d0'),
-    pants: hexToRgba('#3b6ea5'),
-    shoes: hexToRgba('#1a1a1a'),
-    accent: hexToRgba('#1a1a1a'),
+    outline: hexToRgba('#1c1c1c'),
+    skin: hexToRgba('#f3c79a'),
+    skinShade: hexToRgba('#e0a978'),
+    hair: hexToRgba('#6a4634'),
+    shirt: hexToRgba('#f4f4f4'),
+    shirtShade: hexToRgba('#d8d8d8'),
+    pants: hexToRgba('#3a6ea8'),
+    shoes: hexToRgba('#1c1c1c'),
+    accent: hexToRgba('#1c1c1c'),
     accent2: hexToRgba('#ffffff'),
+    mouth: hexToRgba('#c96660'),
   },
 };
 
 type Pose = {
   dir: CharacterDirection;
-  arm: 'down' | 'swing-front' | 'swing-back' | 'wave' | 'think';
-  leg: 'idle' | 'left-fwd' | 'right-fwd';
+  arm: 'down' | 'swing-a' | 'swing-b' | 'wave' | 'think';
+  leg: 'idle' | 'a' | 'b';
   bob: number;
+  bustOnly?: boolean;
 };
 
-function scaleOf(size: number) {
-  const u = size / 32;
-  const px = (n: number) => Math.round(n * u);
-  return { px };
+function u(size: number) {
+  // Design grid: 32 units tall. Head occupies ~0..14
+  const s = size / 32;
+  return (n: number) => Math.round(n * s);
 }
 
-function drawOval(
+function oval(
   buf: PixelBuffer,
   cx: number,
   cy: number,
@@ -94,123 +108,139 @@ function drawOval(
   const ry2 = Math.max(1, ry * ry);
   for (let y = -ry; y <= ry; y++) {
     for (let x = -rx; x <= rx; x++) {
-      if (x * x / rx2 + y * y / ry2 <= 1.08) {
-        setPixel(buf, cx + x, cy + y, color);
-      }
+      if (x * x / rx2 + y * y / ry2 <= 1.05) setPixel(buf, cx + x, cy + y, color);
     }
   }
 }
 
-function drawHead(
+function disc(buf: PixelBuffer, cx: number, cy: number, r: number, color: Rgba) {
+  oval(buf, cx, cy, r, r, color);
+}
+
+function drawChibiHead(
   buf: PixelBuffer,
   preset: CharacterPreset,
   dir: CharacterDirection,
   c: CharColors,
   px: (n: number) => number,
   cx: number,
-  headTop: number,
+  top: number,
   expression: 'neutral' | 'smile' | 'think',
 ) {
-  const headCx = cx;
-  const headCy = headTop + px(5);
+  const headCy = top + px(7);
+  const headRx = px(7);
+  const headRy = px(7);
   const skin = dir === 'up' ? c.skinShade : c.skin;
 
-  // skull
-  drawOval(buf, headCx, headCy, px(5), px(5), skin);
+  // big round head
+  oval(buf, cx, headCy, headRx, headRy, skin);
 
   if (preset === 'curly') {
-    // curly afro mass around head
-    const bumps: [number, number, number][] = [
-      [0, -4, 4],
-      [-4, -2, 3],
-      [4, -2, 3],
-      [-6, 1, 3],
-      [6, 1, 3],
-      [-5, 4, 3],
-      [5, 4, 3],
-      [0, -6, 3],
+    // dense afro halo
+    const curls: [number, number, number][] = [
+      [0, -6, 5],
+      [-5, -4, 4],
+      [5, -4, 4],
+      [-7, 0, 4],
+      [7, 0, 4],
+      [-6, 4, 4],
+      [6, 4, 4],
+      [-3, -7, 3],
+      [3, -7, 3],
+      [0, -8, 3],
     ];
-    for (const [ox, oy, r] of bumps) {
-      if (dir === 'left' && ox > 2) continue;
-      if (dir === 'right' && ox < -2) continue;
-      drawOval(buf, headCx + px(ox), headTop + px(oy + 5), px(r), px(r), c.hair);
+    for (const [ox, oy, r] of curls) {
+      if (dir === 'left' && ox > 3) continue;
+      if (dir === 'right' && ox < -3) continue;
+      disc(buf, cx + px(ox), headCy + px(oy), px(r), c.hair);
     }
-    // forehead
+    // face window
     if (dir !== 'up') {
-      fillRect(buf, headCx - px(3), headTop + px(4), px(6), px(2), skin);
+      oval(buf, cx, headCy + px(1), px(5), px(5), skin);
     }
   } else if (preset === 'worker') {
-    // hair bowl + bun
-    drawOval(buf, headCx, headTop + px(3), px(6), px(3), c.hair);
+    // hair bowl
+    oval(buf, cx, top + px(4), px(7), px(4), c.hair);
+    // bun
+    disc(buf, cx + (dir === 'left' ? -px(1) : dir === 'right' ? px(1) : 0), top + px(1), px(3), c.hair);
     if (dir === 'down') {
-      drawOval(buf, headCx, headTop - px(1), px(3), px(3), c.hair);
-      // side bangs
-      fillRect(buf, headCx - px(5), headTop + px(4), px(2), px(4), c.hair);
-      fillRect(buf, headCx + px(3), headTop + px(4), px(2), px(4), c.hair);
+      fillRect(buf, cx - px(7), top + px(6), px(2), px(5), c.hair);
+      fillRect(buf, cx + px(5), top + px(6), px(2), px(5), c.hair);
     } else if (dir === 'up') {
-      drawOval(buf, headCx, headTop - px(1), px(3), px(3), c.hair);
-      fillRect(buf, headCx - px(5), headTop + px(4), px(10), px(3), c.hair);
+      fillRect(buf, cx - px(7), top + px(5), px(14), px(5), c.hair);
     } else {
-      const side = dir === 'left' ? -1 : 1;
-      drawOval(buf, headCx + side * px(1), headTop - px(1), px(3), px(3), c.hair);
-      fillRect(buf, headCx - side * px(4), headTop + px(4), px(2), px(4), c.hair);
+      const back = dir === 'left' ? 1 : -1;
+      fillRect(buf, cx + back * px(5), top + px(6), px(2), px(5), c.hair);
     }
-    // red visor (after hair/skin)
+    // red visor over forehead
     if (dir !== 'up') {
       if (dir === 'down') {
-        fillRect(buf, headCx - px(5), headTop + px(3), px(10), px(2), c.shirt);
+        fillRect(buf, cx - px(6), top + px(5), px(12), px(3), c.shirt);
+        fillRect(buf, cx - px(6), top + px(5), px(12), px(1), c.shirtShade);
       } else {
         const side = dir === 'left' ? -1 : 1;
         fillRect(
           buf,
-          headCx + (side < 0 ? -px(5) : -px(1)),
-          headTop + px(3),
-          px(6),
-          px(2),
+          cx + (side < 0 ? -px(6) : -px(1)),
+          top + px(5),
+          px(7),
+          px(3),
           c.shirt,
         );
       }
     }
   } else {
-    // short hair + backwards cap
+    // short hair under backwards cap
     if (dir !== 'up') {
-      fillRect(buf, headCx - px(4), headTop + px(3), px(8), px(2), c.hair);
-    } else {
-      fillRect(buf, headCx - px(4), headTop + px(3), px(8), px(3), c.hair);
+      fillRect(buf, cx - px(5), top + px(5), px(10), px(3), c.hair);
     }
-    drawOval(buf, headCx, headTop + px(2), px(6), px(3), c.accent);
+    oval(buf, cx, top + px(4), px(7), px(4), c.accent);
     if (dir === 'down') {
-      // backwards: buckle on front-ish, brim hint back
-      fillRect(buf, headCx + px(2), headTop + px(1), px(3), px(2), c.accent);
-      fillRect(buf, headCx - px(2), headTop + px(3), px(3), px(1), c.accent2);
+      // backwards: adjustable strap facing camera
+      fillRect(buf, cx - px(2), top + px(5), px(4), px(2), c.accent2);
+      fillRect(buf, cx + px(3), top + px(2), px(3), px(3), c.accent);
     } else if (dir === 'up') {
-      fillRect(buf, headCx - px(6), headTop + px(3), px(12), px(2), c.accent);
+      fillRect(buf, cx - px(7), top + px(5), px(14), px(3), c.accent);
     } else {
       const side = dir === 'left' ? -1 : 1;
-      fillRect(buf, headCx + side * px(3), headTop + px(3), px(4), px(2), c.accent);
+      fillRect(buf, cx + side * px(3), top + px(5), px(5), px(2), c.accent);
     }
   }
 
-  // face
   if (dir === 'up') return;
-  const eyeY = headTop + px(6);
+
+  // eyes — simple dots, spaced for big head
+  const eyeY = top + px(8);
   if (dir === 'down') {
-    setPixel(buf, headCx - px(2), eyeY, c.outline);
-    setPixel(buf, headCx + px(2), eyeY, c.outline);
+    setPixel(buf, cx - px(3), eyeY, c.outline);
+    setPixel(buf, cx - px(2), eyeY, c.outline);
+    setPixel(buf, cx + px(2), eyeY, c.outline);
+    setPixel(buf, cx + px(3), eyeY, c.outline);
+    if (sizeHint(buf) >= 48) {
+      setPixel(buf, cx - px(3), eyeY + px(1), c.outline);
+      setPixel(buf, cx + px(3), eyeY + px(1), c.outline);
+    }
     if (expression === 'smile') {
-      setPixel(buf, headCx - px(1), eyeY + px(2), c.shirtShade);
-      setPixel(buf, headCx, eyeY + px(2), c.shirtShade);
-      setPixel(buf, headCx + px(1), eyeY + px(2), c.shirtShade);
+      fillRect(buf, cx - px(2), eyeY + px(3), px(4), px(1), c.mouth);
+      setPixel(buf, cx - px(2), eyeY + px(2), c.mouth);
+      setPixel(buf, cx + px(1), eyeY + px(2), c.mouth);
     } else if (expression === 'think') {
-      setPixel(buf, headCx + px(1), eyeY + px(2), c.outline);
+      setPixel(buf, cx + px(1), eyeY + px(3), c.outline);
+    } else {
+      setPixel(buf, cx, eyeY + px(3), c.mouth);
     }
   } else {
     const side = dir === 'left' ? -1 : 1;
-    setPixel(buf, headCx + side * px(2), eyeY, c.outline);
-    if (expression === 'smile' || expression === 'think') {
-      setPixel(buf, headCx + side * px(1), eyeY + px(2), c.outline);
+    setPixel(buf, cx + side * px(3), eyeY, c.outline);
+    setPixel(buf, cx + side * px(2), eyeY, c.outline);
+    if (expression !== 'neutral') {
+      setPixel(buf, cx + side * px(2), eyeY + px(3), c.mouth);
     }
   }
+}
+
+function sizeHint(buf: PixelBuffer) {
+  return buf.width;
 }
 
 function drawBody(
@@ -221,9 +251,10 @@ function drawBody(
   px: (n: number) => number,
   cx: number,
   torsoY: number,
+  bustOnly: boolean,
 ) {
-  const torsoW = px(10);
-  const torsoH = px(8);
+  const torsoW = px(9);
+  const torsoH = bustOnly ? px(5) : px(7);
   fillRect(buf, cx - Math.floor(torsoW / 2), torsoY, torsoW, torsoH, c.shirt);
   fillRect(
     buf,
@@ -235,44 +266,43 @@ function drawBody(
   );
 
   if (preset === 'worker') {
-    fillRect(buf, cx - px(4), torsoY + px(2), px(8), px(7), c.accent);
+    // apron panel
+    fillRect(buf, cx - px(4), torsoY + px(2), px(8), bustOnly ? px(4) : px(6), c.accent);
     if (dir === 'down') {
       fillRect(buf, cx + px(1), torsoY + px(3), px(2), px(2), c.accent2);
+      setPixel(buf, cx + px(1), torsoY + px(3), c.shirt);
     }
     if (dir === 'up') {
-      for (let i = 0; i < px(6); i++) {
-        setPixel(buf, cx - px(3) + i, torsoY + i, c.accent);
-        setPixel(buf, cx + px(3) - i, torsoY + i, c.accent);
+      for (let i = 0; i < px(5); i++) {
+        setPixel(buf, cx - px(3) + i, torsoY + px(1) + i, c.accent);
+        setPixel(buf, cx + px(3) - i, torsoY + px(1) + i, c.accent);
       }
     }
   }
 
-  if (preset === 'curly' && dir !== 'up') {
-    const bagX = dir === 'left' ? cx - px(8) : cx + px(4);
-    if (dir === 'down') {
-      fillRect(buf, cx + px(4), torsoY + px(2), px(4), px(5), c.accent);
-      fillRect(buf, cx + px(4), torsoY + px(2), px(4), px(1), c.accent2);
-    } else {
-      fillRect(buf, bagX, torsoY + px(2), px(4), px(5), c.accent);
-      fillRect(buf, bagX, torsoY + px(2), px(4), px(1), c.accent2);
+  if (preset === 'curly' && !bustOnly) {
+    const bagX = dir === 'left' ? cx - px(8) : dir === 'right' ? cx + px(4) : cx + px(4);
+    if (dir !== 'up') {
+      fillRect(buf, bagX, torsoY + px(1), px(4), px(5), c.accent);
+      fillRect(buf, bagX + px(1), torsoY + px(2), px(2), px(2), c.accent2);
     }
   }
 
-  if (preset === 'cap') {
+  if (preset === 'cap' && !bustOnly) {
     if (dir === 'down') {
-      for (let i = 0; i < px(8); i++) {
-        setPixel(buf, cx - px(4) + i, torsoY + Math.floor(i * 0.7), c.accent2);
+      for (let i = 0; i < px(7); i++) {
+        setPixel(buf, cx - px(3) + i, torsoY + Math.floor(i * 0.6), c.accent2);
       }
-      fillRect(buf, cx + px(3), torsoY + px(3), px(4), px(5), c.accent);
+      fillRect(buf, cx + px(3), torsoY + px(2), px(4), px(5), c.accent);
     } else if (dir === 'up') {
-      for (let i = 0; i < px(8); i++) {
-        setPixel(buf, cx + px(4) - i, torsoY + Math.floor(i * 0.7), c.accent2);
+      for (let i = 0; i < px(7); i++) {
+        setPixel(buf, cx + px(3) - i, torsoY + Math.floor(i * 0.6), c.accent2);
       }
-      fillRect(buf, cx - px(7), torsoY + px(3), px(4), px(5), c.accent);
+      fillRect(buf, cx - px(7), torsoY + px(2), px(4), px(5), c.accent);
     } else if (dir === 'right') {
-      fillRect(buf, cx - px(7), torsoY + px(2), px(3), px(5), c.accent);
+      fillRect(buf, cx - px(7), torsoY + px(1), px(3), px(5), c.accent);
     } else {
-      fillRect(buf, cx + px(4), torsoY + px(2), px(3), px(5), c.accent);
+      fillRect(buf, cx + px(4), torsoY + px(1), px(3), px(5), c.accent);
     }
   }
 }
@@ -285,39 +315,38 @@ function drawArms(
   cx: number,
   torsoY: number,
 ) {
-  const armY = torsoY + px(1);
+  const baseY = torsoY + px(1);
   if (pose.dir === 'down' || pose.dir === 'up') {
-    const swing =
-      pose.arm === 'swing-front' ? px(1) : pose.arm === 'swing-back' ? -px(1) : 0;
     if (pose.arm === 'wave') {
-      fillRect(buf, cx - px(7), armY, px(2), px(4), c.skin);
-      fillRect(buf, cx + px(5), armY - px(5), px(2), px(6), c.skin);
-      fillRect(buf, cx + px(5), armY - px(6), px(3), px(2), c.skin);
+      fillRect(buf, cx - px(6), baseY, px(2), px(4), c.skin);
+      fillRect(buf, cx + px(4), baseY - px(5), px(2), px(6), c.skin);
+      fillRect(buf, cx + px(4), baseY - px(6), px(3), px(2), c.skin);
     } else if (pose.arm === 'think') {
-      fillRect(buf, cx - px(7), armY, px(2), px(3), c.skin);
-      fillRect(buf, cx + px(3), armY - px(2), px(2), px(5), c.skin);
-      fillRect(buf, cx + px(1), torsoY - px(1), px(3), px(2), c.skin);
+      fillRect(buf, cx - px(6), baseY, px(2), px(3), c.skin);
+      fillRect(buf, cx + px(2), baseY - px(3), px(2), px(5), c.skin);
+      fillRect(buf, cx, torsoY - px(1), px(3), px(2), c.skin);
     } else {
-      fillRect(buf, cx - px(7), armY + swing, px(2), px(5), c.skin);
-      fillRect(buf, cx + px(5), armY - swing, px(2), px(5), c.skin);
+      const a = pose.arm === 'swing-a' ? px(1) : pose.arm === 'swing-b' ? -px(1) : 0;
+      fillRect(buf, cx - px(6), baseY + a, px(2), px(4), c.skin);
+      fillRect(buf, cx + px(4), baseY - a, px(2), px(4), c.skin);
     }
   } else {
     const front = pose.dir === 'left' ? -1 : 1;
-    let ay = armY;
     let ax = cx + front * px(1);
-    if (pose.arm === 'swing-front') {
+    let ay = baseY;
+    if (pose.arm === 'swing-a') {
       ax += front * px(2);
       ay += px(1);
-    } else if (pose.arm === 'swing-back') {
+    } else if (pose.arm === 'swing-b') {
       ax -= front * px(1);
     } else if (pose.arm === 'wave') {
-      ay -= px(4);
+      ay -= px(5);
       ax += front * px(2);
     } else if (pose.arm === 'think') {
-      ay -= px(2);
+      ay -= px(3);
       ax += front * px(2);
     }
-    fillRect(buf, ax, ay, px(2), px(5), c.skin);
+    fillRect(buf, ax, ay, px(2), px(4), c.skin);
   }
 }
 
@@ -330,34 +359,34 @@ function drawLegs(
   cx: number,
   hipY: number,
 ) {
-  const isShorts = preset === 'curly';
-  const pantH = isShorts ? px(4) : px(6);
-  const legW = px(3);
+  if (pose.bustOnly) return;
+  const short = preset === 'curly';
+  const pantH = short ? px(3) : px(5);
+  const w = px(3);
 
   if (pose.dir === 'left' || pose.dir === 'right') {
     const fwd = pose.leg === 'idle' ? 0 : px(2);
     const back = pose.leg === 'idle' ? 0 : -px(1);
-    fillRect(buf, cx - px(1) + back, hipY, legW, pantH, c.pants);
-    fillRect(buf, cx - px(1) + back, hipY + pantH, legW, px(2), c.shoes);
-    fillRect(buf, cx - px(1) + fwd, hipY, legW, pantH, c.pants);
-    fillRect(buf, cx - px(1) + fwd, hipY + pantH, legW, px(2), c.shoes);
+    fillRect(buf, cx - px(1) + back, hipY, w, pantH, c.pants);
+    fillRect(buf, cx - px(1) + back, hipY + pantH, w, px(2), c.shoes);
+    fillRect(buf, cx - px(1) + fwd, hipY, w, pantH, c.pants);
+    fillRect(buf, cx - px(1) + fwd, hipY + pantH, w, px(2), c.shoes);
     return;
   }
 
-  let leftY = 0;
-  let rightY = 0;
-  if (pose.leg === 'left-fwd') {
-    leftY = -px(1);
-    rightY = px(1);
-  } else if (pose.leg === 'right-fwd') {
-    leftY = px(1);
-    rightY = -px(1);
+  let ly = 0;
+  let ry = 0;
+  if (pose.leg === 'a') {
+    ly = -px(1);
+    ry = px(1);
+  } else if (pose.leg === 'b') {
+    ly = px(1);
+    ry = -px(1);
   }
-
-  fillRect(buf, cx - px(4), hipY + leftY, legW, pantH, c.pants);
-  fillRect(buf, cx + px(1), hipY + rightY, legW, pantH, c.pants);
-  fillRect(buf, cx - px(4), hipY + pantH + leftY, legW, px(2), c.shoes);
-  fillRect(buf, cx + px(1), hipY + pantH + rightY, legW, px(2), c.shoes);
+  fillRect(buf, cx - px(4), hipY + ly, w, pantH, c.pants);
+  fillRect(buf, cx + px(1), hipY + ry, w, pantH, c.pants);
+  fillRect(buf, cx - px(4), hipY + pantH + ly, w, px(2), c.shoes);
+  fillRect(buf, cx + px(1), hipY + pantH + ry, w, px(2), c.shoes);
 }
 
 function drawCharacterPose(
@@ -368,29 +397,33 @@ function drawCharacterPose(
 ): PixelBuffer {
   const buf = createBuffer(size, size);
   clear(buf);
-  const { px } = scaleOf(size);
+  const px = u(size);
   const c = PRESET_COLORS[preset];
   const cx = Math.floor(size / 2);
-  const headTop = px(4) + pose.bob;
-  const torsoY = headTop + px(10);
-  const hipY = torsoY + px(7);
+
+  // Head dominates upper half; body tucked under
+  const top = px(2) + pose.bob;
+  const torsoY = top + px(14);
+  const hipY = torsoY + (pose.bustOnly ? px(4) : px(6));
   const expr =
     pose.arm === 'wave' ? 'smile' : pose.arm === 'think' ? 'think' : 'neutral';
 
   if (pose.dir === 'up') {
     drawArms(buf, pose, c, px, cx, torsoY);
     drawLegs(buf, pose, preset, c, px, cx, hipY);
-    drawBody(buf, preset, pose.dir, c, px, cx, torsoY);
-    drawHead(buf, preset, pose.dir, c, px, cx, headTop, expr);
+    drawBody(buf, preset, pose.dir, c, px, cx, torsoY, !!pose.bustOnly);
+    drawChibiHead(buf, preset, pose.dir, c, px, cx, top, expr);
   } else {
     drawLegs(buf, pose, preset, c, px, cx, hipY);
-    drawBody(buf, preset, pose.dir, c, px, cx, torsoY);
+    drawBody(buf, preset, pose.dir, c, px, cx, torsoY, !!pose.bustOnly);
     drawArms(buf, pose, c, px, cx, torsoY);
-    drawHead(buf, preset, pose.dir, c, px, cx, headTop, expr);
+    drawChibiHead(buf, preset, pose.dir, c, px, cx, top, expr);
   }
 
   if (outline) outlineOpaque(buf, c.outline);
-  return centerSprite(buf);
+
+  // Ensure outline didn't leave stray edge pixels uncentered
+  return centerSprite(buf, { bottomPad: Math.max(1, px(1)) });
 }
 
 function animToPose(
@@ -400,7 +433,7 @@ function animToPose(
   size: number,
 ): Pose {
   const t = frame / Math.max(1, frameCount);
-  const bobUnit = Math.max(0, Math.round(size / 32));
+  const bob = Math.max(0, Math.round(size / 64));
   const phase = Math.sin(t * Math.PI * 2);
 
   if (anim === 'wave') {
@@ -408,7 +441,7 @@ function animToPose(
       dir: 'down',
       arm: 'wave',
       leg: 'idle',
-      bob: Math.round(Math.sin(t * Math.PI * 2) * bobUnit),
+      bob: Math.round(Math.sin(t * Math.PI * 2) * bob),
     };
   }
   if (anim === 'thinking') {
@@ -416,26 +449,26 @@ function animToPose(
       dir: 'down',
       arm: 'think',
       leg: 'idle',
-      bob: Math.round(Math.sin(t * Math.PI * 2) * bobUnit * 0.5),
+      bob: Math.round(Math.sin(t * Math.PI * 2) * bob * 0.5),
+      bustOnly: true,
     };
   }
 
   const dir = anim.split('-')[1] as CharacterDirection;
-  const isWalk = anim.startsWith('walk');
-  if (!isWalk) {
+  const walk = anim.startsWith('walk');
+  if (!walk) {
     return {
       dir,
       arm: 'down',
       leg: 'idle',
-      bob: Math.round(Math.sin(t * Math.PI * 2) * bobUnit * 0.5),
+      bob: Math.round(Math.sin(t * Math.PI * 2) * bob * 0.5),
     };
   }
-
   return {
     dir,
-    arm: phase >= 0 ? 'swing-back' : 'swing-front',
-    leg: phase >= 0 ? 'left-fwd' : 'right-fwd',
-    bob: Math.round(Math.abs(phase) * bobUnit),
+    arm: phase >= 0 ? 'swing-a' : 'swing-b',
+    leg: phase >= 0 ? 'a' : 'b',
+    bob: Math.round(Math.abs(phase) * bob),
   };
 }
 
@@ -466,15 +499,16 @@ export function generateCharacterSpritesheet(
   rows: { label: string; frames: PixelBuffer[] }[];
 } {
   const walkFrames = config.walkFrames ?? 4;
+  // Reference layout: labeled directional poses + specials
   const clips: { id: CharacterAnimName; label: string; frames: number }[] = [
     { id: 'walk-left', label: 'left', frames: walkFrames },
     { id: 'walk-right', label: 'right', frames: walkFrames },
-    { id: 'walk-down', label: 'down', frames: walkFrames },
-    { id: 'walk-up', label: 'up', frames: walkFrames },
-    { id: 'idle-down', label: 'idle-down', frames: 2 },
-    { id: 'idle-up', label: 'idle-up', frames: 2 },
-    { id: 'wave', label: 'wave', frames: 4 },
-    { id: 'thinking', label: 'thinking', frames: 4 },
+    { id: 'idle-down', label: 'down', frames: 1 },
+    { id: 'idle-up', label: 'up', frames: 1 },
+    { id: 'wave', label: 'wave', frames: walkFrames },
+    { id: 'thinking', label: 'thinking', frames: walkFrames },
+    { id: 'walk-down', label: 'walk-down', frames: walkFrames },
+    { id: 'walk-up', label: 'walk-up', frames: walkFrames },
   ];
 
   const rows = clips.map((clip) => {
@@ -492,23 +526,38 @@ export function generateCharacterSpritesheet(
     return { label: clip.label, frames };
   });
 
-  const sheetRows: PixelBuffer[][] = [
-    rows[0]!.frames,
-    rows[1]!.frames,
-    rows[2]!.frames,
-    rows[3]!.frames,
-    [
-      rows[4]!.frames[0]!,
-      rows[5]!.frames[0]!,
-      rows[6]!.frames[0]!,
-      rows[7]!.frames[0]!,
-    ],
-  ];
+  // Match reference sheet composition per character:
+  // row1: left, right, down, up (single key poses — use mid walk / idle)
+  // For worker also wave + thinking; for others keep walk cycles in extra rows
+  const keyLeft = rows[0]!.frames[Math.floor(walkFrames / 2)]!;
+  const keyRight = rows[1]!.frames[Math.floor(walkFrames / 2)]!;
+  const keyDown = rows[2]!.frames[0]!;
+  const keyUp = rows[3]!.frames[0]!;
+  const wave = rows[4]!.frames[0]!;
+  const think = rows[5]!.frames[0]!;
+
+  const sheetRows: PixelBuffer[][] =
+    config.preset === 'worker'
+      ? [
+          [wave, keyLeft, keyRight, keyUp, keyDown, think],
+          rows[0]!.frames,
+          rows[1]!.frames,
+          rows[6]!.frames,
+          rows[7]!.frames,
+        ]
+      : config.preset === 'cap'
+        ? [[keyDown], rows[0]!.frames, rows[1]!.frames, rows[6]!.frames, rows[7]!.frames]
+        : [
+            [keyLeft, keyRight, keyDown, keyUp],
+            rows[0]!.frames,
+            rows[1]!.frames,
+            rows[6]!.frames,
+            rows[7]!.frames,
+          ];
 
   return { sheet: stitchRows(sheetRows), rows };
 }
 
-/** Stack all three reference characters into one cast spritesheet */
 export function generateCastSpritesheet(options: {
   size: number;
   outline: boolean;
@@ -526,12 +575,26 @@ export function generateCastSpritesheet(options: {
         walkFrames: options.walkFrames ?? 4,
       }).sheet,
   );
-  return stitchRows(sheets.map((s) => [s]));
+
+  // Pad rows to equal width for a clean cast sheet
+  const maxW = Math.max(...sheets.map((s) => s.width));
+  const padded = sheets.map((s) => {
+    if (s.width === maxW) return s;
+    const out = createBuffer(maxW, s.height);
+    clear(out);
+    for (let y = 0; y < s.height; y++) {
+      for (let x = 0; x < s.width; x++) {
+        setPixel(out, x, y, getPixel(s, x, y));
+      }
+    }
+    return out;
+  });
+  return stitchRows(padded.map((s) => [s]));
 }
 
 export const PRESETS: { id: CharacterPreset; label: string; blurb: string }[] = [
   { id: 'curly', label: 'Curly', blurb: 'Afro · pink tee · green bag' },
-  { id: 'worker', label: 'Worker', blurb: 'Bun · visor · apron' },
+  { id: 'worker', label: 'Worker', blurb: 'Bun · visor · apron · wave/think' },
   { id: 'cap', label: 'Cap', blurb: 'Backwards cap · messenger bag' },
 ];
 

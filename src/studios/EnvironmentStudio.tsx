@@ -4,6 +4,10 @@ import {
   ENV_SIZES,
   generateEnvironmentMap,
 } from '../lib/generators/environment';
+import {
+  generateSupermarketTileset,
+  type SupermarketSection,
+} from '../lib/generators/supermarket';
 import { referenceToPixelMap } from '../lib/imageToPixel';
 import { downloadBuffer } from '../lib/pixelEngine';
 import { PixelPreview } from '../components/PixelPreview';
@@ -17,14 +21,17 @@ import {
 } from '../components/Controls';
 import type { Biome, PixelBuffer, PixelSize } from '../types';
 
+type EnvMode = 'supermarket' | 'procedural' | 'reference';
+
 export function EnvironmentStudio() {
   const [tileSize, setTileSize] = useState<PixelSize>(32);
   const [seed, setSeed] = useState(128);
-  const [biome, setBiome] = useState<Biome>('forest');
+  const [biome, setBiome] = useState<Biome>('village');
   const [paletteId, setPaletteId] = useState('forest');
   const [mapCols, setMapCols] = useState(8);
   const [mapRows, setMapRows] = useState(6);
-  const [mode, setMode] = useState<'procedural' | 'reference'>('procedural');
+  const [mode, setMode] = useState<EnvMode>('supermarket');
+  const [section, setSection] = useState<SupermarketSection | 'all'>('all');
   const [refFile, setRefFile] = useState<File | null>(null);
   const [refUrl, setRefUrl] = useState<string | null>(null);
   const [refPalette, setRefPalette] = useState<string>('auto');
@@ -38,6 +45,11 @@ export function EnvironmentStudio() {
   } | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const market = useMemo(
+    () => generateSupermarketTileset({ tileSize, seed }),
+    [tileSize, seed],
+  );
 
   const procedural = useMemo(
     () =>
@@ -87,9 +99,26 @@ export function EnvironmentStudio() {
     setMode('reference');
   }
 
-  const activeMap = mode === 'reference' && refResult ? refResult.map : procedural.map;
+  const activeSection =
+    section === 'all'
+      ? null
+      : market.sections.find((s) => s.id === section) ?? null;
+
+  const activeMap =
+    mode === 'supermarket'
+      ? market.map
+      : mode === 'reference' && refResult
+        ? refResult.map
+        : procedural.map;
+
   const activeSheet =
-    mode === 'reference' && refResult ? refResult.sheet : procedural.sheet;
+    mode === 'supermarket'
+      ? activeSection
+        ? activeSection.sheet
+        : market.atlas
+      : mode === 'reference' && refResult
+        ? refResult.sheet
+        : procedural.sheet;
 
   return (
     <div className="studio">
@@ -98,10 +127,17 @@ export function EnvironmentStudio() {
           <div className="chip-row">
             <button
               type="button"
+              className={`chip ${mode === 'supermarket' ? 'chip--active' : ''}`}
+              onClick={() => setMode('supermarket')}
+            >
+              Supermarket
+            </button>
+            <button
+              type="button"
               className={`chip ${mode === 'procedural' ? 'chip--active' : ''}`}
               onClick={() => setMode('procedural')}
             >
-              Procedural
+              Biome
             </button>
             <button
               type="button"
@@ -121,7 +157,40 @@ export function EnvironmentStudio() {
           />
         </ControlGroup>
 
-        {mode === 'procedural' ? (
+        {mode === 'supermarket' && (
+          <>
+            <ControlGroup label="Sheet section">
+              <div className="chip-row">
+                <button
+                  type="button"
+                  className={`chip ${section === 'all' ? 'chip--active' : ''}`}
+                  onClick={() => setSection('all')}
+                >
+                  Full atlas
+                </button>
+                {market.sections.map((s) => (
+                  <button
+                    key={s.id}
+                    type="button"
+                    className={`chip ${section === s.id ? 'chip--active' : ''}`}
+                    onClick={() => setSection(s.id)}
+                  >
+                    {s.label}
+                  </button>
+                ))}
+              </div>
+            </ControlGroup>
+            <ControlGroup label="Seed">
+              <SeedControl value={seed} onChange={setSeed} />
+            </ControlGroup>
+            <p className="control-hint">
+              Modular store kit: floors, walls, shelves, checkout, cold cases,
+              produce, bakery, goods, signs — assembled into a location preview.
+            </p>
+          </>
+        )}
+
+        {mode === 'procedural' && (
           <>
             <ControlGroup label="Biome">
               <div className="chip-row">
@@ -144,7 +213,9 @@ export function EnvironmentStudio() {
               <SeedControl value={seed} onChange={setSeed} />
             </ControlGroup>
           </>
-        ) : (
+        )}
+
+        {mode === 'reference' && (
           <>
             <ReferenceUpload
               onFile={onFile}
@@ -180,34 +251,49 @@ export function EnvironmentStudio() {
           </>
         )}
 
-        <ControlGroup label="Map columns">
-          <input
-            type="range"
-            min={4}
-            max={16}
-            value={mapCols}
-            onChange={(e) => setMapCols(Number(e.target.value))}
-          />
-          <span className="control__value">{mapCols}</span>
-        </ControlGroup>
-
-        <ControlGroup label="Map rows">
-          <input
-            type="range"
-            min={4}
-            max={12}
-            value={mapRows}
-            onChange={(e) => setMapRows(Number(e.target.value))}
-          />
-          <span className="control__value">{mapRows}</span>
-        </ControlGroup>
+        {mode !== 'supermarket' && (
+          <>
+            <ControlGroup label="Map columns">
+              <input
+                type="range"
+                min={4}
+                max={16}
+                value={mapCols}
+                onChange={(e) => setMapCols(Number(e.target.value))}
+              />
+              <span className="control__value">{mapCols}</span>
+            </ControlGroup>
+            <ControlGroup label="Map rows">
+              <input
+                type="range"
+                min={4}
+                max={12}
+                value={mapRows}
+                onChange={(e) => setMapRows(Number(e.target.value))}
+              />
+              <span className="control__value">{mapRows}</span>
+            </ControlGroup>
+          </>
+        )}
 
         <ExportButtons
           onPng={() =>
-            downloadBuffer(activeMap, `environment-map-${tileSize}.png`, 1)
+            downloadBuffer(
+              activeMap,
+              mode === 'supermarket'
+                ? `supermarket-map-${tileSize}.png`
+                : `environment-map-${tileSize}.png`,
+              1,
+            )
           }
           onSheet={() =>
-            downloadBuffer(activeSheet, `environment-tiles-${tileSize}.png`, 1)
+            downloadBuffer(
+              activeSheet,
+              mode === 'supermarket'
+                ? `supermarket-${section}-${tileSize}.png`
+                : `environment-tiles-${tileSize}.png`,
+              1,
+            )
           }
         />
       </aside>
@@ -216,9 +302,11 @@ export function EnvironmentStudio() {
         <header className="stage-header">
           <h2>Environment</h2>
           <p>
-            {mode === 'reference'
-              ? 'Location from real-world reference'
-              : `${biome} biome`}{' '}
+            {mode === 'supermarket'
+              ? 'Supermarket modular tileset'
+              : mode === 'reference'
+                ? 'Location from real-world reference'
+                : `${biome} biome`}{' '}
             · tiles {tileSize}×{tileSize}
             {busy ? ' · processing…' : ''}
           </p>
@@ -228,18 +316,29 @@ export function EnvironmentStudio() {
 
         <div className="stage-split">
           <div>
-            <h3>Location map</h3>
+            <h3>
+              {mode === 'supermarket' ? 'Store layout preview' : 'Location map'}
+            </h3>
             <PixelPreview
               buffer={activeMap}
-              scale={Math.max(1, Math.min(4, Math.floor(480 / activeMap.width)))}
+              scale={Math.max(1, Math.min(3, Math.floor(520 / activeMap.width)))}
               checker={false}
             />
           </div>
           <div>
-            <h3>Modular tilesheet</h3>
+            <h3>
+              {mode === 'supermarket'
+                ? section === 'all'
+                  ? 'Full modular atlas'
+                  : activeSection?.label
+                : 'Modular tilesheet'}
+            </h3>
             <PixelPreview
               buffer={activeSheet}
-              scale={Math.max(1, Math.min(4, Math.floor(280 / activeSheet.width)))}
+              scale={Math.max(
+                1,
+                Math.min(3, Math.floor(360 / Math.max(1, activeSheet.width))),
+              )}
             />
             {mode === 'reference' && refResult && (
               <div className="extracted-palette">

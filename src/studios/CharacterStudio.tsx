@@ -19,7 +19,7 @@ import type { CharacterAnimName, CharacterPreset } from '../types';
 const CHAR_SIZES = [16, 32, 64, 128, 256];
 
 export function CharacterStudio() {
-  const [size, setSize] = useState(64);
+  const [size, setSize] = useState(32);
   const [preset, setPreset] = useState<CharacterPreset>('curly');
   const [outline, setOutline] = useState(true);
   const [animation, setAnimation] = useState<CharacterAnimName>('walk-down');
