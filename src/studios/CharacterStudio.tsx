@@ -3,12 +3,14 @@ import {
   ANIMATIONS,
   generateCastSpritesheet,
   generateCharacter,
-  generateCharacterSpritesheet,
+  generateCharacterClipSheet,
+  generateCharacterKeyPoseSheet,
+  PRESET_CLIPS,
   PRESETS,
 } from '../lib/generators/character';
 import { downloadBuffer, stitchHorizontal } from '../lib/pixelEngine';
 import { AnimationPlayer } from '../components/AnimationPlayer';
-import { PixelPreview } from '../components/PixelPreview';
+import { LabeledSpritesheet } from '../components/LabeledSpritesheet';
 import {
   ControlGroup,
   ExportButtons,
@@ -19,13 +21,16 @@ import type { CharacterAnimName, CharacterPreset } from '../types';
 const CHAR_SIZES = [16, 32, 64, 128, 256];
 
 export function CharacterStudio() {
-  const [size, setSize] = useState(32);
+  const [size, setSize] = useState(64);
   const [preset, setPreset] = useState<CharacterPreset>('curly');
   const [outline, setOutline] = useState(true);
-  const [animation, setAnimation] = useState<CharacterAnimName>('walk-down');
-  const [frameCount, setFrameCount] = useState(4);
+  const [animation, setAnimation] = useState<CharacterAnimName>('walk-left');
+  const [frameCount, setFrameCount] = useState(5);
   const [fps, setFps] = useState(8);
-  const [showSheet, setShowSheet] = useState(true);
+  const [sheetMode, setSheetMode] = useState<'clips' | 'keys'>('clips');
+
+  // Sync default frames when switching preset
+  const clips = PRESET_CLIPS[preset];
 
   const { frames } = useMemo(
     () =>
@@ -41,18 +46,22 @@ export function CharacterStudio() {
     [size, preset, outline, animation, frameCount, fps],
   );
 
-  const { sheet } = useMemo(
-    () =>
-      generateCharacterSpritesheet({
-        size,
-        seed: 0,
-        preset,
-        outline,
-        fps,
-        walkFrames: 4,
-      }),
-    [size, preset, outline, fps],
+  const clipSheet = useMemo(
+    () => generateCharacterClipSheet(preset, size, outline),
+    [preset, size, outline],
   );
+
+  const keySheet = useMemo(
+    () => generateCharacterKeyPoseSheet(preset, size, outline),
+    [preset, size, outline],
+  );
+
+  function selectPreset(id: CharacterPreset) {
+    setPreset(id);
+    const first = PRESET_CLIPS[id][0]!;
+    setAnimation(first.anim);
+    setFrameCount(first.frames);
+  }
 
   return (
     <div className="studio">
@@ -73,19 +82,35 @@ export function CharacterStudio() {
                 key={p.id}
                 type="button"
                 className={`chip ${preset === p.id ? 'chip--active' : ''}`}
-                onClick={() => setPreset(p.id)}
+                onClick={() => selectPreset(p.id)}
                 title={p.blurb}
               >
                 {p.label}
               </button>
             ))}
           </div>
-          <p className="control-hint">
-            {PRESETS.find((p) => p.id === preset)?.blurb}
-          </p>
+          <p className="control-hint">{PRESETS.find((p) => p.id === preset)?.blurb}</p>
         </ControlGroup>
 
-        <ControlGroup label="Animation (centered)">
+        <ControlGroup label="Animation clip">
+          <div className="chip-row">
+            {clips.map((c) => (
+              <button
+                key={c.id}
+                type="button"
+                className={`chip ${animation === c.anim && frameCount === c.frames ? 'chip--active' : ''}`}
+                onClick={() => {
+                  setAnimation(c.anim);
+                  setFrameCount(c.frames);
+                }}
+              >
+                {c.label}
+              </button>
+            ))}
+          </div>
+        </ControlGroup>
+
+        <ControlGroup label="All animations">
           <div className="chip-row">
             {ANIMATIONS.map((a) => (
               <button
@@ -101,17 +126,6 @@ export function CharacterStudio() {
               </button>
             ))}
           </div>
-        </ControlGroup>
-
-        <ControlGroup label="Frames">
-          <input
-            type="range"
-            min={2}
-            max={8}
-            value={frameCount}
-            onChange={(e) => setFrameCount(Number(e.target.value))}
-          />
-          <span className="control__value">{frameCount}</span>
         </ControlGroup>
 
         <ControlGroup label="FPS">
@@ -134,21 +148,35 @@ export function CharacterStudio() {
           Pixel outline
         </label>
 
-        <label className="check">
-          <input
-            type="checkbox"
-            checked={showSheet}
-            onChange={(e) => setShowSheet(e.target.checked)}
-          />
-          Show full spritesheet
-        </label>
+        <ControlGroup label="Sheet layout">
+          <div className="chip-row">
+            <button
+              type="button"
+              className={`chip ${sheetMode === 'clips' ? 'chip--active' : ''}`}
+              onClick={() => setSheetMode('clips')}
+            >
+              Anim strips
+            </button>
+            <button
+              type="button"
+              className={`chip ${sheetMode === 'keys' ? 'chip--active' : ''}`}
+              onClick={() => setSheetMode('keys')}
+            >
+              Key poses
+            </button>
+          </div>
+        </ControlGroup>
 
         <ExportButtons
           onPng={() =>
-            downloadBuffer(frames[0]!, `character-${preset}-${animation}.png`, 1)
+            downloadBuffer(frames[0]!, `character-${preset}-${animation}-${size}.png`, 1)
           }
           onSheet={() =>
-            downloadBuffer(sheet, `character-${preset}-spritesheet.png`, 1)
+            downloadBuffer(
+              clipSheet.sheet,
+              `character-${preset}-spritesheet-${size}.png`,
+              1,
+            )
           }
         />
         <button
@@ -157,7 +185,7 @@ export function CharacterStudio() {
           onClick={() =>
             downloadBuffer(
               stitchHorizontal(frames),
-              `character-${preset}-${animation}-strip.png`,
+              `character-${preset}-${animation}-strip-${size}.png`,
               1,
             )
           }
@@ -169,7 +197,20 @@ export function CharacterStudio() {
           className="btn btn--ghost"
           onClick={() =>
             downloadBuffer(
-              generateCastSpritesheet({ size, outline, walkFrames: 4 }),
+              keySheet.sheet,
+              `character-${preset}-keyposes-${size}.png`,
+              1,
+            )
+          }
+        >
+          Export key poses
+        </button>
+        <button
+          type="button"
+          className="btn btn--ghost"
+          onClick={() =>
+            downloadBuffer(
+              generateCastSpritesheet({ size, outline }),
               `cast-spritesheet-${size}.png`,
               1,
             )
@@ -183,32 +224,34 @@ export function CharacterStudio() {
         <header className="stage-header">
           <h2>Character</h2>
           <p>
-            {size}×{size} · {preset} · {animation} · frames centered on baseline
+            {size}×{size} · {preset} · {animation} · {frameCount} frames · centered
           </p>
         </header>
 
-        <div className="stage-split stage-split--char">
+        <div className="char-layout">
           <div>
             <h3>Animation preview</h3>
             <AnimationPlayer
               frames={frames}
               fps={fps}
-              scale={Math.max(2, Math.floor(280 / size))}
+              scale={Math.max(2, Math.floor(256 / size))}
             />
           </div>
-          {showSheet && (
-            <div>
-              <h3>Spritesheet</h3>
-              <p className="control-hint">
-                Rows: left · right · down · up · idle/wave/think
-              </p>
-              <PixelPreview
-                buffer={sheet}
-                scale={Math.max(1, Math.min(3, Math.floor(420 / sheet.width)))}
-                checker
-              />
-            </div>
-          )}
+
+          <div className="char-layout__sheet">
+            <h3>
+              {sheetMode === 'clips' ? 'Spritesheet (anim strips)' : 'Key poses'}
+            </h3>
+            <p className="control-hint">
+              Each cell is {size}×{size}, centered — same layout as your reference
+            </p>
+            <LabeledSpritesheet
+              rows={clipSheet.rows}
+              size={size}
+              mode={sheetMode}
+              keyPoses={keySheet}
+            />
+          </div>
         </div>
       </section>
     </div>

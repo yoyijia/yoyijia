@@ -271,6 +271,90 @@
   font-size: 0.82rem;
 }
 
+.char-layout {
+  display: grid;
+  grid-template-columns: minmax(200px, 280px) 1fr;
+  gap: 1.25rem;
+  align-items: start;
+}
+
+.char-layout h3 {
+  margin: 0 0 0.5rem;
+  color: var(--muted);
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.char-layout__sheet {
+  min-width: 0;
+}
+
+.label-sheet {
+  background: #f7f4ee;
+  border: 2px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1rem;
+  display: grid;
+  gap: 1.1rem;
+  overflow: auto;
+  max-height: min(70vh, 820px);
+}
+
+.label-sheet__block {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.label-sheet__clip-label {
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  color: #2a2a2a;
+  letter-spacing: 0.02em;
+}
+
+.label-sheet__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+.label-sheet__cell {
+  display: grid;
+  justify-items: center;
+  gap: 0.25rem;
+  min-width: 72px;
+}
+
+.label-sheet__name {
+  font-family: var(--font-display);
+  font-size: 0.65rem;
+  color: #2a2a2a;
+}
+
+.label-sheet__frame {
+  background: #ffffff;
+  border: 1px solid #d8d2c6;
+  padding: 4px;
+  border-radius: 2px;
+}
+
+.label-sheet__frame .pixel-preview canvas {
+  border: none;
+  background: transparent;
+}
+
+.label-sheet__dim {
+  font-size: 0.7rem;
+  color: #6a655c;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 960px) {
+  .char-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
 .stage-split h3 {
   margin-bottom: 0.6rem;
 }
