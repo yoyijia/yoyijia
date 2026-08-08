@@ -1,257 +1,553 @@
 import type {
   CharacterAnimName,
-  CharacterArchetype,
   CharacterConfig,
+  CharacterDirection,
+  CharacterPreset,
   PixelBuffer,
   Rgba,
 } from '../../types';
-import { createRng, type Rng } from '../rng';
-import { hexToRgba, paletteRgba } from '../palettes';
+import { hexToRgba } from '../palettes';
 import {
+  centerSprite,
   clear,
-  cloneBuffer,
   createBuffer,
-  fillCircle,
   fillRect,
   outlineOpaque,
   setPixel,
-  shiftBuffer,
+  stitchRows,
 } from '../pixelEngine';
 
-function bodyColors(palette: Rgba[], archetype: CharacterArchetype, rng: Rng) {
-  const skin = palette[Math.min(palette.length - 1, 3)] ?? hexToRgba('#e8c39e');
-  const shade = palette[Math.min(palette.length - 2, 2)] ?? hexToRgba('#c49a6c');
-  const accent = palette[1] ?? hexToRgba('#e94560');
-  const dark = palette[0] ?? hexToRgba('#1a1a2e');
-  const light = palette[palette.length - 1] ?? hexToRgba('#ffffff');
+type CharColors = {
+  outline: Rgba;
+  skin: Rgba;
+  skinShade: Rgba;
+  hair: Rgba;
+  shirt: Rgba;
+  shirtShade: Rgba;
+  pants: Rgba;
+  shoes: Rgba;
+  accent: Rgba;
+  accent2: Rgba;
+};
 
-  const outfits: Record<CharacterArchetype, Rgba> = {
-    hero: accent,
-    mage: palette[Math.min(2, palette.length - 1)]!,
-    rogue: dark,
-    knight: palette[Math.min(3, palette.length - 1)]!,
-    creature: accent,
-    robot: palette[Math.min(2, palette.length - 1)]!,
-    npc: shade,
-  };
+const PRESET_COLORS: Record<CharacterPreset, CharColors> = {
+  curly: {
+    outline: hexToRgba('#1a1a1a'),
+    skin: hexToRgba('#f0c8a0'),
+    skinShade: hexToRgba('#d4a574'),
+    hair: hexToRgba('#1a1a1a'),
+    shirt: hexToRgba('#e87a7a'),
+    shirtShade: hexToRgba('#c45c5c'),
+    pants: hexToRgba('#2f4f8f'),
+    shoes: hexToRgba('#1a1a1a'),
+    accent: hexToRgba('#4caf6a'),
+    accent2: hexToRgba('#3d8f55'),
+  },
+  worker: {
+    outline: hexToRgba('#1a1a1a'),
+    skin: hexToRgba('#f0c8a0'),
+    skinShade: hexToRgba('#d4a574'),
+    hair: hexToRgba('#1a1a1a'),
+    shirt: hexToRgba('#d64545'),
+    shirtShade: hexToRgba('#a83232'),
+    pants: hexToRgba('#2a2a2a'),
+    shoes: hexToRgba('#1a1a1a'),
+    accent: hexToRgba('#1a1a1a'),
+    accent2: hexToRgba('#ffffff'),
+  },
+  cap: {
+    outline: hexToRgba('#1a1a1a'),
+    skin: hexToRgba('#f0c8a0'),
+    skinShade: hexToRgba('#d4a574'),
+    hair: hexToRgba('#5c4030'),
+    shirt: hexToRgba('#f2f2f2'),
+    shirtShade: hexToRgba('#d0d0d0'),
+    pants: hexToRgba('#3b6ea5'),
+    shoes: hexToRgba('#1a1a1a'),
+    accent: hexToRgba('#1a1a1a'),
+    accent2: hexToRgba('#ffffff'),
+  },
+};
 
-  return {
-    skin,
-    shade,
-    accent: outfits[archetype],
-    dark,
-    light,
-    hair: rng.pick(palette),
-    detail: rng.pick(palette),
-  };
+type Pose = {
+  dir: CharacterDirection;
+  arm: 'down' | 'swing-front' | 'swing-back' | 'wave' | 'think';
+  leg: 'idle' | 'left-fwd' | 'right-fwd';
+  bob: number;
+};
+
+function scaleOf(size: number) {
+  const u = size / 32;
+  const px = (n: number) => Math.round(n * u);
+  return { px };
 }
 
-function drawBaseCharacter(
-  size: number,
-  archetype: CharacterArchetype,
-  colors: ReturnType<typeof bodyColors>,
-  rng: Rng,
-): PixelBuffer {
-  const buf = createBuffer(size, size);
-  clear(buf);
-  const s = size / 16;
-  const px = (n: number) => Math.round(n * s);
-
-  // legs
-  fillRect(buf, px(5), px(11), px(2), px(4), colors.accent);
-  fillRect(buf, px(9), px(11), px(2), px(4), colors.accent);
-  fillRect(buf, px(5), px(14), px(2), px(1), colors.dark);
-  fillRect(buf, px(9), px(14), px(2), px(1), colors.dark);
-
-  // torso
-  fillRect(buf, px(4), px(7), px(8), px(5), colors.accent);
-  if (archetype === 'knight') {
-    fillRect(buf, px(5), px(8), px(6), px(3), colors.light);
-    fillRect(buf, px(7), px(7), px(2), px(5), colors.shade);
-  } else if (archetype === 'mage') {
-    fillRect(buf, px(3), px(7), px(10), px(7), colors.accent);
-    fillRect(buf, px(6), px(8), px(4), px(2), colors.detail);
-  } else if (archetype === 'rogue') {
-    fillRect(buf, px(4), px(7), px(8), px(5), colors.dark);
-    fillRect(buf, px(5), px(8), px(2), px(2), colors.accent);
-  } else if (archetype === 'robot') {
-    fillRect(buf, px(4), px(7), px(8), px(5), colors.shade);
-    setPixel(buf, px(6), px(9), colors.detail);
-    setPixel(buf, px(9), px(9), colors.detail);
-  } else if (archetype === 'creature') {
-    fillCircle(buf, px(8), px(10), px(4), colors.accent);
+function drawOval(
+  buf: PixelBuffer,
+  cx: number,
+  cy: number,
+  rx: number,
+  ry: number,
+  color: Rgba,
+) {
+  const rx2 = Math.max(1, rx * rx);
+  const ry2 = Math.max(1, ry * ry);
+  for (let y = -ry; y <= ry; y++) {
+    for (let x = -rx; x <= rx; x++) {
+      if (x * x / rx2 + y * y / ry2 <= 1.08) {
+        setPixel(buf, cx + x, cy + y, color);
+      }
+    }
   }
+}
 
-  // arms
-  fillRect(buf, px(2), px(7), px(2), px(4), colors.skin);
-  fillRect(buf, px(12), px(7), px(2), px(4), colors.skin);
+function drawHead(
+  buf: PixelBuffer,
+  preset: CharacterPreset,
+  dir: CharacterDirection,
+  c: CharColors,
+  px: (n: number) => number,
+  cx: number,
+  headTop: number,
+  expression: 'neutral' | 'smile' | 'think',
+) {
+  const headCx = cx;
+  const headCy = headTop + px(5);
+  const skin = dir === 'up' ? c.skinShade : c.skin;
 
-  // head
-  fillRect(buf, px(5), px(2), px(6), px(5), colors.skin);
-  fillRect(buf, px(5), px(2), px(6), px(2), colors.hair);
-  if (archetype === 'mage') {
-    // hat
-    fillRect(buf, px(4), px(1), px(8), px(2), colors.accent);
-    fillRect(buf, px(7), px(0), px(2), px(2), colors.detail);
-  } else if (archetype === 'knight') {
-    fillRect(buf, px(5), px(1), px(6), px(3), colors.shade);
-    fillRect(buf, px(6), px(3), px(4), px(1), colors.dark);
-  } else if (archetype === 'robot') {
-    fillRect(buf, px(5), px(2), px(6), px(5), colors.shade);
-    fillRect(buf, px(6), px(4), px(1), px(1), colors.light);
-    fillRect(buf, px(9), px(4), px(1), px(1), colors.light);
-  }
+  // skull
+  drawOval(buf, headCx, headCy, px(5), px(5), skin);
 
-  // eyes
-  if (archetype !== 'robot') {
-    setPixel(buf, px(6), px(4), colors.dark);
-    setPixel(buf, px(9), px(4), colors.dark);
-  }
-
-  // weapon / prop accents
-  if (archetype === 'hero' || archetype === 'knight') {
-    fillRect(buf, px(13), px(5), px(1), px(7), colors.shade);
-    fillRect(buf, px(12), px(5), px(3), px(1), colors.light);
-  } else if (archetype === 'mage') {
-    fillRect(buf, px(13), px(4), px(1), px(8), colors.detail);
-    fillCircle(buf, px(13), px(3), Math.max(1, px(1)), colors.light);
-  } else if (archetype === 'rogue') {
-    fillRect(buf, px(13), px(8), px(2), px(1), colors.light);
-  }
-
-  // noise speckles for personality
-  for (let i = 0; i < Math.max(2, Math.floor(size / 16)); i++) {
-    if (rng.chance(0.7)) {
-      const x = rng.int(px(4), px(11));
-      const y = rng.int(px(7), px(11));
-      setPixel(buf, x, y, colors.shade);
+  if (preset === 'curly') {
+    // curly afro mass around head
+    const bumps: [number, number, number][] = [
+      [0, -4, 4],
+      [-4, -2, 3],
+      [4, -2, 3],
+      [-6, 1, 3],
+      [6, 1, 3],
+      [-5, 4, 3],
+      [5, 4, 3],
+      [0, -6, 3],
+    ];
+    for (const [ox, oy, r] of bumps) {
+      if (dir === 'left' && ox > 2) continue;
+      if (dir === 'right' && ox < -2) continue;
+      drawOval(buf, headCx + px(ox), headTop + px(oy + 5), px(r), px(r), c.hair);
+    }
+    // forehead
+    if (dir !== 'up') {
+      fillRect(buf, headCx - px(3), headTop + px(4), px(6), px(2), skin);
+    }
+  } else if (preset === 'worker') {
+    // hair bowl + bun
+    drawOval(buf, headCx, headTop + px(3), px(6), px(3), c.hair);
+    if (dir === 'down') {
+      drawOval(buf, headCx, headTop - px(1), px(3), px(3), c.hair);
+      // side bangs
+      fillRect(buf, headCx - px(5), headTop + px(4), px(2), px(4), c.hair);
+      fillRect(buf, headCx + px(3), headTop + px(4), px(2), px(4), c.hair);
+    } else if (dir === 'up') {
+      drawOval(buf, headCx, headTop - px(1), px(3), px(3), c.hair);
+      fillRect(buf, headCx - px(5), headTop + px(4), px(10), px(3), c.hair);
+    } else {
+      const side = dir === 'left' ? -1 : 1;
+      drawOval(buf, headCx + side * px(1), headTop - px(1), px(3), px(3), c.hair);
+      fillRect(buf, headCx - side * px(4), headTop + px(4), px(2), px(4), c.hair);
+    }
+    // red visor (after hair/skin)
+    if (dir !== 'up') {
+      if (dir === 'down') {
+        fillRect(buf, headCx - px(5), headTop + px(3), px(10), px(2), c.shirt);
+      } else {
+        const side = dir === 'left' ? -1 : 1;
+        fillRect(
+          buf,
+          headCx + (side < 0 ? -px(5) : -px(1)),
+          headTop + px(3),
+          px(6),
+          px(2),
+          c.shirt,
+        );
+      }
+    }
+  } else {
+    // short hair + backwards cap
+    if (dir !== 'up') {
+      fillRect(buf, headCx - px(4), headTop + px(3), px(8), px(2), c.hair);
+    } else {
+      fillRect(buf, headCx - px(4), headTop + px(3), px(8), px(3), c.hair);
+    }
+    drawOval(buf, headCx, headTop + px(2), px(6), px(3), c.accent);
+    if (dir === 'down') {
+      // backwards: buckle on front-ish, brim hint back
+      fillRect(buf, headCx + px(2), headTop + px(1), px(3), px(2), c.accent);
+      fillRect(buf, headCx - px(2), headTop + px(3), px(3), px(1), c.accent2);
+    } else if (dir === 'up') {
+      fillRect(buf, headCx - px(6), headTop + px(3), px(12), px(2), c.accent);
+    } else {
+      const side = dir === 'left' ? -1 : 1;
+      fillRect(buf, headCx + side * px(3), headTop + px(3), px(4), px(2), c.accent);
     }
   }
 
-  return buf;
+  // face
+  if (dir === 'up') return;
+  const eyeY = headTop + px(6);
+  if (dir === 'down') {
+    setPixel(buf, headCx - px(2), eyeY, c.outline);
+    setPixel(buf, headCx + px(2), eyeY, c.outline);
+    if (expression === 'smile') {
+      setPixel(buf, headCx - px(1), eyeY + px(2), c.shirtShade);
+      setPixel(buf, headCx, eyeY + px(2), c.shirtShade);
+      setPixel(buf, headCx + px(1), eyeY + px(2), c.shirtShade);
+    } else if (expression === 'think') {
+      setPixel(buf, headCx + px(1), eyeY + px(2), c.outline);
+    }
+  } else {
+    const side = dir === 'left' ? -1 : 1;
+    setPixel(buf, headCx + side * px(2), eyeY, c.outline);
+    if (expression === 'smile' || expression === 'think') {
+      setPixel(buf, headCx + side * px(1), eyeY + px(2), c.outline);
+    }
+  }
 }
 
-function animateFrame(
-  base: PixelBuffer,
+function drawBody(
+  buf: PixelBuffer,
+  preset: CharacterPreset,
+  dir: CharacterDirection,
+  c: CharColors,
+  px: (n: number) => number,
+  cx: number,
+  torsoY: number,
+) {
+  const torsoW = px(10);
+  const torsoH = px(8);
+  fillRect(buf, cx - Math.floor(torsoW / 2), torsoY, torsoW, torsoH, c.shirt);
+  fillRect(
+    buf,
+    cx - Math.floor(torsoW / 2),
+    torsoY + torsoH - px(2),
+    torsoW,
+    px(1),
+    c.shirtShade,
+  );
+
+  if (preset === 'worker') {
+    fillRect(buf, cx - px(4), torsoY + px(2), px(8), px(7), c.accent);
+    if (dir === 'down') {
+      fillRect(buf, cx + px(1), torsoY + px(3), px(2), px(2), c.accent2);
+    }
+    if (dir === 'up') {
+      for (let i = 0; i < px(6); i++) {
+        setPixel(buf, cx - px(3) + i, torsoY + i, c.accent);
+        setPixel(buf, cx + px(3) - i, torsoY + i, c.accent);
+      }
+    }
+  }
+
+  if (preset === 'curly' && dir !== 'up') {
+    const bagX = dir === 'left' ? cx - px(8) : cx + px(4);
+    if (dir === 'down') {
+      fillRect(buf, cx + px(4), torsoY + px(2), px(4), px(5), c.accent);
+      fillRect(buf, cx + px(4), torsoY + px(2), px(4), px(1), c.accent2);
+    } else {
+      fillRect(buf, bagX, torsoY + px(2), px(4), px(5), c.accent);
+      fillRect(buf, bagX, torsoY + px(2), px(4), px(1), c.accent2);
+    }
+  }
+
+  if (preset === 'cap') {
+    if (dir === 'down') {
+      for (let i = 0; i < px(8); i++) {
+        setPixel(buf, cx - px(4) + i, torsoY + Math.floor(i * 0.7), c.accent2);
+      }
+      fillRect(buf, cx + px(3), torsoY + px(3), px(4), px(5), c.accent);
+    } else if (dir === 'up') {
+      for (let i = 0; i < px(8); i++) {
+        setPixel(buf, cx + px(4) - i, torsoY + Math.floor(i * 0.7), c.accent2);
+      }
+      fillRect(buf, cx - px(7), torsoY + px(3), px(4), px(5), c.accent);
+    } else if (dir === 'right') {
+      fillRect(buf, cx - px(7), torsoY + px(2), px(3), px(5), c.accent);
+    } else {
+      fillRect(buf, cx + px(4), torsoY + px(2), px(3), px(5), c.accent);
+    }
+  }
+}
+
+function drawArms(
+  buf: PixelBuffer,
+  pose: Pose,
+  c: CharColors,
+  px: (n: number) => number,
+  cx: number,
+  torsoY: number,
+) {
+  const armY = torsoY + px(1);
+  if (pose.dir === 'down' || pose.dir === 'up') {
+    const swing =
+      pose.arm === 'swing-front' ? px(1) : pose.arm === 'swing-back' ? -px(1) : 0;
+    if (pose.arm === 'wave') {
+      fillRect(buf, cx - px(7), armY, px(2), px(4), c.skin);
+      fillRect(buf, cx + px(5), armY - px(5), px(2), px(6), c.skin);
+      fillRect(buf, cx + px(5), armY - px(6), px(3), px(2), c.skin);
+    } else if (pose.arm === 'think') {
+      fillRect(buf, cx - px(7), armY, px(2), px(3), c.skin);
+      fillRect(buf, cx + px(3), armY - px(2), px(2), px(5), c.skin);
+      fillRect(buf, cx + px(1), torsoY - px(1), px(3), px(2), c.skin);
+    } else {
+      fillRect(buf, cx - px(7), armY + swing, px(2), px(5), c.skin);
+      fillRect(buf, cx + px(5), armY - swing, px(2), px(5), c.skin);
+    }
+  } else {
+    const front = pose.dir === 'left' ? -1 : 1;
+    let ay = armY;
+    let ax = cx + front * px(1);
+    if (pose.arm === 'swing-front') {
+      ax += front * px(2);
+      ay += px(1);
+    } else if (pose.arm === 'swing-back') {
+      ax -= front * px(1);
+    } else if (pose.arm === 'wave') {
+      ay -= px(4);
+      ax += front * px(2);
+    } else if (pose.arm === 'think') {
+      ay -= px(2);
+      ax += front * px(2);
+    }
+    fillRect(buf, ax, ay, px(2), px(5), c.skin);
+  }
+}
+
+function drawLegs(
+  buf: PixelBuffer,
+  pose: Pose,
+  preset: CharacterPreset,
+  c: CharColors,
+  px: (n: number) => number,
+  cx: number,
+  hipY: number,
+) {
+  const isShorts = preset === 'curly';
+  const pantH = isShorts ? px(4) : px(6);
+  const legW = px(3);
+
+  if (pose.dir === 'left' || pose.dir === 'right') {
+    const fwd = pose.leg === 'idle' ? 0 : px(2);
+    const back = pose.leg === 'idle' ? 0 : -px(1);
+    fillRect(buf, cx - px(1) + back, hipY, legW, pantH, c.pants);
+    fillRect(buf, cx - px(1) + back, hipY + pantH, legW, px(2), c.shoes);
+    fillRect(buf, cx - px(1) + fwd, hipY, legW, pantH, c.pants);
+    fillRect(buf, cx - px(1) + fwd, hipY + pantH, legW, px(2), c.shoes);
+    return;
+  }
+
+  let leftY = 0;
+  let rightY = 0;
+  if (pose.leg === 'left-fwd') {
+    leftY = -px(1);
+    rightY = px(1);
+  } else if (pose.leg === 'right-fwd') {
+    leftY = px(1);
+    rightY = -px(1);
+  }
+
+  fillRect(buf, cx - px(4), hipY + leftY, legW, pantH, c.pants);
+  fillRect(buf, cx + px(1), hipY + rightY, legW, pantH, c.pants);
+  fillRect(buf, cx - px(4), hipY + pantH + leftY, legW, px(2), c.shoes);
+  fillRect(buf, cx + px(1), hipY + pantH + rightY, legW, px(2), c.shoes);
+}
+
+function drawCharacterPose(
+  size: number,
+  preset: CharacterPreset,
+  pose: Pose,
+  outline: boolean,
+): PixelBuffer {
+  const buf = createBuffer(size, size);
+  clear(buf);
+  const { px } = scaleOf(size);
+  const c = PRESET_COLORS[preset];
+  const cx = Math.floor(size / 2);
+  const headTop = px(4) + pose.bob;
+  const torsoY = headTop + px(10);
+  const hipY = torsoY + px(7);
+  const expr =
+    pose.arm === 'wave' ? 'smile' : pose.arm === 'think' ? 'think' : 'neutral';
+
+  if (pose.dir === 'up') {
+    drawArms(buf, pose, c, px, cx, torsoY);
+    drawLegs(buf, pose, preset, c, px, cx, hipY);
+    drawBody(buf, preset, pose.dir, c, px, cx, torsoY);
+    drawHead(buf, preset, pose.dir, c, px, cx, headTop, expr);
+  } else {
+    drawLegs(buf, pose, preset, c, px, cx, hipY);
+    drawBody(buf, preset, pose.dir, c, px, cx, torsoY);
+    drawArms(buf, pose, c, px, cx, torsoY);
+    drawHead(buf, preset, pose.dir, c, px, cx, headTop, expr);
+  }
+
+  if (outline) outlineOpaque(buf, c.outline);
+  return centerSprite(buf);
+}
+
+function animToPose(
   anim: CharacterAnimName,
   frame: number,
   frameCount: number,
   size: number,
-): PixelBuffer {
+): Pose {
   const t = frame / Math.max(1, frameCount);
-  const s = size / 16;
-  const px = (n: number) => Math.round(n * s);
-  let out = cloneBuffer(base);
+  const bobUnit = Math.max(0, Math.round(size / 32));
+  const phase = Math.sin(t * Math.PI * 2);
 
-  switch (anim) {
-    case 'idle': {
-      const bob = Math.round(Math.sin(t * Math.PI * 2) * px(0.5));
-      out = shiftBuffer(base, 0, bob);
-      break;
-    }
-    case 'walk': {
-      const phase = Math.sin(t * Math.PI * 2);
-      const bob = Math.round(Math.abs(phase) * px(1));
-      const sway = Math.round(phase * px(0.5));
-      out = shiftBuffer(base, sway, -bob);
-      // leg stride hint: clear bottom and redraw offset feet
-      const footY = out.height - Math.max(1, px(2));
-      for (let x = 0; x < out.width; x++) {
-        for (let y = footY; y < out.height; y++) {
-          setPixel(out, x, y, [0, 0, 0, 0]);
-        }
-      }
-      const c = getOpaqueSample(base, Math.floor(base.width / 2), footY - 1);
-      fillRect(out, px(5) + Math.round(phase * px(1)), footY, px(2), px(2), c);
-      fillRect(out, px(9) - Math.round(phase * px(1)), footY, px(2), px(2), c);
-      break;
-    }
-    case 'attack': {
-      const lunge = frame < frameCount / 2 ? px(2) : 0;
-      out = shiftBuffer(base, lunge, 0);
-      if (frame >= frameCount / 2) {
-        // slash flash
-        const flash: Rgba = [255, 240, 180, 220];
-        fillRect(out, px(12), px(4), px(3), px(1), flash);
-        fillRect(out, px(13), px(5), px(2), px(1), flash);
-      }
-      break;
-    }
-    case 'jump': {
-      const apex = Math.sin(t * Math.PI);
-      out = shiftBuffer(base, 0, -Math.round(apex * px(3)));
-      break;
-    }
-    case 'hurt': {
-      const shake = frame % 2 === 0 ? px(1) : -px(1);
-      out = shiftBuffer(base, shake, 0);
-      // flash red tint on some pixels
-      if (frame % 2 === 0) {
-        for (let y = 0; y < out.height; y++) {
-          for (let x = 0; x < out.width; x++) {
-            const i = (y * out.width + x) * 4;
-            if (out.data[i + 3]! > 0) {
-              out.data[i] = Math.min(255, out.data[i]! + 80);
-            }
-          }
-        }
-      }
-      break;
-    }
+  if (anim === 'wave') {
+    return {
+      dir: 'down',
+      arm: 'wave',
+      leg: 'idle',
+      bob: Math.round(Math.sin(t * Math.PI * 2) * bobUnit),
+    };
+  }
+  if (anim === 'thinking') {
+    return {
+      dir: 'down',
+      arm: 'think',
+      leg: 'idle',
+      bob: Math.round(Math.sin(t * Math.PI * 2) * bobUnit * 0.5),
+    };
   }
 
-  return out;
-}
-
-function getOpaqueSample(buf: PixelBuffer, x: number, y: number): Rgba {
-  for (let dy = 0; dy < 3; dy++) {
-    for (let dx = -1; dx <= 1; dx++) {
-      const i = ((y - dy) * buf.width + (x + dx)) * 4;
-      if (i >= 0 && buf.data[i + 3]! > 0) {
-        return [buf.data[i]!, buf.data[i + 1]!, buf.data[i + 2]!, 255];
-      }
-    }
+  const dir = anim.split('-')[1] as CharacterDirection;
+  const isWalk = anim.startsWith('walk');
+  if (!isWalk) {
+    return {
+      dir,
+      arm: 'down',
+      leg: 'idle',
+      bob: Math.round(Math.sin(t * Math.PI * 2) * bobUnit * 0.5),
+    };
   }
-  return [60, 60, 60, 255];
+
+  return {
+    dir,
+    arm: phase >= 0 ? 'swing-back' : 'swing-front',
+    leg: phase >= 0 ? 'left-fwd' : 'right-fwd',
+    bob: Math.round(Math.abs(phase) * bobUnit),
+  };
 }
 
 export function generateCharacter(config: CharacterConfig): {
   frames: PixelBuffer[];
   preview: PixelBuffer;
 } {
-  const rng = createRng(config.seed);
-  const palette = paletteRgba(config.paletteId);
-  const colors = bodyColors(palette, config.archetype, rng);
-  const base = drawBaseCharacter(config.size, config.archetype, colors, rng);
-
-  if (config.outline) {
-    outlineOpaque(base, colors.dark);
-  }
-
   const frames: PixelBuffer[] = [];
   for (let i = 0; i < config.frameCount; i++) {
     frames.push(
-      animateFrame(base, config.animation, i, config.frameCount, config.size),
+      drawCharacterPose(
+        config.size,
+        config.preset,
+        animToPose(config.animation, i, config.frameCount, config.size),
+        config.outline,
+      ),
     );
   }
-
   return { frames, preview: frames[0]! };
 }
 
-export const ARCHETYPES: { id: CharacterArchetype; label: string }[] = [
-  { id: 'hero', label: 'Hero' },
-  { id: 'mage', label: 'Mage' },
-  { id: 'rogue', label: 'Rogue' },
-  { id: 'knight', label: 'Knight' },
-  { id: 'creature', label: 'Creature' },
-  { id: 'robot', label: 'Robot' },
-  { id: 'npc', label: 'NPC' },
+export function generateCharacterSpritesheet(
+  config: Omit<CharacterConfig, 'animation' | 'frameCount'> & {
+    walkFrames?: number;
+  },
+): {
+  sheet: PixelBuffer;
+  rows: { label: string; frames: PixelBuffer[] }[];
+} {
+  const walkFrames = config.walkFrames ?? 4;
+  const clips: { id: CharacterAnimName; label: string; frames: number }[] = [
+    { id: 'walk-left', label: 'left', frames: walkFrames },
+    { id: 'walk-right', label: 'right', frames: walkFrames },
+    { id: 'walk-down', label: 'down', frames: walkFrames },
+    { id: 'walk-up', label: 'up', frames: walkFrames },
+    { id: 'idle-down', label: 'idle-down', frames: 2 },
+    { id: 'idle-up', label: 'idle-up', frames: 2 },
+    { id: 'wave', label: 'wave', frames: 4 },
+    { id: 'thinking', label: 'thinking', frames: 4 },
+  ];
+
+  const rows = clips.map((clip) => {
+    const frames: PixelBuffer[] = [];
+    for (let i = 0; i < clip.frames; i++) {
+      frames.push(
+        drawCharacterPose(
+          config.size,
+          config.preset,
+          animToPose(clip.id, i, clip.frames, config.size),
+          config.outline,
+        ),
+      );
+    }
+    return { label: clip.label, frames };
+  });
+
+  const sheetRows: PixelBuffer[][] = [
+    rows[0]!.frames,
+    rows[1]!.frames,
+    rows[2]!.frames,
+    rows[3]!.frames,
+    [
+      rows[4]!.frames[0]!,
+      rows[5]!.frames[0]!,
+      rows[6]!.frames[0]!,
+      rows[7]!.frames[0]!,
+    ],
+  ];
+
+  return { sheet: stitchRows(sheetRows), rows };
+}
+
+/** Stack all three reference characters into one cast spritesheet */
+export function generateCastSpritesheet(options: {
+  size: number;
+  outline: boolean;
+  walkFrames?: number;
+}): PixelBuffer {
+  const presets: CharacterPreset[] = ['curly', 'worker', 'cap'];
+  const sheets = presets.map(
+    (preset) =>
+      generateCharacterSpritesheet({
+        size: options.size,
+        seed: 0,
+        preset,
+        outline: options.outline,
+        fps: 8,
+        walkFrames: options.walkFrames ?? 4,
+      }).sheet,
+  );
+  return stitchRows(sheets.map((s) => [s]));
+}
+
+export const PRESETS: { id: CharacterPreset; label: string; blurb: string }[] = [
+  { id: 'curly', label: 'Curly', blurb: 'Afro · pink tee · green bag' },
+  { id: 'worker', label: 'Worker', blurb: 'Bun · visor · apron' },
+  { id: 'cap', label: 'Cap', blurb: 'Backwards cap · messenger bag' },
 ];
 
-export const ANIMATIONS: { id: CharacterAnimName; label: string; frames: number }[] = [
-  { id: 'idle', label: 'Idle', frames: 4 },
-  { id: 'walk', label: 'Walk', frames: 6 },
-  { id: 'attack', label: 'Attack', frames: 4 },
-  { id: 'jump', label: 'Jump', frames: 4 },
-  { id: 'hurt', label: 'Hurt', frames: 3 },
+export const ANIMATIONS: {
+  id: CharacterAnimName;
+  label: string;
+  frames: number;
+}[] = [
+  { id: 'idle-down', label: 'Idle ↓', frames: 4 },
+  { id: 'idle-up', label: 'Idle ↑', frames: 4 },
+  { id: 'idle-left', label: 'Idle ←', frames: 4 },
+  { id: 'idle-right', label: 'Idle →', frames: 4 },
+  { id: 'walk-down', label: 'Walk ↓', frames: 4 },
+  { id: 'walk-up', label: 'Walk ↑', frames: 4 },
+  { id: 'walk-left', label: 'Walk ←', frames: 4 },
+  { id: 'walk-right', label: 'Walk →', frames: 4 },
+  { id: 'wave', label: 'Wave', frames: 4 },
+  { id: 'thinking', label: 'Thinking', frames: 4 },
 ];

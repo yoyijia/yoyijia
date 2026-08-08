@@ -260,6 +260,17 @@
   gap: 1.25rem;
 }
 
+.stage-split--char {
+  grid-template-columns: minmax(220px, 0.9fr) 1.3fr;
+  align-items: start;
+}
+
+.control-hint {
+  margin: 0.25rem 0 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
 .stage-split h3 {
   margin-bottom: 0.6rem;
 }

@@ -27,24 +27,29 @@ export interface AnimationClip {
 export interface CharacterConfig {
   size: number;
   seed: number;
-  archetype: CharacterArchetype;
-  paletteId: string;
+  preset: CharacterPreset;
   outline: boolean;
   animation: CharacterAnimName;
   frameCount: number;
   fps: number;
 }
 
-export type CharacterArchetype =
-  | 'hero'
-  | 'mage'
-  | 'rogue'
-  | 'knight'
-  | 'creature'
-  | 'robot'
-  | 'npc';
+/** Matches the reference cast: curly-hair boy, café worker, cap boy */
+export type CharacterPreset = 'curly' | 'worker' | 'cap';
 
-export type CharacterAnimName = 'idle' | 'walk' | 'attack' | 'jump' | 'hurt';
+export type CharacterDirection = 'down' | 'up' | 'left' | 'right';
+
+export type CharacterAnimName =
+  | 'idle-down'
+  | 'idle-up'
+  | 'idle-left'
+  | 'idle-right'
+  | 'walk-down'
+  | 'walk-up'
+  | 'walk-left'
+  | 'walk-right'
+  | 'wave'
+  | 'thinking';
 
 export interface UiConfig {
   size: PixelSize;

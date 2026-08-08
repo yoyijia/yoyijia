@@ -201,6 +201,49 @@ export function quantizeBuffer(buf: PixelBuffer, palette: Rgba[]): void {
   }
 }
 
+export function opaqueBounds(buf: PixelBuffer): {
+  minX: number;
+  minY: number;
+  maxX: number;
+  maxY: number;
+} | null {
+  let minX = buf.width;
+  let minY = buf.height;
+  let maxX = -1;
+  let maxY = -1;
+  for (let y = 0; y < buf.height; y++) {
+    for (let x = 0; x < buf.width; x++) {
+      if (getPixel(buf, x, y)[3]! > 0) {
+        minX = Math.min(minX, x);
+        minY = Math.min(minY, y);
+        maxX = Math.max(maxX, x);
+        maxY = Math.max(maxY, y);
+      }
+    }
+  }
+  if (maxX < 0) return null;
+  return { minX, minY, maxX, maxY };
+}
+
+/**
+ * Center a sprite in its frame: horizontally centered, feet on a shared baseline.
+ * Keeps walk/wave animation cells aligned in a spritesheet.
+ */
+export function centerSprite(
+  buf: PixelBuffer,
+  options: { bottomPad?: number } = {},
+): PixelBuffer {
+  const bounds = opaqueBounds(buf);
+  if (!bounds) return buf;
+  const bottomPad =
+    options.bottomPad ?? Math.max(1, Math.round(buf.height * 0.06));
+  const spriteW = bounds.maxX - bounds.minX + 1;
+  const spriteH = bounds.maxY - bounds.minY + 1;
+  const dx = Math.round((buf.width - spriteW) / 2) - bounds.minX;
+  const dy = buf.height - bottomPad - spriteH - bounds.minY;
+  return shiftBuffer(buf, dx, dy);
+}
+
 export function stitchHorizontal(frames: PixelBuffer[]): PixelBuffer {
   if (frames.length === 0) return createBuffer(1, 1);
   const h = frames[0]!.height;
@@ -210,6 +253,20 @@ export function stitchHorizontal(frames: PixelBuffer[]): PixelBuffer {
   for (const f of frames) {
     blit(out, f, x, 0, false);
     x += f.width;
+  }
+  return out;
+}
+
+export function stitchRows(rows: PixelBuffer[][]): PixelBuffer {
+  if (rows.length === 0) return createBuffer(1, 1);
+  const strips = rows.map((row) => stitchHorizontal(row));
+  const width = Math.max(...strips.map((s) => s.width));
+  const height = strips.reduce((s, r) => s + r.height, 0);
+  const out = createBuffer(width, height);
+  let y = 0;
+  for (const strip of strips) {
+    blit(out, strip, 0, y, false);
+    y += strip.height;
   }
   return out;
 }
