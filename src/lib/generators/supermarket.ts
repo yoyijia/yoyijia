@@ -26,10 +26,14 @@ const C = {
   wallBrown: hexToRgba('#b08968'),
   wallGrey: hexToRgba('#9aa3a7'),
   brick: hexToRgba('#a86b5a'),
+  navy: hexToRgba('#244a78'),
+  navyDark: hexToRgba('#183453'),
   metal: hexToRgba('#8a949c'),
   metalLight: hexToRgba('#c5d0d6'),
+  metalDark: hexToRgba('#555f66'),
   glass: hexToRgba('#a8d8e8'),
   glassDark: hexToRgba('#6aa8c0'),
+  glassLight: hexToRgba('#d8f2f7'),
   white: hexToRgba('#f7f7f7'),
   black: hexToRgba('#2a2a2a'),
   red: hexToRgba('#d64545'),
@@ -63,6 +67,58 @@ function strokeRect(
     setPixel(buf, x, y + i, color);
     setPixel(buf, x + w - 1, y + i, color);
   }
+}
+
+function colorMatches(data: Uint8ClampedArray, i: number, color: Rgba): boolean {
+  return (
+    i >= 0 &&
+    i + 3 < data.length &&
+    data[i] === color[0] &&
+    data[i + 1] === color[1] &&
+    data[i + 2] === color[2] &&
+    data[i + 3] === color[3]
+  );
+}
+
+/** Crisp three-tone material lighting for high-resolution 16-bit props. */
+function shadeStoreAsset(buf: PixelBuffer): PixelBuffer {
+  const source = new Uint8ClampedArray(buf.data);
+  const ramps: [Rgba, Rgba, Rgba][] = [
+    [C.metal, C.metalLight, C.metalDark],
+    [C.wallGrey, C.metalLight, C.metal],
+    [C.navy, C.blue, C.navyDark],
+    [C.glass, C.glassLight, C.glassDark],
+    [C.wood, C.woodLight, C.woodDark],
+    [C.green, hexToRgba('#82cf72'), C.wallGreenDark],
+    [C.red, hexToRgba('#ef6b5d'), hexToRgba('#9f302d')],
+  ];
+
+  for (const [base, light, dark] of ramps) {
+    for (let y = 0; y < buf.height; y++) {
+      for (let x = 0; x < buf.width; x++) {
+        const i = (y * buf.width + x) * 4;
+        if (!colorMatches(source, i, base)) continue;
+        const up =
+          y > 0 &&
+          colorMatches(source, ((y - 1) * buf.width + x) * 4, base);
+        const left =
+          x > 0 &&
+          colorMatches(source, (y * buf.width + x - 1) * 4, base);
+        const down =
+          y + 1 < buf.height &&
+          colorMatches(source, ((y + 1) * buf.width + x) * 4, base);
+        const right =
+          x + 1 < buf.width &&
+          colorMatches(source, (y * buf.width + x + 1) * 4, base);
+        if ((!up || !left) && (x + y) % 3 !== 0) {
+          setPixel(buf, x, y, light);
+        } else if ((!down || !right) && (x + y) % 2 === 0) {
+          setPixel(buf, x, y, dark);
+        }
+      }
+    }
+  }
+  return buf;
 }
 
 function tileFloor(size: number, variant: number): PixelBuffer {
@@ -159,6 +215,11 @@ function drawShelf(size: number, stocked: boolean, rng: Rng): PixelBuffer {
   // side posts
   fillRect(buf, p(2), p(2), p(2), size - p(4), C.metal);
   fillRect(buf, size - p(4), p(2), p(2), size - p(4), C.metal);
+  // Department-colored header panel, as used in the reference props.
+  const header = rng.pick([C.navy, C.green, C.orange, C.yellow, C.purple]);
+  fillRect(buf, p(2), p(2), size - p(4), p(5), C.metalLight);
+  fillRect(buf, p(4), p(3), size - p(8), p(3), header);
+  strokeRect(buf, p(2), p(2), size - p(4), p(5), C.outline);
   // shelves
   for (let row = 0; row < 3; row++) {
     const y = p(6) + row * p(8);
@@ -392,6 +453,162 @@ function drawPromo(size: number, color: Rgba): PixelBuffer {
   return buf;
 }
 
+function drawServiceDoor(size: number): PixelBuffer {
+  const buf = createBuffer(size, size);
+  const p = px(size);
+  clear(buf);
+  fillRect(buf, p(5), p(1), p(22), p(30), C.metalDark);
+  fillRect(buf, p(7), p(4), p(18), p(27), hexToRgba('#6f7475'));
+  strokeRect(buf, p(5), p(1), p(22), p(30), C.outline);
+  // Blue header and inset window
+  fillRect(buf, p(5), p(1), p(22), p(4), C.navy);
+  fillRect(buf, p(10), p(8), p(12), p(8), C.glassDark);
+  fillRect(buf, p(11), p(9), p(10), p(6), C.glass);
+  fillRect(buf, p(12), p(9), p(6), p(1), C.glassLight);
+  strokeRect(buf, p(10), p(8), p(12), p(8), C.outline);
+  // Vertical paneling and handle
+  for (let x = p(9); x < p(24); x += p(5)) {
+    fillRect(buf, x, p(18), 1, p(12), C.metalDark);
+  }
+  fillRect(buf, p(22), p(19), p(2), p(5), C.metalLight);
+  strokeRect(buf, p(22), p(19), p(2), p(5), C.outline);
+  return shadeStoreAsset(buf);
+}
+
+function drawPoster(size: number, color: Rgba, sale: boolean): PixelBuffer {
+  const buf = createBuffer(size, size);
+  const p = px(size);
+  clear(buf);
+  fillRect(buf, p(5), p(2), p(22), p(28), C.metalDark);
+  fillRect(buf, p(7), p(4), p(18), p(24), color);
+  strokeRect(buf, p(5), p(2), p(22), p(28), C.outline);
+  fillRect(buf, p(9), p(7), p(14), p(4), C.white);
+  fillRect(buf, p(10), p(8), p(12), p(2), sale ? C.red : C.navy);
+  // Pixel-copy lines / price panel
+  fillRect(buf, p(9), p(14), p(14), p(2), C.white);
+  fillRect(buf, p(11), p(18), p(10), p(2), C.white);
+  if (sale) {
+    fillRect(buf, p(10), p(22), p(12), p(4), C.yellow);
+    fillRect(buf, p(12), p(23), p(8), p(2), C.outline);
+  } else {
+    // check mark
+    fillRect(buf, p(12), p(22), p(2), p(2), C.white);
+    fillRect(buf, p(14), p(24), p(2), p(2), C.white);
+    fillRect(buf, p(16), p(21), p(2), p(4), C.white);
+  }
+  return shadeStoreAsset(buf);
+}
+
+function drawCautionBoard(size: number): PixelBuffer {
+  const buf = createBuffer(size, size);
+  const p = px(size);
+  clear(buf);
+  // Fold-out A-frame
+  fillRect(buf, p(10), p(4), p(12), p(3), C.orange);
+  fillRect(buf, p(8), p(6), p(16), p(22), C.yellow);
+  strokeRect(buf, p(8), p(6), p(16), p(22), C.outline);
+  fillRect(buf, p(10), p(8), p(12), p(2), C.orange);
+  // warning triangle
+  for (let y = 0; y < p(8); y++) {
+    const half = Math.floor((y / Math.max(1, p(8))) * p(6));
+    fillRect(buf, p(16) - half, p(12) + y, half * 2 + 1, 1, C.outline);
+  }
+  fillRect(buf, p(15), p(15), p(2), p(4), C.yellow);
+  setPixel(buf, p(16), p(20), C.yellow);
+  fillRect(buf, p(10), p(24), p(12), p(2), C.outline);
+  return buf;
+}
+
+function drawTrashBin(size: number): PixelBuffer {
+  const buf = createBuffer(size, size);
+  const p = px(size);
+  clear(buf);
+  fillRect(buf, p(9), p(7), p(14), p(21), C.wallGreenDark);
+  fillRect(buf, p(8), p(5), p(16), p(4), C.green);
+  strokeRect(buf, p(9), p(7), p(14), p(21), C.outline);
+  strokeRect(buf, p(8), p(5), p(16), p(4), C.outline);
+  // inset trash icon
+  fillRect(buf, p(14), p(14), p(5), p(8), C.white);
+  fillRect(buf, p(13), p(13), p(7), p(2), C.white);
+  fillRect(buf, p(15), p(11), p(3), p(2), C.white);
+  return shadeStoreAsset(buf);
+}
+
+function drawBarrier(size: number): PixelBuffer {
+  const buf = createBuffer(size, size);
+  const p = px(size);
+  clear(buf);
+  fillRect(buf, p(4), p(12), p(24), p(5), C.metalLight);
+  strokeRect(buf, p(4), p(12), p(24), p(5), C.outline);
+  fillRect(buf, p(5), p(15), p(2), p(12), C.metal);
+  fillRect(buf, p(25), p(15), p(2), p(12), C.metal);
+  fillRect(buf, p(3), p(26), p(6), p(3), C.metalDark);
+  fillRect(buf, p(23), p(26), p(6), p(3), C.metalDark);
+  return shadeStoreAsset(buf);
+}
+
+function drawFlatbed(size: number): PixelBuffer {
+  const buf = createBuffer(size, size);
+  const p = px(size);
+  clear(buf);
+  fillRect(buf, p(4), p(18), p(22), p(7), C.metalLight);
+  strokeRect(buf, p(4), p(18), p(22), p(7), C.outline);
+  // raised handle
+  fillRect(buf, p(24), p(6), p(3), p(14), C.metal);
+  fillRect(buf, p(25), p(4), p(5), p(3), C.metal);
+  strokeRect(buf, p(24), p(5), p(3), p(15), C.outline);
+  // wheels
+  discPixel(buf, p(8), p(27), p(2), C.outline);
+  discPixel(buf, p(23), p(27), p(2), C.outline);
+  return shadeStoreAsset(buf);
+}
+
+function discPixel(
+  buf: PixelBuffer,
+  cx: number,
+  cy: number,
+  r: number,
+  color: Rgba,
+): void {
+  for (let y = -r; y <= r; y++) {
+    for (let x = -r; x <= r; x++) {
+      if (x * x + y * y <= r * r) setPixel(buf, cx + x, cy + y, color);
+    }
+  }
+}
+
+function drawRollCage(size: number): PixelBuffer {
+  const buf = createBuffer(size, size);
+  const p = px(size);
+  clear(buf);
+  fillRect(buf, p(7), p(3), p(3), p(24), C.metalDark);
+  fillRect(buf, p(22), p(3), p(3), p(24), C.metalDark);
+  fillRect(buf, p(7), p(3), p(18), p(3), C.metalDark);
+  fillRect(buf, p(7), p(24), p(18), p(3), C.metalDark);
+  // wire grid
+  for (let x = p(11); x < p(22); x += p(4)) {
+    fillRect(buf, x, p(5), 1, p(20), C.metal);
+  }
+  for (let y = p(8); y < p(24); y += p(4)) {
+    fillRect(buf, p(9), y, p(15), 1, C.metal);
+  }
+  discPixel(buf, p(10), p(28), p(2), C.outline);
+  discPixel(buf, p(22), p(28), p(2), C.outline);
+  return shadeStoreAsset(buf);
+}
+
+function drawCardboardBin(size: number): PixelBuffer {
+  const buf = createBuffer(size, size);
+  const p = px(size);
+  clear(buf);
+  fillRect(buf, p(9), p(8), p(14), p(20), C.wood);
+  strokeRect(buf, p(9), p(8), p(14), p(20), C.outline);
+  fillRect(buf, p(12), p(11), p(8), p(5), C.woodLight);
+  fillRect(buf, p(14), p(12), p(4), p(2), C.outline);
+  fillRect(buf, p(10), p(23), p(12), p(2), C.woodDark);
+  return shadeStoreAsset(buf);
+}
+
 function drawProduceStand(size: number, rng: Rng): PixelBuffer {
   const buf = createBuffer(size, size);
   const p = px(size);
@@ -457,7 +674,7 @@ export function generateSupermarketTileset(options: {
     drawShelf(size, true, createRng(seed + 11)),
     drawShelf(size, false, rng),
     drawProduceStand(size, createRng(seed + 21)),
-  ];
+  ].map(shadeStoreAsset);
 
   const checkout = [
     drawCheckout(size, rng),
@@ -466,14 +683,14 @@ export function generateSupermarketTileset(options: {
     drawCart(size, C.orange),
     drawBasket(size, C.red),
     drawBasket(size, C.green),
-  ];
+  ].map(shadeStoreAsset);
 
   const cold = [
     drawFridge(size, 3, createRng(seed + 31)),
     drawFridge(size, 2, createRng(seed + 32)),
     drawFreezer(size, false, createRng(seed + 33)),
     drawFreezer(size, true, createRng(seed + 34)),
-  ];
+  ].map(shadeStoreAsset);
 
   const produceColors: [Rgba, Rgba][] = [
     [C.red, C.orange], // tomato
@@ -520,9 +737,18 @@ export function generateSupermarketTileset(options: {
   ];
 
   const props = [
-    drawPlant(size),
-    drawPromo(size, C.red),
-    drawPromo(size, C.blue),
+    drawServiceDoor(size),
+    drawPoster(size, C.navy, false),
+    drawPoster(size, C.red, true),
+    drawCautionBoard(size),
+    drawTrashBin(size),
+    drawBarrier(size),
+    drawFlatbed(size),
+    drawRollCage(size),
+    drawCardboardBin(size),
+    shadeStoreAsset(drawPlant(size)),
+    shadeStoreAsset(drawPromo(size, C.red)),
+    shadeStoreAsset(drawPromo(size, C.blue)),
     drawBasket(size, C.orange),
   ];
 
@@ -541,7 +767,7 @@ export function generateSupermarketTileset(options: {
     { id: 'bakery', label: 'Bakery', tiles: bakery, sheet: stitchGrid(bakery, 4) },
     { id: 'goods', label: 'Dry goods & drinks', tiles: goods, sheet: stitchGrid(goods, 6) },
     { id: 'signs', label: 'Signs', tiles: signs, sheet: stitchGrid(signs, 4) },
-    { id: 'props', label: 'Props & promo', tiles: props, sheet: stitchGrid(props, 4) },
+    { id: 'props', label: 'High-res location props', tiles: props, sheet: stitchGrid(props, 5) },
   ];
 
   // Atlas: stack section sheets (padded to common width)

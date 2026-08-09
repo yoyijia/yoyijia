@@ -24,14 +24,14 @@ import type { Biome, PixelBuffer, PixelSize } from '../types';
 type EnvMode = 'supermarket' | 'procedural' | 'reference';
 
 export function EnvironmentStudio() {
-  const [tileSize, setTileSize] = useState<PixelSize>(32);
+  const [tileSize, setTileSize] = useState<PixelSize>(64);
   const [seed, setSeed] = useState(128);
   const [biome, setBiome] = useState<Biome>('village');
   const [paletteId, setPaletteId] = useState('forest');
   const [mapCols, setMapCols] = useState(8);
   const [mapRows, setMapRows] = useState(6);
   const [mode, setMode] = useState<EnvMode>('supermarket');
-  const [section, setSection] = useState<SupermarketSection | 'all'>('all');
+  const [section, setSection] = useState<SupermarketSection | 'all'>('props');
   const [refFile, setRefFile] = useState<File | null>(null);
   const [refUrl, setRefUrl] = useState<string | null>(null);
   const [refPalette, setRefPalette] = useState<string>('auto');
