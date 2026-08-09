@@ -25,15 +25,21 @@ type CharColors = {
   outline: Rgba;
   skin: Rgba;
   skinShade: Rgba;
+  skinLight: Rgba;
   blush: Rgba;
   eyeWhite: Rgba;
   hair: Rgba;
+  hairShade: Rgba;
+  hairLight: Rgba;
   shirt: Rgba;
   shirtShade: Rgba;
+  shirtLight: Rgba;
   pants: Rgba;
+  pantsLight: Rgba;
   shoes: Rgba;
   accent: Rgba;
   accent2: Rgba;
+  accentLight: Rgba;
   mouth: Rgba;
 };
 
@@ -42,45 +48,63 @@ const PRESET_COLORS: Record<CharacterPreset, CharColors> = {
     outline: hexToRgba('#1a1a1a'),
     skin: hexToRgba('#f6c9a0'),
     skinShade: hexToRgba('#e8b086'),
+    skinLight: hexToRgba('#ffe0bd'),
     blush: hexToRgba('#f2a0a8'),
     eyeWhite: hexToRgba('#ffffff'),
-    hair: hexToRgba('#1a1a1a'),
+    hair: hexToRgba('#292929'),
+    hairShade: hexToRgba('#161616'),
+    hairLight: hexToRgba('#454545'),
     shirt: hexToRgba('#e87a7a'),
     shirtShade: hexToRgba('#c85c5c'),
+    shirtLight: hexToRgba('#f29a91'),
     pants: hexToRgba('#2d508f'),
+    pantsLight: hexToRgba('#4670b0'),
     shoes: hexToRgba('#2a2a2a'),
     accent: hexToRgba('#7ecf4a'),
     accent2: hexToRgba('#5faf38'),
+    accentLight: hexToRgba('#a6e46d'),
     mouth: hexToRgba('#e05656'),
   },
   worker: {
     outline: hexToRgba('#1a1a1a'),
     skin: hexToRgba('#f6c9a0'),
     skinShade: hexToRgba('#e8b086'),
+    skinLight: hexToRgba('#ffe0bd'),
     blush: hexToRgba('#f2a0a8'),
     eyeWhite: hexToRgba('#ffffff'),
-    hair: hexToRgba('#1a1a1a'),
+    hair: hexToRgba('#292929'),
+    hairShade: hexToRgba('#161616'),
+    hairLight: hexToRgba('#454545'),
     shirt: hexToRgba('#d64545'),
     shirtShade: hexToRgba('#a83232'),
+    shirtLight: hexToRgba('#ee6254'),
     pants: hexToRgba('#222222'),
+    pantsLight: hexToRgba('#3c3c3c'),
     shoes: hexToRgba('#1a1a1a'),
     accent: hexToRgba('#1f1f1f'),
     accent2: hexToRgba('#f5f5f5'),
+    accentLight: hexToRgba('#4a4a4a'),
     mouth: hexToRgba('#e05656'),
   },
   cap: {
     outline: hexToRgba('#1a1a1a'),
     skin: hexToRgba('#f6c9a0'),
     skinShade: hexToRgba('#e8b086'),
+    skinLight: hexToRgba('#ffe0bd'),
     blush: hexToRgba('#f2a0a8'),
     eyeWhite: hexToRgba('#ffffff'),
     hair: hexToRgba('#6b4634'),
+    hairShade: hexToRgba('#473024'),
+    hairLight: hexToRgba('#8b6249'),
     shirt: hexToRgba('#f5f5f5'),
     shirtShade: hexToRgba('#d8d8d8'),
+    shirtLight: hexToRgba('#ffffff'),
     pants: hexToRgba('#3a6ea8'),
+    pantsLight: hexToRgba('#5a8ac0'),
     shoes: hexToRgba('#1a1a1a'),
     accent: hexToRgba('#1a1a1a'),
     accent2: hexToRgba('#ffffff'),
+    accentLight: hexToRgba('#444444'),
     mouth: hexToRgba('#e05656'),
   },
 };
@@ -208,6 +232,74 @@ function strokeRect(
   }
 }
 
+function sameColor(data: Uint8ClampedArray, i: number, color: Rgba): boolean {
+  return (
+    i >= 0 &&
+    i + 3 < data.length &&
+    data[i] === color[0] &&
+    data[i + 1] === color[1] &&
+    data[i + 2] === color[2] &&
+    data[i + 3] === color[3]
+  );
+}
+
+/**
+ * Adds deliberately clustered 16-bit shading. It avoids gradients and
+ * anti-aliasing: every material gets a highlight, base, and shadow ramp.
+ */
+function applyMaterialShading(buf: PixelBuffer, c: CharColors): void {
+  const source = new Uint8ClampedArray(buf.data);
+  const ramps: { base: Rgba; light: Rgba; dark: Rgba; texture?: boolean }[] = [
+    { base: c.hair, light: c.hairLight, dark: c.hairShade, texture: true },
+    { base: c.skin, light: c.skinLight, dark: c.skinShade },
+    { base: c.shirt, light: c.shirtLight, dark: c.shirtShade },
+    { base: c.pants, light: c.pantsLight, dark: c.outline },
+    { base: c.accent, light: c.accentLight, dark: c.accent2 },
+  ];
+
+  for (const ramp of ramps) {
+    for (let y = 0; y < buf.height; y++) {
+      for (let x = 0; x < buf.width; x++) {
+        const i = (y * buf.width + x) * 4;
+        if (!sameColor(source, i, ramp.base)) continue;
+
+        const up =
+          y > 0 &&
+          sameColor(source, ((y - 1) * buf.width + x) * 4, ramp.base);
+        const left =
+          x > 0 &&
+          sameColor(source, (y * buf.width + x - 1) * 4, ramp.base);
+        const down =
+          y + 1 < buf.height &&
+          sameColor(source, ((y + 1) * buf.width + x) * 4, ramp.base);
+        const right =
+          x + 1 < buf.width &&
+          sameColor(source, (y * buf.width + x + 1) * 4, ramp.base);
+
+        // Upper-left light, lower-right shadow: classic 16-bit sprite lighting.
+        if ((!up || !left) && (x + y) % 3 !== 0) {
+          setPixel(buf, x, y, ramp.light);
+        } else if ((!down || !right) && (x + y) % 2 === 0) {
+          setPixel(buf, x, y, ramp.dark);
+        } else if (
+          ramp.texture &&
+          up &&
+          left &&
+          down &&
+          right &&
+          (x * 7 + y * 11) % 29 < 2
+        ) {
+          // Sparse two-pixel curl clusters, never random/noisy.
+          setPixel(buf, x, y, ramp.light);
+          if (x + 1 < buf.width && sameColor(source, i + 4, ramp.base)) {
+            setPixel(buf, x + 1, y, ramp.light);
+          }
+        }
+      }
+    }
+  }
+}
+
 function drawAfro(
   buf: PixelBuffer,
   cx: number,
@@ -218,25 +310,38 @@ function drawAfro(
 ) {
   // Dense curly mass — matches reference rounded afro
   const curls: [number, number, number][] = [
-    [0, -2, 16],
-    [-8, -6, 11],
-    [8, -6, 11],
-    [-12, 0, 10],
-    [12, 0, 10],
-    [-10, 8, 9],
-    [10, 8, 9],
-    [0, -12, 10],
-    [-5, -14, 8],
-    [5, -14, 8],
-    [-14, 4, 7],
-    [14, 4, 7],
-    [-6, 12, 7],
-    [6, 12, 7],
+    [0, -3, 12],
+    [-7, -6, 8],
+    [7, -6, 8],
+    [-11, 0, 7],
+    [11, 0, 7],
+    [-10, 6, 7],
+    [10, 6, 7],
+    [0, -12, 7],
+    [-5, -12, 6],
+    [5, -12, 6],
+    [-13, 3, 6],
+    [13, 3, 6],
+    [-6, 10, 5],
+    [6, 10, 5],
   ];
   for (const [ox, oy, r] of curls) {
     if (dir === 'left' && ox > 8) continue;
     if (dir === 'right' && ox < -8) continue;
     disc(buf, cx + px(ox), cy + px(oy), px(r), c.hair);
+  }
+
+  // Hand-placed curl highlights keep the afro dimensional at 64×64.
+  for (const [ox, oy] of [
+    [-8, -8],
+    [-3, -13],
+    [4, -11],
+    [8, -7],
+    [-11, 0],
+    [10, 2],
+    [-8, 7],
+  ] as const) {
+    fillRect(buf, cx + px(ox), cy + px(oy), Math.max(1, px(3)), Math.max(1, px(2)), c.hairLight);
   }
 }
 
@@ -252,17 +357,17 @@ function drawHead(
   tilt: number,
 ) {
   const headCx = cx + tilt;
-  const headCy = top + px(16);
+  const headCy = top + px(13);
   const skin = dir === 'up' ? c.skinShade : c.skin;
 
   // Big round face
-  oval(buf, headCx, headCy, px(14), px(14), skin);
+  oval(buf, headCx, headCy, px(12), px(12), skin);
 
   if (preset === 'curly') {
-    drawAfro(buf, headCx, headCy - px(2), px, c, dir);
+    drawAfro(buf, headCx, headCy - px(1), px, c, dir);
     // Face window through hair
     if (dir !== 'up') {
-      oval(buf, headCx, headCy + px(2), px(11), px(11), skin);
+      oval(buf, headCx, headCy + px(2), px(10), px(10), skin);
     }
   } else if (preset === 'worker') {
     oval(buf, headCx, top + px(10), px(14), px(8), c.hair);
@@ -317,7 +422,7 @@ function drawHead(
   if (dir === 'up') return;
 
   // Eyebrows
-  const browY = top + px(14);
+  const browY = top + px(12);
   if (dir === 'down') {
     fillRect(buf, headCx - px(8), browY, px(5), px(1), c.outline);
     fillRect(buf, headCx + px(3), browY, px(5), px(1), c.outline);
@@ -327,19 +432,28 @@ function drawHead(
   }
 
   // Big white eyes + pupils (reference style)
-  const eyeY = top + px(17);
+  const eyeY = top + px(15);
   if (dir === 'down') {
-    oval(buf, headCx - px(6), eyeY, px(4), px(5), c.eyeWhite);
-    oval(buf, headCx + px(6), eyeY, px(4), px(5), c.eyeWhite);
-    disc(buf, headCx - px(6), eyeY + px(1), px(2), c.outline);
-    disc(buf, headCx + px(6), eyeY + px(1), px(2), c.outline);
-    setPixel(buf, headCx - px(7), eyeY, c.eyeWhite);
-    setPixel(buf, headCx + px(5), eyeY, c.eyeWhite);
+    oval(buf, headCx - px(5), eyeY, px(3), px(4), c.eyeWhite);
+    oval(buf, headCx + px(5), eyeY, px(3), px(4), c.eyeWhite);
+    fillRect(buf, headCx - px(6), eyeY - px(1), px(3), px(4), c.outline);
+    fillRect(buf, headCx + px(4), eyeY - px(1), px(3), px(4), c.outline);
+    setPixel(buf, headCx - px(6), eyeY - px(1), c.eyeWhite);
+    setPixel(buf, headCx + px(4), eyeY - px(1), c.eyeWhite);
+    // Tiny nose highlight makes the face read at native 64×64.
+    setPixel(buf, headCx, eyeY + px(4), c.skinLight);
   } else {
     const side = dir === 'left' ? -1 : 1;
-    oval(buf, headCx + side * px(5), eyeY, px(4), px(5), c.eyeWhite);
-    disc(buf, headCx + side * px(5), eyeY + px(1), px(2), c.outline);
-    setPixel(buf, headCx + side * px(6), eyeY, c.eyeWhite);
+    oval(buf, headCx + side * px(5), eyeY, px(3), px(4), c.eyeWhite);
+    fillRect(
+      buf,
+      headCx + side * px(5) - px(1),
+      eyeY - px(1),
+      px(3),
+      px(4),
+      c.outline,
+    );
+    setPixel(buf, headCx + side * px(5), eyeY - px(1), c.eyeWhite);
   }
 
   // Blush
@@ -352,7 +466,7 @@ function drawHead(
   }
 
   // Mouth
-  const mouthY = eyeY + px(8);
+  const mouthY = eyeY + px(7);
   if (expression === 'open') {
     oval(buf, headCx, mouthY, px(3), px(2), c.mouth);
   } else if (expression === 'smile' || expression === 'neutral') {
@@ -374,13 +488,14 @@ function drawBody(
   torsoY: number,
   bustOnly: boolean,
 ) {
-  const torsoW = px(18);
-  const torsoH = bustOnly ? px(10) : px(13);
+  // A longer, broader torso balances the large chibi head (roughly 45/55).
+  const torsoW = px(22);
+  const torsoH = bustOnly ? px(12) : px(16);
   fillRect(buf, cx - Math.floor(torsoW / 2), torsoY, torsoW, torsoH, c.shirt);
   // sleeve hints
   if (dir === 'down' || dir === 'up') {
-    fillRect(buf, cx - Math.floor(torsoW / 2) - px(1), torsoY, px(3), px(5), c.shirt);
-    fillRect(buf, cx + Math.floor(torsoW / 2) - px(2), torsoY, px(3), px(5), c.shirt);
+    fillRect(buf, cx - Math.floor(torsoW / 2) - px(1), torsoY, px(4), px(6), c.shirt);
+    fillRect(buf, cx + Math.floor(torsoW / 2) - px(3), torsoY, px(4), px(6), c.shirt);
   }
   fillRect(
     buf,
@@ -392,7 +507,7 @@ function drawBody(
   );
 
   if (preset === 'worker') {
-    fillRect(buf, cx - px(8), torsoY + px(3), px(16), bustOnly ? px(8) : px(12), c.accent);
+    fillRect(buf, cx - px(9), torsoY + px(3), px(18), bustOnly ? px(9) : px(14), c.accent);
     if (dir === 'down') {
       fillRect(buf, cx + px(2), torsoY + px(5), px(4), px(3), c.accent2);
       fillRect(buf, cx + px(2), torsoY + px(5), px(2), px(2), c.shirt);
@@ -439,18 +554,19 @@ function drawBag(
   // Lime lunchbox with handle — held in character's left (viewer's right on down)
   if (dir === 'up') return;
   let bagX: number;
-  if (dir === 'down') bagX = cx + px(10);
+  if (dir === 'down') bagX = cx + px(8);
   else if (dir === 'left') bagX = cx - px(18);
-  else bagX = cx + px(10);
+  else bagX = cx + px(8);
 
-  const bagY = handY;
-  fillRect(buf, bagX, bagY, px(10), px(9), c.accent);
-  fillRect(buf, bagX, bagY, px(10), px(2), c.accent2);
-  strokeRect(buf, bagX, bagY, px(10), px(9), c.outline);
+  const bagY = handY - px(1);
+  fillRect(buf, bagX, bagY, px(11), px(12), c.accent);
+  fillRect(buf, bagX, bagY, px(11), px(3), c.accentLight);
+  fillRect(buf, bagX + px(8), bagY + px(3), px(2), px(8), c.accent2);
+  strokeRect(buf, bagX, bagY, px(11), px(12), c.outline);
   // handle
-  fillRect(buf, bagX + px(2), bagY - px(3), px(6), px(1), c.outline);
+  fillRect(buf, bagX + px(2), bagY - px(4), px(7), px(1), c.outline);
   setPixel(buf, bagX + px(2), bagY - px(2), c.outline);
-  setPixel(buf, bagX + px(7), bagY - px(2), c.outline);
+  setPixel(buf, bagX + px(8), bagY - px(2), c.outline);
 }
 
 function drawArms(
@@ -513,7 +629,7 @@ function drawLegs(
 ) {
   if (pose.bustOnly) return;
   const short = preset === 'curly';
-  const pantH = short ? px(7) : px(11);
+  const pantH = short ? px(9) : px(12);
   const w = px(5);
   // Subtle walk: sin phase → small stride
   const stride = Math.round(Math.sin(pose.legPhase * Math.PI * 2) * px(3));
@@ -549,8 +665,8 @@ function drawCharacterPose(
   const cx = Math.floor(size / 2);
 
   const top = px(3) + pose.bob;
-  const torsoY = top + px(30);
-  const hipY = torsoY + (pose.bustOnly ? px(8) : px(11));
+  const torsoY = top + px(26);
+  const hipY = torsoY + (pose.bustOnly ? px(10) : px(14));
   const expr: 'neutral' | 'smile' | 'think' | 'open' =
     pose.mouthOpen
       ? 'open'
@@ -572,6 +688,7 @@ function drawCharacterPose(
     drawHead(buf, preset, pose.dir, c, px, cx, top, expr, pose.thinkTilt);
   }
 
+  applyMaterialShading(buf, c);
   if (outline) outlineOpaque(buf, c.outline);
   return centerSprite(buf, { bottomPad: Math.max(2, px(2)) });
 }
