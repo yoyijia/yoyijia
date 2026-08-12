@@ -370,7 +370,7 @@
     today.dones = [
       {
         id: uid(),
-        text: "Opened Sprig and started my intern log 🌱",
+        text: "Opened Sprig and started my intern log",
         done: true,
         createdAt: Date.now(),
       },
