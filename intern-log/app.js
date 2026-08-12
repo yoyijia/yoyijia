@@ -86,14 +86,16 @@
   function showToast(message) {
     els.toast.hidden = false;
     els.toast.textContent = message;
-    requestAnimationFrame(() => els.toast.classList.add("show"));
+    requestAnimationFrame(() => {
+      els.toast.classList.add("show");
+    });
     clearTimeout(toastTimer);
     toastTimer = setTimeout(() => {
       els.toast.classList.remove("show");
       setTimeout(() => {
         els.toast.hidden = true;
-      }, 280);
-    }, 1800);
+      }, 320);
+    }, 2600);
   }
 
   function prettyDate(key) {

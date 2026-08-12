@@ -465,17 +465,21 @@ h2 {
 }
 
 .mood {
-  width: 2.15rem;
-  height: 2.15rem;
+  min-height: 2.15rem;
+  padding: 0.35rem 0.7rem;
   border-radius: 999px;
   border: 1px solid var(--line);
   background: rgba(255, 255, 255, 0.6);
-  font-size: 0.95rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--ink-soft);
+  text-transform: lowercase;
 }
 
 .mood[aria-pressed="true"] {
   background: var(--butter);
   border-color: transparent;
+  color: var(--ink);
   transform: translateY(-1px);
 }
 
@@ -517,20 +521,24 @@ h2 {
 .toast {
   position: fixed;
   left: 50%;
-  bottom: 1.4rem;
-  transform: translateX(-50%) translateY(120%);
-  background: var(--ink);
-  color: #f7f3e9;
-  padding: 0.75rem 1.1rem;
+  bottom: 1.6rem;
+  transform: translateX(-50%) translateY(140%);
+  background: var(--sage-deep);
+  color: #fff8ef;
+  padding: 0.85rem 1.25rem;
   border-radius: 999px;
-  font-weight: 600;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
-  z-index: 20;
-  transition: transform 0.28s ease;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  box-shadow: 0 16px 36px rgba(62, 107, 74, 0.35);
+  z-index: 40;
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
 .toast.show {
   transform: translateX(-50%) translateY(0);
+  opacity: 1;
 }
 
 @keyframes rise {
