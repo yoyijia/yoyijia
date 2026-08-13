@@ -40,7 +40,13 @@
     doneList: document.getElementById("doneList"),
     doneEmpty: document.getElementById("doneEmpty"),
     doneCount: document.getElementById("doneCount"),
-    noteInput: document.getElementById("noteInput"),
+    stickyForm: document.getElementById("stickyForm"),
+    stickyTitle: document.getElementById("stickyTitle"),
+    stickyBody: document.getElementById("stickyBody"),
+    stickyBoard: document.getElementById("stickyBoard"),
+    stickyEmpty: document.getElementById("stickyEmpty"),
+    saveSticky: document.getElementById("saveSticky"),
+    swatches: [...document.querySelectorAll(".swatch")],
     jumpToday: document.getElementById("jumpToday"),
     copyDay: document.getElementById("copyDay"),
     saveStatus: document.getElementById("saveStatus"),
@@ -52,7 +58,7 @@
   let currentView = localStorage.getItem(VIEW_KEY) === "day" ? "day" : "dashboard";
   let store = loadStore();
   let toastTimer = null;
-  let noteTimer = null;
+  let stickyColor = "butter";
   const openEditors = new Set();
 
   function todayKey() {
@@ -94,22 +100,40 @@
   }
 
   function emptyDay() {
-    return { todos: [], dones: [], note: "", mood: "" };
+    return { todos: [], dones: [], note: "", mood: "", stickies: [] };
   }
 
   function dayData(key = selectedDate) {
     if (!store.days[key]) store.days[key] = emptyDay();
-    return store.days[key];
+    const day = store.days[key];
+    if (!Array.isArray(day.stickies)) day.stickies = [];
+    // Migrate old single note into a sticky once
+    if (day.note && day.note.trim() && day.stickies.length === 0) {
+      day.stickies.push({
+        id: uid(),
+        title: "Day note",
+        body: day.note.trim(),
+        color: "butter",
+        createdAt: Date.now(),
+      });
+      day.note = "";
+      saveStore();
+    }
+    return day;
   }
 
   function peekDay(key) {
-    return store.days[key] || emptyDay();
+    const day = store.days[key];
+    if (!day) return emptyDay();
+    if (!Array.isArray(day.stickies)) day.stickies = [];
+    return day;
   }
 
   function dayHasContent(day) {
     return Boolean(
       (day.todos && day.todos.length) ||
         (day.dones && day.dones.length) ||
+        (day.stickies && day.stickies.length) ||
         (day.note && day.note.trim()) ||
         day.mood
     );
@@ -227,7 +251,12 @@
       const done = day.dones.length;
       const todo = day.todos.length;
       weekDone += done;
-      const activity = done + todo + (day.note?.trim() ? 1 : 0) + (day.mood ? 1 : 0);
+      const activity =
+        done +
+        todo +
+        (day.stickies?.length || 0) +
+        (day.note?.trim() ? 1 : 0) +
+        (day.mood ? 1 : 0);
       const height = activity === 0 ? 0.18 : Math.min(1, 0.28 + activity * 0.16);
 
       const btn = document.createElement("button");
@@ -325,7 +354,7 @@
         : "How did this day grow?";
 
     els.dayHint.textContent = isToday
-      ? "Plant a to-do, check off what you finished, and keep a soft note for your internship days."
+      ? "Plant a to-do, pin a sticky reminder, and keep track of what grew today."
       : "Flip through past days anytime — everything stays on this device.";
 
     els.nextDay.disabled = isToday;
@@ -486,11 +515,59 @@
     });
   }
 
-  function renderMoodAndNote() {
+  function renderMood() {
     const data = dayData();
-    els.noteInput.value = data.note || "";
     els.moods.forEach((btn) => {
       btn.setAttribute("aria-pressed", btn.dataset.mood === data.mood ? "true" : "false");
+    });
+  }
+
+  function renderStickies() {
+    const data = dayData();
+    els.stickyBoard.innerHTML = "";
+    els.stickyEmpty.hidden = data.stickies.length > 0;
+
+    data.stickies.forEach((sticky) => {
+      const note = document.createElement("article");
+      note.className = `sticky-note sticky-card color-${sticky.color || "butter"}`;
+
+      if (sticky.title?.trim()) {
+        const title = document.createElement("h3");
+        title.className = "sticky-card-title";
+        title.textContent = sticky.title.trim();
+        note.appendChild(title);
+      }
+
+      const body = document.createElement("p");
+      body.className = "sticky-card-body";
+      body.textContent = sticky.body || "";
+      note.appendChild(body);
+
+      const foot = document.createElement("div");
+      foot.className = "sticky-card-foot";
+
+      const time = document.createElement("span");
+      time.className = "sticky-card-time";
+      time.textContent = new Date(sticky.createdAt || Date.now()).toLocaleTimeString(
+        undefined,
+        { hour: "numeric", minute: "2-digit" }
+      );
+
+      const del = document.createElement("button");
+      del.type = "button";
+      del.className = "sticky-delete";
+      del.setAttribute("aria-label", "Delete sticky");
+      del.textContent = "×";
+      del.addEventListener("click", () => {
+        data.stickies = data.stickies.filter((s) => s.id !== sticky.id);
+        saveStore();
+        renderStickies();
+        showToast("Sticky removed");
+      });
+
+      foot.append(time, del);
+      note.appendChild(foot);
+      els.stickyBoard.appendChild(note);
     });
   }
 
@@ -498,7 +575,41 @@
     updateChrome();
     renderList("todo");
     renderList("done");
-    renderMoodAndNote();
+    renderMood();
+    renderStickies();
+    syncComposerColor();
+  }
+
+  function syncComposerColor() {
+    els.stickyForm.className = `sticky-composer sticky-note color-${stickyColor}`;
+    els.swatches.forEach((swatch) => {
+      const active = swatch.dataset.color === stickyColor;
+      swatch.classList.toggle("is-active", active);
+      swatch.setAttribute("aria-pressed", active ? "true" : "false");
+    });
+  }
+
+  function saveStickyReminder() {
+    const body = els.stickyBody.value.trim();
+    if (!body) {
+      showToast("Write something on the sticky first");
+      els.stickyBody.focus();
+      return;
+    }
+    const data = dayData();
+    data.stickies.unshift({
+      id: uid(),
+      title: els.stickyTitle.value.trim(),
+      body,
+      color: stickyColor,
+      createdAt: Date.now(),
+    });
+    saveStore();
+    els.stickyTitle.value = "";
+    els.stickyBody.value = "";
+    renderStickies();
+    showToast("Sticky saved");
+    els.stickyBody.focus();
   }
 
   function refresh() {
@@ -585,7 +696,12 @@
         : ["- (none yet)"]),
     ];
 
-    if (data.note?.trim()) {
+    if (data.stickies?.length) {
+      lines.push("", "Stickies:");
+      data.stickies.forEach((s) => {
+        lines.push(s.title?.trim() ? `- ${s.title.trim()}: ${s.body}` : `- ${s.body}`);
+      });
+    } else if (data.note?.trim()) {
       lines.push("", "Note:", data.note.trim());
     }
 
@@ -608,6 +724,13 @@
         day.todos.forEach((i) => {
           lines.push(`  ○ ${i.text}`);
           if (i.detail?.trim()) lines.push(`    ${i.detail.trim().replace(/\n/g, "\n    ")}`);
+        });
+      }
+      if (day.stickies?.length) {
+        day.stickies.forEach((s) => {
+          lines.push(
+            s.title?.trim() ? `  ❏ ${s.title.trim()}: ${s.body}` : `  ❏ ${s.body}`
+          );
         });
       }
       lines.push("");
@@ -670,13 +793,16 @@
     els.doneInput.focus();
   });
 
-  els.noteInput.addEventListener("input", () => {
-    dayData().note = els.noteInput.value;
-    els.saveStatus.textContent = "Saving…";
-    clearTimeout(noteTimer);
-    noteTimer = setTimeout(() => {
-      saveStore();
-    }, 250);
+  els.stickyForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    saveStickyReminder();
+  });
+
+  els.swatches.forEach((swatch) => {
+    swatch.addEventListener("click", () => {
+      stickyColor = swatch.dataset.color || "butter";
+      syncComposerColor();
+    });
   });
 
   els.moods.forEach((btn) => {
@@ -684,7 +810,7 @@
       const data = dayData();
       data.mood = data.mood === btn.dataset.mood ? "" : btn.dataset.mood;
       saveStore();
-      renderMoodAndNote();
+      renderMood();
     });
   });
 
@@ -715,7 +841,15 @@
         createdAt: Date.now(),
       },
     ];
-    today.note = "First day in the log. Tiny steps count.";
+    today.stickies = [
+      {
+        id: uid(),
+        title: "Reminder",
+        body: "Send standup notes before 10am.",
+        color: "butter",
+        createdAt: Date.now(),
+      },
+    ];
     today.mood = "sunny";
 
     yesterday.dones = [
@@ -727,8 +861,16 @@
         createdAt: Date.now() - 86400000,
       },
     ];
+    yesterday.stickies = [
+      {
+        id: uid(),
+        title: "Getting oriented",
+        body: "Tiny steps count.",
+        color: "mint",
+        createdAt: Date.now() - 86400000,
+      },
+    ];
     yesterday.mood = "steady";
-    yesterday.note = "Getting oriented.";
     saveStore();
   }
 

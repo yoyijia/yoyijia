@@ -204,8 +204,8 @@
           <p class="eyebrow" id="weekdayLabel">Wednesday</p>
           <h1 id="dayTitle">What grew today?</h1>
           <p class="lede" id="dayHint">
-            Plant a to-do, check off what you finished, and keep a soft note for your
-            internship days.
+            Plant a to-do, pin a sticky reminder, and keep track of what grew
+            today.
           </p>
         </section>
 
@@ -283,11 +283,11 @@
           </section>
         </div>
 
-        <section class="note-panel" aria-labelledby="noteHeading">
+        <section class="stickies-panel" aria-labelledby="stickyHeading">
           <div class="panel-head">
             <div>
-              <p class="panel-kicker">soft note</p>
-              <h2 id="noteHeading">How did the day feel?</h2>
+              <p class="panel-kicker">post-its</p>
+              <h2 id="stickyHeading">Reminders & little notes</h2>
             </div>
             <div class="moods" role="group" aria-label="Mood">
               <button type="button" class="mood" data-mood="sunny" aria-pressed="false">
@@ -304,13 +304,37 @@
               </button>
             </div>
           </div>
-          <textarea
-            id="noteInput"
-            rows="4"
-            maxlength="2000"
-            placeholder="Learnings, blockers, people who helped, little joys…"
-            aria-label="Day note"
-          ></textarea>
+
+          <form class="sticky-composer sticky-note color-butter" id="stickyForm" autocomplete="off">
+            <p class="sticky-label">New sticky</p>
+            <input
+              type="text"
+              id="stickyTitle"
+              maxlength="120"
+              placeholder="Reminder title (optional)"
+              aria-label="Sticky title"
+            />
+            <textarea
+              id="stickyBody"
+              rows="4"
+              maxlength="1000"
+              placeholder="Write your reminder… e.g. email mentor about Friday demo"
+              aria-label="Sticky reminder"
+              required
+            ></textarea>
+            <div class="sticky-composer-actions">
+              <div class="sticky-swatches" role="group" aria-label="Sticky color">
+                <button type="button" class="swatch is-active" data-color="butter" aria-label="Butter" aria-pressed="true"></button>
+                <button type="button" class="swatch" data-color="peach" aria-label="Peach" aria-pressed="false"></button>
+                <button type="button" class="swatch" data-color="mint" aria-label="Mint" aria-pressed="false"></button>
+                <button type="button" class="swatch" data-color="sky" aria-label="Sky" aria-pressed="false"></button>
+              </div>
+              <button type="submit" class="save-sticky-btn" id="saveSticky">Save sticky</button>
+            </div>
+          </form>
+
+          <div class="sticky-board" id="stickyBoard" aria-live="polite"></div>
+          <p class="empty" id="stickyEmpty">No stickies yet — write one above and hit Save sticky.</p>
         </section>
 
         <footer class="actions">
