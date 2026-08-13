@@ -79,6 +79,17 @@
         >
           Day log
         </button>
+        <button
+          type="button"
+          class="view-tab"
+          role="tab"
+          id="tabNotes"
+          aria-controls="viewNotes"
+          aria-selected="false"
+          data-view="notes"
+        >
+          Notes
+        </button>
       </nav>
     </header>
 
@@ -232,12 +243,35 @@
                 />
                 <button type="submit" class="add-btn">Add</button>
               </div>
+              <div class="add-meta">
+                <select id="todoTool" aria-label="Tool or file type">
+                  <option value="">Tool / file type</option>
+                  <option value="figma">Figma</option>
+                  <option value="gdoc">Google Doc</option>
+                  <option value="gsheets">Google Sheets</option>
+                  <option value="photoshop">Photoshop</option>
+                  <option value="illustrator">Illustrator</option>
+                  <option value="notion">Notion</option>
+                  <option value="slack">Slack</option>
+                  <option value="github">GitHub</option>
+                  <option value="miro">Miro</option>
+                  <option value="drive">Drive</option>
+                  <option value="other">Other</option>
+                </select>
+                <input
+                  type="text"
+                  id="todoFile"
+                  maxlength="300"
+                  placeholder="File name or link…"
+                  aria-label="File name or link"
+                />
+              </div>
               <textarea
                 id="todoDetail"
                 name="todoDetail"
                 rows="2"
                 maxlength="1000"
-                placeholder="Optional details — notes, links, next steps…"
+                placeholder="Optional details — notes, next steps…"
                 aria-label="To-do details"
               ></textarea>
             </form>
@@ -267,6 +301,29 @@
                   required
                 />
                 <button type="submit" class="add-btn">Add</button>
+              </div>
+              <div class="add-meta">
+                <select id="doneTool" aria-label="Tool or file type">
+                  <option value="">Tool / file type</option>
+                  <option value="figma">Figma</option>
+                  <option value="gdoc">Google Doc</option>
+                  <option value="gsheets">Google Sheets</option>
+                  <option value="photoshop">Photoshop</option>
+                  <option value="illustrator">Illustrator</option>
+                  <option value="notion">Notion</option>
+                  <option value="slack">Slack</option>
+                  <option value="github">GitHub</option>
+                  <option value="miro">Miro</option>
+                  <option value="drive">Drive</option>
+                  <option value="other">Other</option>
+                </select>
+                <input
+                  type="text"
+                  id="doneFile"
+                  maxlength="300"
+                  placeholder="File name or link…"
+                  aria-label="File name or link"
+                />
               </div>
               <textarea
                 id="doneDetail"
@@ -342,6 +399,173 @@
           <button type="button" class="ghost-btn" id="copyDay">Copy day summary</button>
           <span class="save-status" id="saveStatus" aria-live="polite">Saved on this device</span>
         </footer>
+      </section>
+
+      <!-- NOTES OVERVIEW -->
+      <section
+        class="view view-notes"
+        id="viewNotes"
+        role="tabpanel"
+        aria-labelledby="tabNotes"
+        hidden
+      >
+        <section class="hero-line" aria-labelledby="notesTitle">
+          <p class="eyebrow">gathered leaves</p>
+          <h1 id="notesTitle">Notes overview</h1>
+          <p class="lede">
+            Links, stickies, and consolidated notes from your internship days —
+            all in one place.
+          </p>
+        </section>
+
+        <div class="notes-tabs" role="tablist" aria-label="Notes sections">
+          <button
+            type="button"
+            class="notes-tab"
+            role="tab"
+            id="notesTabLinks"
+            aria-controls="notesPanelLinks"
+            aria-selected="true"
+            data-notes-tab="links"
+          >
+            Links
+          </button>
+          <button
+            type="button"
+            class="notes-tab"
+            role="tab"
+            id="notesTabStickies"
+            aria-controls="notesPanelStickies"
+            aria-selected="false"
+            data-notes-tab="stickies"
+          >
+            Stickies
+          </button>
+          <button
+            type="button"
+            class="notes-tab"
+            role="tab"
+            id="notesTabConsolidated"
+            aria-controls="notesPanelConsolidated"
+            aria-selected="false"
+            data-notes-tab="consolidated"
+          >
+            Consolidated
+          </button>
+        </div>
+
+        <section
+          class="panel notes-panel"
+          id="notesPanelLinks"
+          role="tabpanel"
+          aria-labelledby="notesTabLinks"
+        >
+          <div class="panel-head">
+            <div>
+              <p class="panel-kicker">saved links</p>
+              <h2>Project links</h2>
+            </div>
+            <span class="count" id="linksCount">0</span>
+          </div>
+          <form class="add-stack" id="linkForm" autocomplete="off">
+            <div class="add-row">
+              <input
+                type="text"
+                id="linkTitle"
+                maxlength="160"
+                placeholder="Link title…"
+                aria-label="Link title"
+                required
+              />
+              <button type="submit" class="add-btn">Save link</button>
+            </div>
+            <div class="add-meta">
+              <select id="linkTool" aria-label="Tool or file type">
+                <option value="">Tool / file type</option>
+                <option value="figma">Figma</option>
+                <option value="gdoc">Google Doc</option>
+                <option value="gsheets">Google Sheets</option>
+                <option value="photoshop">Photoshop</option>
+                <option value="illustrator">Illustrator</option>
+                <option value="notion">Notion</option>
+                <option value="slack">Slack</option>
+                <option value="github">GitHub</option>
+                <option value="miro">Miro</option>
+                <option value="drive">Drive</option>
+                <option value="other">Other</option>
+              </select>
+              <input
+                type="text"
+                id="linkUrl"
+                maxlength="500"
+                placeholder="https://… or file name"
+                aria-label="URL or file name"
+                required
+              />
+            </div>
+          </form>
+          <ul class="dash-list" id="linksList"></ul>
+          <p class="empty" id="linksEmpty">No saved links yet. Add one above.</p>
+        </section>
+
+        <section
+          class="panel notes-panel"
+          id="notesPanelStickies"
+          role="tabpanel"
+          aria-labelledby="notesTabStickies"
+          hidden
+        >
+          <div class="panel-head">
+            <div>
+              <p class="panel-kicker">all stickies</p>
+              <h2>Reminder wall</h2>
+            </div>
+            <span class="count" id="allStickiesCount">0</span>
+          </div>
+          <div class="sticky-board" id="allStickiesBoard"></div>
+          <p class="empty" id="allStickiesEmpty">No stickies yet — add some in Day log.</p>
+        </section>
+
+        <section
+          class="panel notes-panel"
+          id="notesPanelConsolidated"
+          role="tabpanel"
+          aria-labelledby="notesTabConsolidated"
+          hidden
+        >
+          <div class="panel-head">
+            <div>
+              <p class="panel-kicker">everything gathered</p>
+              <h2>Consolidated notes</h2>
+            </div>
+            <button type="button" class="ghost-btn" id="copyNotes">Copy all notes</button>
+          </div>
+          <form class="add-stack" id="noteForm" autocomplete="off">
+            <div class="add-row">
+              <input
+                type="text"
+                id="noteTitle"
+                maxlength="160"
+                placeholder="Notebook title…"
+                aria-label="Notebook title"
+                required
+              />
+              <button type="submit" class="add-btn">Add note</button>
+            </div>
+            <textarea
+              id="noteBody"
+              rows="3"
+              maxlength="4000"
+              placeholder="Write a lasting note — decisions, feedback, learnings…"
+              aria-label="Notebook body"
+              required
+            ></textarea>
+          </form>
+          <div class="consolidated-list" id="consolidatedList"></div>
+          <p class="empty" id="consolidatedEmpty">
+            Notes from tasks, stickies, and your notebook will appear here.
+          </p>
+        </section>
       </section>
     </main>
 
