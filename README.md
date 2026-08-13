@@ -4,7 +4,7 @@ Personal projects for [Yijia](https://github.com/yoyijia).
 
 ## Sprig — intern daily log
 
-A cute daily log for internship work: **things to do**, **things done**, mood, and a soft note.
+A cute daily log for internship work, with a **dashboard** plus a day log for **things to do**, **things done**, mood, and a soft note.
 
 - Source: [`intern-log/`](./intern-log/)
 - Free site (GitHub Pages): **https://yoyijia.github.io/yoyijia/**
