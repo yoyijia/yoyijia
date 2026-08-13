@@ -558,14 +558,22 @@ h2 {
   font-size: 0.9rem;
 }
 
+.add-stack {
+  display: grid;
+  gap: 0.45rem;
+  margin-bottom: 0.85rem;
+}
+
 .add-row {
   display: grid;
   grid-template-columns: 1fr auto;
   gap: 0.5rem;
-  margin-bottom: 0.85rem;
 }
 
 .add-row input,
+.add-stack textarea,
+.item-edit-title,
+.item-edit-detail,
 #noteInput {
   width: 100%;
   border: 1.5px solid var(--line);
@@ -574,9 +582,19 @@ h2 {
   padding: 0.78rem 0.9rem;
   outline: none;
   transition: border-color 0.18s ease, box-shadow 0.18s ease;
+  resize: vertical;
+}
+
+.add-stack textarea,
+.item-edit-detail {
+  min-height: 4.2rem;
+  line-height: 1.45;
 }
 
 .add-row input:focus,
+.add-stack textarea:focus,
+.item-edit-title:focus,
+.item-edit-detail:focus,
 #noteInput:focus {
   border-color: var(--sage);
   box-shadow: 0 0 0 4px rgba(95, 143, 106, 0.16);
@@ -620,8 +638,75 @@ h2 {
   border-color: var(--line);
 }
 
+.item.is-open {
+  border-color: rgba(95, 143, 106, 0.28);
+  background: rgba(255, 252, 245, 0.92);
+}
+
 .item.done-item {
   background: rgba(255, 252, 245, 0.7);
+}
+
+.item-main {
+  min-width: 0;
+}
+
+.item-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.item-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.detail-btn {
+  border: 0;
+  background: transparent;
+  color: var(--sage-deep);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.25rem 0.45rem;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.detail-btn:hover,
+.detail-btn[aria-expanded="true"] {
+  background: var(--sage-mist);
+}
+
+.item-detail-preview {
+  margin: 0.35rem 0 0;
+  color: var(--ink-soft);
+  font-size: 0.88rem;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.item-editor {
+  display: grid;
+  gap: 0.45rem;
+  margin-top: 0.65rem;
+}
+
+.item-edit-title {
+  font-weight: 700;
+}
+
+.item-editor-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
 }
 
 .check {

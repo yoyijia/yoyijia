@@ -219,17 +219,27 @@
               <span class="count" id="todoCount">0</span>
             </div>
 
-            <form class="add-row" id="todoForm" autocomplete="off">
-              <input
-                type="text"
-                id="todoInput"
-                name="todo"
-                maxlength="200"
-                placeholder="e.g. Review PR feedback…"
-                aria-label="Add a to-do"
-                required
-              />
-              <button type="submit" class="add-btn">Add</button>
+            <form class="add-stack" id="todoForm" autocomplete="off">
+              <div class="add-row">
+                <input
+                  type="text"
+                  id="todoInput"
+                  name="todo"
+                  maxlength="200"
+                  placeholder="e.g. Review PR feedback…"
+                  aria-label="Add a to-do"
+                  required
+                />
+                <button type="submit" class="add-btn">Add</button>
+              </div>
+              <textarea
+                id="todoDetail"
+                name="todoDetail"
+                rows="2"
+                maxlength="1000"
+                placeholder="Optional details — notes, links, next steps…"
+                aria-label="To-do details"
+              ></textarea>
             </form>
 
             <ul class="list" id="todoList"></ul>
@@ -245,17 +255,27 @@
               <span class="count" id="doneCount">0</span>
             </div>
 
-            <form class="add-row" id="doneForm" autocomplete="off">
-              <input
-                type="text"
-                id="doneInput"
-                name="done"
-                maxlength="200"
-                placeholder="e.g. Shipped the landing tweak…"
-                aria-label="Add something done"
-                required
-              />
-              <button type="submit" class="add-btn">Add</button>
+            <form class="add-stack" id="doneForm" autocomplete="off">
+              <div class="add-row">
+                <input
+                  type="text"
+                  id="doneInput"
+                  name="done"
+                  maxlength="200"
+                  placeholder="e.g. Shipped the landing tweak…"
+                  aria-label="Add something done"
+                  required
+                />
+                <button type="submit" class="add-btn">Add</button>
+              </div>
+              <textarea
+                id="doneDetail"
+                name="doneDetail"
+                rows="2"
+                maxlength="1000"
+                placeholder="Optional details — what you learned, impact, follow-ups…"
+                aria-label="Done details"
+              ></textarea>
             </form>
 
             <ul class="list" id="doneList"></ul>

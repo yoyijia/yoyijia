@@ -30,11 +30,13 @@
     dayHint: document.getElementById("dayHint"),
     todoForm: document.getElementById("todoForm"),
     todoInput: document.getElementById("todoInput"),
+    todoDetail: document.getElementById("todoDetail"),
     todoList: document.getElementById("todoList"),
     todoEmpty: document.getElementById("todoEmpty"),
     todoCount: document.getElementById("todoCount"),
     doneForm: document.getElementById("doneForm"),
     doneInput: document.getElementById("doneInput"),
+    doneDetail: document.getElementById("doneDetail"),
     doneList: document.getElementById("doneList"),
     doneEmpty: document.getElementById("doneEmpty"),
     doneCount: document.getElementById("doneCount"),
@@ -51,6 +53,7 @@
   let store = loadStore();
   let toastTimer = null;
   let noteTimer = null;
+  const openEditors = new Set();
 
   function todayKey() {
     return formatKey(new Date());
@@ -202,7 +205,12 @@
       totalDone += day.dones.length;
       totalTodo += day.todos.length;
       day.todos.forEach((item) => {
-        openItems.push({ key, text: item.text, id: item.id });
+        openItems.push({
+          key,
+          text: item.text,
+          detail: item.detail || "",
+          id: item.id,
+        });
       });
     });
 
@@ -259,7 +267,10 @@
         <span class="dash-item-side">open</span>
       `;
       btn.querySelector(".dash-item-title").textContent = item.text;
-      btn.querySelector(".dash-item-meta").textContent = prettyDate(item.key);
+      const meta = item.detail?.trim()
+        ? `${prettyDate(item.key)} · ${item.detail.trim()}`
+        : prettyDate(item.key);
+      btn.querySelector(".dash-item-meta").textContent = meta;
       btn.addEventListener("click", () => openDay(item.key));
       li.appendChild(btn);
       els.openTodoList.appendChild(li);
@@ -325,6 +336,19 @@
     return `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5 L10 17.5 L19 7.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
   }
 
+  function findItem(kind, id) {
+    const data = dayData();
+    const list = kind === "todo" ? data.todos : data.dones;
+    return list.find((i) => i.id === id) || null;
+  }
+
+  function formatItemLine(item, mark = "-") {
+    const detail = (item.detail || "").trim();
+    return detail
+      ? `${mark} ${item.text}\n  ${detail.replace(/\n/g, "\n  ")}`
+      : `${mark} ${item.text}`;
+  }
+
   function renderList(kind) {
     const data = dayData();
     const items = kind === "todo" ? data.todos : data.dones;
@@ -337,10 +361,12 @@
     emptyEl.hidden = items.length > 0;
 
     items.forEach((item) => {
+      if (typeof item.detail !== "string") item.detail = "";
+      const isOpen = openEditors.has(item.id);
       const li = document.createElement("li");
       li.className = `item ${kind === "done" || item.done ? "done-item" : ""} ${
         item.done ? "is-checked" : ""
-      }`;
+      }${isOpen ? " is-open" : ""}`;
       li.dataset.id = item.id;
 
       const check = document.createElement("button");
@@ -352,9 +378,100 @@
       );
       check.innerHTML = checkIcon();
 
+      const main = document.createElement("div");
+      main.className = "item-main";
+
+      const top = document.createElement("div");
+      top.className = "item-top";
+
       const text = document.createElement("p");
       text.className = "item-text";
       text.textContent = item.text;
+
+      const detailBtn = document.createElement("button");
+      detailBtn.type = "button";
+      detailBtn.className = "detail-btn";
+      detailBtn.setAttribute("aria-expanded", isOpen ? "true" : "false");
+      detailBtn.textContent = isOpen
+        ? "Close"
+        : item.detail?.trim()
+          ? "Edit info"
+          : "Add info";
+
+      top.append(text, detailBtn);
+      main.appendChild(top);
+
+      if (!isOpen && item.detail?.trim()) {
+        const preview = document.createElement("p");
+        preview.className = "item-detail-preview";
+        preview.textContent = item.detail.trim();
+        main.appendChild(preview);
+      }
+
+      if (isOpen) {
+        const editor = document.createElement("div");
+        editor.className = "item-editor";
+
+        const titleInput = document.createElement("input");
+        titleInput.type = "text";
+        titleInput.className = "item-edit-title";
+        titleInput.maxLength = 200;
+        titleInput.value = item.text;
+        titleInput.setAttribute("aria-label", "Task title");
+
+        const detailInput = document.createElement("textarea");
+        detailInput.className = "item-edit-detail";
+        detailInput.rows = 3;
+        detailInput.maxLength = 1000;
+        detailInput.value = item.detail || "";
+        detailInput.placeholder = "Add notes, links, blockers, next steps…";
+        detailInput.setAttribute("aria-label", "Task details");
+
+        const actions = document.createElement("div");
+        actions.className = "item-editor-actions";
+
+        const saveBtn = document.createElement("button");
+        saveBtn.type = "button";
+        saveBtn.className = "add-btn";
+        saveBtn.textContent = "Save info";
+
+        const cancelBtn = document.createElement("button");
+        cancelBtn.type = "button";
+        cancelBtn.className = "ghost-btn";
+        cancelBtn.textContent = "Cancel";
+
+        const saveEdits = () => {
+          const nextTitle = titleInput.value.trim();
+          if (!nextTitle) {
+            showToast("Task needs a title");
+            titleInput.focus();
+            return;
+          }
+          item.text = nextTitle;
+          item.detail = detailInput.value.trim();
+          openEditors.delete(item.id);
+          saveStore();
+          renderList(kind);
+          showToast("Task info saved");
+        };
+
+        saveBtn.addEventListener("click", saveEdits);
+        cancelBtn.addEventListener("click", () => {
+          openEditors.delete(item.id);
+          renderList(kind);
+        });
+        titleInput.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            saveEdits();
+          }
+        });
+
+        actions.append(saveBtn, cancelBtn);
+        editor.append(titleInput, detailInput, actions);
+        main.appendChild(editor);
+        requestAnimationFrame(() => detailInput.focus());
+      }
 
       const del = document.createElement("button");
       del.type = "button";
@@ -364,8 +481,13 @@
 
       check.addEventListener("click", () => toggleItem(kind, item.id));
       del.addEventListener("click", () => removeItem(kind, item.id));
+      detailBtn.addEventListener("click", () => {
+        if (openEditors.has(item.id)) openEditors.delete(item.id);
+        else openEditors.add(item.id);
+        renderList(kind);
+      });
 
-      li.append(check, text, del);
+      li.append(check, main, del);
       listEl.appendChild(li);
     });
   }
@@ -390,18 +512,20 @@
     else renderDay();
   }
 
-  function addItem(kind, text) {
+  function addItem(kind, text, detail = "") {
     const trimmed = text.trim();
     if (!trimmed) return;
     const data = dayData();
     const entry = {
       id: uid(),
       text: trimmed,
+      detail: detail.trim(),
       done: kind === "done",
       createdAt: Date.now(),
     };
     if (kind === "todo") data.todos.unshift(entry);
     else data.dones.unshift(entry);
+    if (entry.detail) openEditors.delete(entry.id);
     saveStore();
     renderList(kind);
   }
@@ -410,6 +534,7 @@
     const data = dayData();
     if (kind === "todo") data.todos = data.todos.filter((i) => i.id !== id);
     else data.dones = data.dones.filter((i) => i.id !== id);
+    openEditors.delete(id);
     saveStore();
     renderList(kind);
   }
@@ -456,10 +581,14 @@
       data.mood ? `Mood: ${data.mood}` : null,
       "",
       "Done:",
-      ...(data.dones.length ? data.dones.map((i) => `- ${i.text}`) : ["- (none yet)"]),
+      ...(data.dones.length
+        ? data.dones.map((i) => formatItemLine(i, "-"))
+        : ["- (none yet)"]),
       "",
       "To do:",
-      ...(data.todos.length ? data.todos.map((i) => `- ${i.text}`) : ["- (none yet)"]),
+      ...(data.todos.length
+        ? data.todos.map((i) => formatItemLine(i, "-"))
+        : ["- (none yet)"]),
     ];
 
     if (data.note?.trim()) {
@@ -476,10 +605,16 @@
       if (!dayHasContent(day)) return;
       lines.push(prettyDate(key));
       if (day.dones.length) {
-        day.dones.forEach((i) => lines.push(`  ✓ ${i.text}`));
+        day.dones.forEach((i) => {
+          lines.push(`  ✓ ${i.text}`);
+          if (i.detail?.trim()) lines.push(`    ${i.detail.trim().replace(/\n/g, "\n    ")}`);
+        });
       }
       if (day.todos.length) {
-        day.todos.forEach((i) => lines.push(`  ○ ${i.text}`));
+        day.todos.forEach((i) => {
+          lines.push(`  ○ ${i.text}`);
+          if (i.detail?.trim()) lines.push(`    ${i.detail.trim().replace(/\n/g, "\n    ")}`);
+        });
       }
       lines.push("");
     });
@@ -527,15 +662,17 @@
 
   els.todoForm.addEventListener("submit", (e) => {
     e.preventDefault();
-    addItem("todo", els.todoInput.value);
+    addItem("todo", els.todoInput.value, els.todoDetail.value);
     els.todoInput.value = "";
+    els.todoDetail.value = "";
     els.todoInput.focus();
   });
 
   els.doneForm.addEventListener("submit", (e) => {
     e.preventDefault();
-    addItem("done", els.doneInput.value);
+    addItem("done", els.doneInput.value, els.doneDetail.value);
     els.doneInput.value = "";
+    els.doneDetail.value = "";
     els.doneInput.focus();
   });
 
@@ -570,6 +707,7 @@
       {
         id: uid(),
         text: "Ask my mentor one clarifying question",
+        detail: "About the code review process and how tickets get prioritized.",
         done: false,
         createdAt: Date.now(),
       },
@@ -578,6 +716,7 @@
       {
         id: uid(),
         text: "Opened Sprig and started my intern log",
+        detail: "Using the dashboard to track daily wins.",
         done: true,
         createdAt: Date.now(),
       },
@@ -589,6 +728,7 @@
       {
         id: uid(),
         text: "Set up my intern tools",
+        detail: "Slack, email, and repo access sorted.",
         done: true,
         createdAt: Date.now() - 86400000,
       },
