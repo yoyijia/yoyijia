@@ -336,12 +336,6 @@
     return `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5 L10 17.5 L19 7.5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
   }
 
-  function findItem(kind, id) {
-    const data = dayData();
-    const list = kind === "todo" ? data.todos : data.dones;
-    return list.find((i) => i.id === id) || null;
-  }
-
   function formatItemLine(item, mark = "-") {
     const detail = (item.detail || "").trim();
     return detail
