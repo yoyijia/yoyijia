@@ -1163,7 +1163,7 @@
       el.innerHTML = `
         <p class="note-card-kicker"></p>
         <h3 class="note-card-title"></h3>
-        <p class="note-card-body"></p>
+        <div class="note-card-body"></div>
         <div class="note-card-foot">
           <span class="note-card-meta"></span>
         </div>
