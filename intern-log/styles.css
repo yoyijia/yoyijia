@@ -1352,3 +1352,131 @@ h2 {
     width: 100%;
   }
 }
+
+.rt-host {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.rt-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.35rem;
+  border: 1.5px solid var(--line);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.rt-host-sticky .rt-toolbar {
+  background: rgba(255, 255, 255, 0.4);
+  border-color: rgba(36, 51, 40, 0.12);
+}
+
+.rt-btn {
+  min-width: 1.9rem;
+  height: 1.9rem;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--ink);
+  font-weight: 700;
+  font-size: 0.9rem;
+  display: grid;
+  place-items: center;
+  padding: 0 0.35rem;
+}
+
+.rt-btn:hover,
+.rt-btn.is-active {
+  background: var(--sage-mist);
+  color: var(--sage-deep);
+}
+
+.rt-btn em {
+  font-style: italic;
+  font-weight: 600;
+}
+
+.rt-btn u {
+  text-decoration: underline;
+  font-weight: 700;
+}
+
+.rt-sep {
+  width: 1px;
+  height: 1.2rem;
+  background: var(--line);
+  margin: 0 0.15rem;
+}
+
+.rt-colors {
+  display: flex;
+  gap: 0.28rem;
+  align-items: center;
+}
+
+.rt-color {
+  width: 1.15rem;
+  height: 1.15rem;
+  border-radius: 999px;
+  border: 2px solid rgba(36, 51, 40, 0.15);
+  padding: 0;
+}
+
+.rt-color.is-active {
+  border-color: var(--ink);
+  transform: scale(1.08);
+}
+
+.rt-editor {
+  min-height: 4.4rem;
+  border: 1.5px solid var(--line);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.72);
+  padding: 0.75rem 0.9rem;
+  outline: none;
+  line-height: 1.45;
+  word-break: break-word;
+}
+
+.rt-editor:focus {
+  border-color: var(--sage);
+  box-shadow: 0 0 0 4px rgba(95, 143, 106, 0.16);
+}
+
+.rt-editor:empty:before {
+  content: attr(data-placeholder);
+  color: rgba(74, 92, 79, 0.55);
+  pointer-events: none;
+}
+
+.rt-host-sticky .rt-editor {
+  min-height: 6rem;
+  border: 0;
+  background: rgba(255, 255, 255, 0.35);
+  font-family: var(--font-display);
+  border-radius: 8px;
+}
+
+.rt-host-sticky .rt-editor:focus {
+  background: rgba(255, 255, 255, 0.55);
+  box-shadow: 0 0 0 3px rgba(62, 107, 74, 0.12);
+}
+
+.rt-editor b,
+.rt-editor strong {
+  font-weight: 700;
+}
+
+.rich-content b,
+.rich-content strong {
+  font-weight: 700;
+}
+
+.item-detail-preview.rich-content,
+.sticky-card-body.rich-content,
+.note-card-body.rich-content {
+  white-space: normal;
+}

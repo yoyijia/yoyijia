@@ -266,14 +266,12 @@
                   aria-label="File name or link"
                 />
               </div>
-              <textarea
+              <div
                 id="todoDetail"
-                name="todoDetail"
-                rows="2"
-                maxlength="1000"
-                placeholder="Optional details — notes, next steps…"
-                aria-label="To-do details"
-              ></textarea>
+                class="rt-host"
+                data-placeholder="Optional details — notes, next steps…"
+                data-aria="To-do details"
+              ></div>
             </form>
 
             <ul class="list" id="todoList"></ul>
@@ -325,14 +323,12 @@
                   aria-label="File name or link"
                 />
               </div>
-              <textarea
+              <div
                 id="doneDetail"
-                name="doneDetail"
-                rows="2"
-                maxlength="1000"
-                placeholder="Optional details — what you learned, impact, follow-ups…"
-                aria-label="Done details"
-              ></textarea>
+                class="rt-host"
+                data-placeholder="Optional details — what you learned, impact, follow-ups…"
+                data-aria="Done details"
+              ></div>
             </form>
 
             <ul class="list" id="doneList"></ul>
@@ -371,14 +367,12 @@
               placeholder="Reminder title (optional)"
               aria-label="Sticky title"
             />
-            <textarea
+            <div
               id="stickyBody"
-              rows="4"
-              maxlength="1000"
-              placeholder="Write your reminder… e.g. email mentor about Friday demo"
-              aria-label="Sticky reminder"
-              required
-            ></textarea>
+              class="rt-host rt-host-sticky"
+              data-placeholder="Write your reminder… e.g. email mentor about Friday demo"
+              data-aria="Sticky reminder"
+            ></div>
             <div class="sticky-composer-actions">
               <div class="sticky-swatches" role="group" aria-label="Sticky color">
                 <button type="button" class="swatch is-active" data-color="butter" aria-label="Butter" aria-pressed="true"></button>
@@ -552,14 +546,12 @@
               />
               <button type="submit" class="add-btn">Add note</button>
             </div>
-            <textarea
+            <div
               id="noteBody"
-              rows="3"
-              maxlength="4000"
-              placeholder="Write a lasting note — decisions, feedback, learnings…"
-              aria-label="Notebook body"
-              required
-            ></textarea>
+              class="rt-host"
+              data-placeholder="Write a lasting note — decisions, feedback, learnings…"
+              data-aria="Notebook body"
+            ></div>
           </form>
           <div class="consolidated-list" id="consolidatedList"></div>
           <p class="empty" id="consolidatedEmpty">

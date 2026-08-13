@@ -20,6 +20,193 @@
 
   const TOOL_LABELS = Object.fromEntries(TOOL_OPTIONS.filter(([v]) => v));
 
+  const RICH_COLORS = [
+    { name: "Ink", value: "#243328" },
+    { name: "Sage", value: "#3e6b4a" },
+    { name: "Coral", value: "#e07a5f" },
+    { name: "Amber", value: "#b45309" },
+    { name: "Sky", value: "#2f6f9f" },
+  ];
+
+  function sanitizeHtml(dirty) {
+    const template = document.createElement("template");
+    template.innerHTML = String(dirty || "");
+    const allowed = new Set(["B", "STRONG", "I", "EM", "U", "SPAN", "BR", "DIV", "P"]);
+
+    const clean = (node) => {
+      [...node.childNodes].forEach((child) => {
+        if (child.nodeType === Node.ELEMENT_NODE) {
+          if (!allowed.has(child.tagName)) {
+            const frag = document.createDocumentFragment();
+            while (child.firstChild) frag.appendChild(child.firstChild);
+            child.replaceWith(frag);
+            clean(node);
+            return;
+          }
+          [...child.attributes].forEach((attr) => {
+            if (child.tagName === "SPAN" && attr.name === "style") {
+              const color = child.style.color;
+              child.removeAttribute("style");
+              if (color) child.style.color = color;
+            } else {
+              child.removeAttribute(attr.name);
+            }
+          });
+          clean(child);
+        } else if (child.nodeType === Node.COMMENT_NODE) {
+          child.remove();
+        }
+      });
+    };
+
+    clean(template.content);
+    return template.innerHTML;
+  }
+
+  function htmlToPlain(html) {
+    const div = document.createElement("div");
+    div.innerHTML = sanitizeHtml(html);
+    return (div.textContent || "").replace(/\u00a0/g, " ").trim();
+  }
+
+  function setRichHtml(el, html) {
+    el.innerHTML = sanitizeHtml(html || "");
+  }
+
+  function mountRichEditor(host) {
+    if (!host || host.dataset.richMounted === "1") {
+      return host && host._richApi;
+    }
+    const placeholder = host.dataset.placeholder || "";
+    const aria = host.dataset.aria || "Rich text";
+    host.dataset.richMounted = "1";
+    host.innerHTML = "";
+
+    const toolbar = document.createElement("div");
+    toolbar.className = "rt-toolbar";
+    toolbar.setAttribute("role", "toolbar");
+    toolbar.setAttribute("aria-label", `${aria} formatting`);
+
+    const mkBtn = (label, cmd, title, html) => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "rt-btn";
+      btn.dataset.cmd = cmd;
+      btn.title = title;
+      btn.setAttribute("aria-label", title);
+      btn.innerHTML = html || label;
+      btn.addEventListener("mousedown", (e) => e.preventDefault());
+      btn.addEventListener("click", () => {
+        editor.focus();
+        document.execCommand(cmd, false, null);
+        syncToolbar();
+      });
+      return btn;
+    };
+
+    toolbar.append(
+      mkBtn("B", "bold", "Bold", "<b>B</b>"),
+      mkBtn("I", "italic", "Italic", "<em>I</em>"),
+      mkBtn("U", "underline", "Underline", "<u>U</u>")
+    );
+
+    const sep = document.createElement("span");
+    sep.className = "rt-sep";
+    sep.setAttribute("aria-hidden", "true");
+    toolbar.appendChild(sep);
+
+    const colors = document.createElement("div");
+    colors.className = "rt-colors";
+    colors.setAttribute("role", "group");
+    colors.setAttribute("aria-label", "Text color");
+
+    RICH_COLORS.forEach((color) => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "rt-color";
+      btn.style.background = color.value;
+      btn.title = color.name;
+      btn.setAttribute("aria-label", `${color.name} text`);
+      btn.addEventListener("mousedown", (e) => e.preventDefault());
+      btn.addEventListener("click", () => {
+        editor.focus();
+        document.execCommand("styleWithCSS", false, true);
+        document.execCommand("foreColor", false, color.value);
+        syncToolbar();
+      });
+      colors.appendChild(btn);
+    });
+    toolbar.appendChild(colors);
+
+    const clearBtn = document.createElement("button");
+    clearBtn.type = "button";
+    clearBtn.className = "rt-btn";
+    clearBtn.title = "Clear formatting";
+    clearBtn.setAttribute("aria-label", "Clear formatting");
+    clearBtn.textContent = "Tx";
+    clearBtn.addEventListener("mousedown", (e) => e.preventDefault());
+    clearBtn.addEventListener("click", () => {
+      editor.focus();
+      document.execCommand("removeFormat", false, null);
+      document.execCommand("foreColor", false, "#243328");
+      syncToolbar();
+    });
+    toolbar.appendChild(clearBtn);
+
+    const editor = document.createElement("div");
+    editor.className = "rt-editor";
+    editor.contentEditable = "true";
+    editor.dataset.placeholder = placeholder;
+    editor.setAttribute("role", "textbox");
+    editor.setAttribute("aria-multiline", "true");
+    editor.setAttribute("aria-label", aria);
+    editor.spellcheck = true;
+
+    const syncToolbar = () => {
+      toolbar.querySelectorAll(".rt-btn[data-cmd]").forEach((btn) => {
+        let active = false;
+        try {
+          active = document.queryCommandState(btn.dataset.cmd);
+        } catch {
+          active = false;
+        }
+        btn.classList.toggle("is-active", active);
+      });
+    };
+
+    editor.addEventListener("keyup", syncToolbar);
+    editor.addEventListener("mouseup", syncToolbar);
+    editor.addEventListener("focus", syncToolbar);
+
+    host.append(toolbar, editor);
+
+    const api = {
+      host,
+      editor,
+      getHtml: () => sanitizeHtml(editor.innerHTML),
+      getPlain: () => htmlToPlain(editor.innerHTML),
+      setHtml: (html) => {
+        editor.innerHTML = sanitizeHtml(html || "");
+      },
+      clear: () => {
+        editor.innerHTML = "";
+      },
+      focus: () => editor.focus(),
+      isEmpty: () => !htmlToPlain(editor.innerHTML),
+    };
+    host._richApi = api;
+    return api;
+  }
+
+  function mountRichEditorIn(parent, { placeholder = "", aria = "Details", className = "" } = {}) {
+    const host = document.createElement("div");
+    host.className = `rt-host ${className}`.trim();
+    host.dataset.placeholder = placeholder;
+    host.dataset.aria = aria;
+    parent.appendChild(host);
+    return mountRichEditor(host);
+  }
+
   const els = {
     tabDashboard: document.getElementById("tabDashboard"),
     tabDay: document.getElementById("tabDay"),
@@ -108,6 +295,13 @@
   let toastTimer = null;
   let stickyColor = "butter";
   const openEditors = new Set();
+
+  const rich = {
+    todoDetail: mountRichEditor(els.todoDetail),
+    doneDetail: mountRichEditor(document.getElementById("doneDetail")),
+    stickyBody: mountRichEditor(els.stickyBody),
+    noteBody: mountRichEditor(els.noteBody),
+  };
 
   function todayKey() {
     return formatKey(new Date());
@@ -384,7 +578,7 @@
       const bits = [prettyDate(item.key)];
       if (item.tool) bits.push(toolLabel(item.tool));
       if (item.file?.trim()) bits.push(item.file.trim());
-      else if (item.detail?.trim()) bits.push(item.detail.trim());
+      else if (htmlToPlain(item.detail || "")) bits.push(htmlToPlain(item.detail));
       btn.querySelector(".dash-item-meta").textContent = bits.join(" · ");
       btn.addEventListener("click", () => openDay(item.key));
       li.appendChild(btn);
@@ -452,7 +646,7 @@
   }
 
   function formatItemLine(item, mark = "-") {
-    const detail = (item.detail || "").trim();
+    const detail = htmlToPlain(item.detail || "");
     const tool = toolLabel(item.tool || "");
     const file = (item.file || "").trim();
     const meta = [tool, file].filter(Boolean).join(" · ");
@@ -539,7 +733,7 @@
       detailBtn.setAttribute("aria-expanded", isOpen ? "true" : "false");
       detailBtn.textContent = isOpen
         ? "Close"
-        : item.detail?.trim() || item.tool || item.file
+        : htmlToPlain(item.detail || "") || item.tool || item.file
           ? "Edit info"
           : "Add info";
 
@@ -549,10 +743,10 @@
       if (!isOpen) {
         const chip = renderToolChip(item);
         if (chip) main.appendChild(chip);
-        if (item.detail?.trim()) {
-          const preview = document.createElement("p");
-          preview.className = "item-detail-preview";
-          preview.textContent = item.detail.trim();
+        if (htmlToPlain(item.detail || "")) {
+          const preview = document.createElement("div");
+          preview.className = "item-detail-preview rich-content";
+          setRichHtml(preview, item.detail);
           main.appendChild(preview);
         }
       }
@@ -586,14 +780,6 @@
 
         metaRow.append(toolSelect, fileInput);
 
-        const detailInput = document.createElement("textarea");
-        detailInput.className = "item-edit-detail";
-        detailInput.rows = 3;
-        detailInput.maxLength = 1000;
-        detailInput.value = item.detail || "";
-        detailInput.placeholder = "Add notes, blockers, next steps…";
-        detailInput.setAttribute("aria-label", "Task details");
-
         const actions = document.createElement("div");
         actions.className = "item-editor-actions";
 
@@ -607,6 +793,13 @@
         cancelBtn.className = "ghost-btn";
         cancelBtn.textContent = "Cancel";
 
+        editor.append(titleInput, metaRow);
+        const detailRich = mountRichEditorIn(editor, {
+          placeholder: "Add notes, blockers, next steps…",
+          aria: "Task details",
+        });
+        detailRich.setHtml(item.detail || "");
+
         const saveEdits = () => {
           const nextTitle = titleInput.value.trim();
           if (!nextTitle) {
@@ -617,7 +810,7 @@
           item.text = nextTitle;
           item.tool = toolSelect.value || "";
           item.file = fileInput.value.trim();
-          item.detail = detailInput.value.trim();
+          item.detail = detailRich.isEmpty() ? "" : detailRich.getHtml();
           openEditors.delete(item.id);
           saveStore();
           renderList(kind);
@@ -637,9 +830,9 @@
         });
 
         actions.append(saveBtn, cancelBtn);
-        editor.append(titleInput, metaRow, detailInput, actions);
+        editor.appendChild(actions);
         main.appendChild(editor);
-        requestAnimationFrame(() => detailInput.focus());
+        requestAnimationFrame(() => detailRich.focus());
       }
 
       const del = document.createElement("button");
@@ -684,9 +877,9 @@
         note.appendChild(title);
       }
 
-      const body = document.createElement("p");
-      body.className = "sticky-card-body";
-      body.textContent = sticky.body || "";
+      const body = document.createElement("div");
+      body.className = "sticky-card-body rich-content";
+      setRichHtml(body, sticky.body || "");
       note.appendChild(body);
 
       const foot = document.createElement("div");
@@ -736,26 +929,25 @@
   }
 
   function saveStickyReminder() {
-    const body = els.stickyBody.value.trim();
-    if (!body) {
+    if (rich.stickyBody.isEmpty()) {
       showToast("Write something on the sticky first");
-      els.stickyBody.focus();
+      rich.stickyBody.focus();
       return;
     }
     const data = dayData();
     data.stickies.unshift({
       id: uid(),
       title: els.stickyTitle.value.trim(),
-      body,
+      body: rich.stickyBody.getHtml(),
       color: stickyColor,
       createdAt: Date.now(),
     });
     saveStore();
     els.stickyTitle.value = "";
-    els.stickyBody.value = "";
+    rich.stickyBody.clear();
     renderStickies();
     showToast("Sticky saved");
-    els.stickyBody.focus();
+    rich.stickyBody.focus();
   }
 
   function refresh() {
@@ -892,9 +1084,9 @@
         note.appendChild(title);
       }
 
-      const body = document.createElement("p");
-      body.className = "sticky-card-body";
-      body.textContent = sticky.body || "";
+      const body = document.createElement("div");
+      body.className = "sticky-card-body rich-content";
+      setRichHtml(body, sticky.body || "");
       note.appendChild(body);
 
       const foot = document.createElement("div");
@@ -919,6 +1111,7 @@
         kicker: "notebook",
         title: note.title,
         body: note.body,
+        bodyIsHtml: true,
         meta: new Date(note.createdAt || Date.now()).toLocaleString(),
         deletable: true,
         sort: note.createdAt || 0,
@@ -933,22 +1126,26 @@
           kicker: `sticky · ${prettyDate(key)}`,
           title: sticky.title?.trim() || "Sticky reminder",
           body: sticky.body || "",
-          meta: toolLabel(sticky.color) ? prettyDate(key) : prettyDate(key),
+          bodyIsHtml: true,
+          meta: prettyDate(key),
           deletable: false,
           sort: sticky.createdAt || 0,
         });
       });
       [...day.todos, ...day.dones].forEach((item) => {
-        if (!item.detail?.trim() && !item.file?.trim() && !item.tool) return;
+        const detailPlain = htmlToPlain(item.detail || "");
+        if (!detailPlain && !item.file?.trim() && !item.tool) return;
         const bits = [];
         if (item.tool) bits.push(toolLabel(item.tool));
         if (item.file?.trim()) bits.push(item.file.trim());
-        if (item.detail?.trim()) bits.push(item.detail.trim());
         cards.push({
           id: `tasknote-${item.id}`,
           kicker: `task · ${prettyDate(key)}`,
           title: item.text,
-          body: bits.join("\n"),
+          body: detailPlain
+            ? `${bits.join(" · ")}${bits.length ? "\n" : ""}${item.detail}`
+            : bits.join(" · "),
+          bodyIsHtml: Boolean(detailPlain),
           meta: item.done ? "done" : "to-do",
           deletable: false,
           sort: item.createdAt || 0,
@@ -973,7 +1170,10 @@
       `;
       el.querySelector(".note-card-kicker").textContent = card.kicker;
       el.querySelector(".note-card-title").textContent = card.title;
-      el.querySelector(".note-card-body").textContent = card.body;
+      const bodyEl = el.querySelector(".note-card-body");
+      bodyEl.classList.add("rich-content");
+      if (card.bodyIsHtml) setRichHtml(bodyEl, card.body);
+      else bodyEl.textContent = card.body;
       el.querySelector(".note-card-meta").textContent = card.meta;
       if (card.deletable) {
         const del = document.createElement("button");
@@ -995,16 +1195,18 @@
   function buildNotesSummary() {
     const lines = ["Sprig — consolidated notes", ""];
     (store.notes || []).forEach((n) => {
-      lines.push(`Notebook: ${n.title}`, n.body, "");
+      lines.push(`Notebook: ${n.title}`, htmlToPlain(n.body), "");
     });
     contentKeys().forEach((key) => {
       const day = peekDay(key);
       const chunk = [];
       day.stickies.forEach((s) =>
-        chunk.push(`Sticky: ${s.title?.trim() || "Reminder"} — ${s.body}`)
+        chunk.push(
+          `Sticky: ${s.title?.trim() || "Reminder"} — ${htmlToPlain(s.body || "")}`
+        )
       );
       [...day.todos, ...day.dones].forEach((item) => {
-        if (!item.detail?.trim() && !item.file?.trim() && !item.tool) return;
+        if (!htmlToPlain(item.detail || "") && !item.file?.trim() && !item.tool) return;
         chunk.push(formatItemLine(item, item.done ? "Done" : "Todo"));
       });
       if (chunk.length) {
@@ -1121,13 +1323,13 @@
       if (day.dones.length) {
         day.dones.forEach((i) => {
           lines.push(`  ✓ ${i.text}`);
-          if (i.detail?.trim()) lines.push(`    ${i.detail.trim().replace(/\n/g, "\n    ")}`);
+          if (htmlToPlain(i.detail || "")) lines.push(`    ${htmlToPlain(i.detail)}`);
         });
       }
       if (day.todos.length) {
         day.todos.forEach((i) => {
           lines.push(`  ○ ${i.text}`);
-          if (i.detail?.trim()) lines.push(`    ${i.detail.trim().replace(/\n/g, "\n    ")}`);
+          if (htmlToPlain(i.detail || "")) lines.push(`    ${htmlToPlain(i.detail)}`);
         });
       }
       if (day.stickies?.length) {
@@ -1197,12 +1399,12 @@
     addItem(
       "todo",
       els.todoInput.value,
-      els.todoDetail.value,
+      rich.todoDetail.isEmpty() ? "" : rich.todoDetail.getHtml(),
       els.todoTool.value,
       els.todoFile.value
     );
     els.todoInput.value = "";
-    els.todoDetail.value = "";
+    rich.todoDetail.clear();
     els.todoTool.value = "";
     els.todoFile.value = "";
     els.todoInput.focus();
@@ -1213,12 +1415,12 @@
     addItem(
       "done",
       els.doneInput.value,
-      els.doneDetail.value,
+      rich.doneDetail.isEmpty() ? "" : rich.doneDetail.getHtml(),
       els.doneTool.value,
       els.doneFile.value
     );
     els.doneInput.value = "";
-    els.doneDetail.value = "";
+    rich.doneDetail.clear();
     els.doneTool.value = "";
     els.doneFile.value = "";
     els.doneInput.focus();
@@ -1252,17 +1454,19 @@
   els.noteForm.addEventListener("submit", (e) => {
     e.preventDefault();
     const title = els.noteTitle.value.trim();
-    const body = els.noteBody.value.trim();
-    if (!title || !body) return;
+    if (!title || rich.noteBody.isEmpty()) {
+      showToast("Add a title and note body");
+      return;
+    }
     store.notes.unshift({
       id: uid(),
       title,
-      body,
+      body: rich.noteBody.getHtml(),
       createdAt: Date.now(),
     });
     saveStore();
     els.noteTitle.value = "";
-    els.noteBody.value = "";
+    rich.noteBody.clear();
     renderConsolidatedPanel();
     showToast("Note added");
   });
