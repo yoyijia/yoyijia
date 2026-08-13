@@ -56,137 +56,249 @@
         </span>
       </a>
 
-      <div class="date-nav" role="group" aria-label="Choose day">
-        <button type="button" class="icon-btn" id="prevDay" aria-label="Previous day">
-          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
-            <path
-              d="M15 6 L9 12 L15 18"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2.2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-          </svg>
+      <nav class="view-tabs" role="tablist" aria-label="Sprig views">
+        <button
+          type="button"
+          class="view-tab"
+          role="tab"
+          id="tabDashboard"
+          aria-controls="viewDashboard"
+          aria-selected="true"
+          data-view="dashboard"
+        >
+          Dashboard
         </button>
-        <button type="button" class="date-pill" id="dateLabel" aria-live="polite">
-          Today
+        <button
+          type="button"
+          class="view-tab"
+          role="tab"
+          id="tabDay"
+          aria-controls="viewDay"
+          aria-selected="false"
+          data-view="day"
+        >
+          Day log
         </button>
-        <input type="date" id="datePicker" class="date-picker" aria-label="Pick a date" />
-        <button type="button" class="icon-btn" id="nextDay" aria-label="Next day">
-          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
-            <path
-              d="M9 6 L15 12 L9 18"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2.2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-          </svg>
-        </button>
-      </div>
+      </nav>
     </header>
 
     <main class="page">
-      <section class="hero-line" aria-labelledby="dayTitle">
-        <p class="eyebrow" id="weekdayLabel">Wednesday</p>
-        <h1 id="dayTitle">What grew today?</h1>
-        <p class="lede" id="dayHint">
-          Plant a to-do, check off what you finished, and keep a soft note for your
-          internship days.
-        </p>
-      </section>
-
-      <div class="columns">
-        <section class="panel panel-todo" aria-labelledby="todoHeading">
-          <div class="panel-head">
-            <div>
-              <p class="panel-kicker">to plant</p>
-              <h2 id="todoHeading">Things to do</h2>
-            </div>
-            <span class="count" id="todoCount">0</span>
+      <!-- DASHBOARD -->
+      <section
+        class="view view-dashboard"
+        id="viewDashboard"
+        role="tabpanel"
+        aria-labelledby="tabDashboard"
+      >
+        <section class="hero-line" aria-labelledby="dashTitle">
+          <p class="eyebrow">your garden</p>
+          <h1 id="dashTitle">Internship dashboard</h1>
+          <p class="lede">
+            A soft overview of what you’ve planted, grown, and still want to tend.
+          </p>
+          <div class="hero-actions">
+            <button type="button" class="add-btn" id="openToday">Open today’s log</button>
+            <button type="button" class="ghost-btn" id="copyWeek">Copy week summary</button>
           </div>
-
-          <form class="add-row" id="todoForm" autocomplete="off">
-            <input
-              type="text"
-              id="todoInput"
-              name="todo"
-              maxlength="200"
-              placeholder="e.g. Review PR feedback…"
-              aria-label="Add a to-do"
-              required
-            />
-            <button type="submit" class="add-btn">Add</button>
-          </form>
-
-          <ul class="list" id="todoList"></ul>
-          <p class="empty" id="todoEmpty">Nothing planted yet. Add one above.</p>
         </section>
 
-        <section class="panel panel-done" aria-labelledby="doneHeading">
+        <section class="metrics" aria-label="Internship snapshot">
+          <article class="metric">
+            <p class="metric-label">Days logged</p>
+            <p class="metric-value" id="statDays">0</p>
+          </article>
+          <article class="metric">
+            <p class="metric-label">Things done</p>
+            <p class="metric-value" id="statDone">0</p>
+          </article>
+          <article class="metric">
+            <p class="metric-label">Still to do</p>
+            <p class="metric-value" id="statTodo">0</p>
+          </article>
+          <article class="metric metric-streak">
+            <p class="metric-label">Streak</p>
+            <p class="metric-value"><span id="statStreak">0</span><span class="metric-unit"> days</span></p>
+          </article>
+        </section>
+
+        <section class="panel week-panel" aria-labelledby="weekHeading">
           <div class="panel-head">
             <div>
-              <p class="panel-kicker">grown</p>
-              <h2 id="doneHeading">Things done</h2>
+              <p class="panel-kicker">this week</p>
+              <h2 id="weekHeading">Growth rhythm</h2>
             </div>
-            <span class="count" id="doneCount">0</span>
+            <span class="count" id="weekDoneCount">0 done</span>
           </div>
-
-          <form class="add-row" id="doneForm" autocomplete="off">
-            <input
-              type="text"
-              id="doneInput"
-              name="done"
-              maxlength="200"
-              placeholder="e.g. Shipped the landing tweak…"
-              aria-label="Add something done"
-              required
-            />
-            <button type="submit" class="add-btn">Add</button>
-          </form>
-
-          <ul class="list" id="doneList"></ul>
-          <p class="empty" id="doneEmpty">No wins logged yet. You’ve got this.</p>
+          <div class="week-strip" id="weekStrip" aria-label="Last seven days"></div>
         </section>
-      </div>
 
-      <section class="note-panel" aria-labelledby="noteHeading">
-        <div class="panel-head">
-          <div>
-            <p class="panel-kicker">soft note</p>
-            <h2 id="noteHeading">How did the day feel?</h2>
-          </div>
-          <div class="moods" role="group" aria-label="Mood">
-            <button type="button" class="mood" data-mood="sunny" aria-pressed="false">
-              sunny
-            </button>
-            <button type="button" class="mood" data-mood="steady" aria-pressed="false">
-              steady
-            </button>
-            <button type="button" class="mood" data-mood="cloudy" aria-pressed="false">
-              cloudy
-            </button>
-            <button type="button" class="mood" data-mood="tired" aria-pressed="false">
-              tired
-            </button>
-          </div>
+        <div class="dash-columns">
+          <section class="panel panel-open" aria-labelledby="openHeading">
+            <div class="panel-head">
+              <div>
+                <p class="panel-kicker">still growing</p>
+                <h2 id="openHeading">Open to-dos</h2>
+              </div>
+              <span class="count" id="openTodoCount">0</span>
+            </div>
+            <ul class="dash-list" id="openTodoList"></ul>
+            <p class="empty" id="openTodoEmpty">No open to-dos. Nice and clear.</p>
+          </section>
+
+          <section class="panel panel-recent" aria-labelledby="recentHeading">
+            <div class="panel-head">
+              <div>
+                <p class="panel-kicker">recent soil</p>
+                <h2 id="recentHeading">Recent days</h2>
+              </div>
+            </div>
+            <ul class="dash-list" id="recentList"></ul>
+            <p class="empty" id="recentEmpty">Start logging today to fill your garden.</p>
+          </section>
         </div>
-        <textarea
-          id="noteInput"
-          rows="4"
-          maxlength="2000"
-          placeholder="Learnings, blockers, people who helped, little joys…"
-          aria-label="Day note"
-        ></textarea>
       </section>
 
-      <footer class="actions">
-        <button type="button" class="ghost-btn" id="jumpToday">Jump to today</button>
-        <button type="button" class="ghost-btn" id="copyDay">Copy day summary</button>
-        <span class="save-status" id="saveStatus" aria-live="polite">Saved on this device</span>
-      </footer>
+      <!-- DAY LOG -->
+      <section
+        class="view view-day"
+        id="viewDay"
+        role="tabpanel"
+        aria-labelledby="tabDay"
+        hidden
+      >
+        <div class="day-toolbar">
+          <div class="date-nav" role="group" aria-label="Choose day">
+            <button type="button" class="icon-btn" id="prevDay" aria-label="Previous day">
+              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+                <path
+                  d="M15 6 L9 12 L15 18"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </button>
+            <button type="button" class="date-pill" id="dateLabel" aria-live="polite">
+              Today
+            </button>
+            <input type="date" id="datePicker" class="date-picker" aria-label="Pick a date" />
+            <button type="button" class="icon-btn" id="nextDay" aria-label="Next day">
+              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+                <path
+                  d="M9 6 L15 12 L9 18"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </button>
+          </div>
+          <button type="button" class="ghost-btn" id="backDashboard">Back to dashboard</button>
+        </div>
+
+        <section class="hero-line" aria-labelledby="dayTitle">
+          <p class="eyebrow" id="weekdayLabel">Wednesday</p>
+          <h1 id="dayTitle">What grew today?</h1>
+          <p class="lede" id="dayHint">
+            Plant a to-do, check off what you finished, and keep a soft note for your
+            internship days.
+          </p>
+        </section>
+
+        <div class="columns">
+          <section class="panel panel-todo" aria-labelledby="todoHeading">
+            <div class="panel-head">
+              <div>
+                <p class="panel-kicker">to plant</p>
+                <h2 id="todoHeading">Things to do</h2>
+              </div>
+              <span class="count" id="todoCount">0</span>
+            </div>
+
+            <form class="add-row" id="todoForm" autocomplete="off">
+              <input
+                type="text"
+                id="todoInput"
+                name="todo"
+                maxlength="200"
+                placeholder="e.g. Review PR feedback…"
+                aria-label="Add a to-do"
+                required
+              />
+              <button type="submit" class="add-btn">Add</button>
+            </form>
+
+            <ul class="list" id="todoList"></ul>
+            <p class="empty" id="todoEmpty">Nothing planted yet. Add one above.</p>
+          </section>
+
+          <section class="panel panel-done" aria-labelledby="doneHeading">
+            <div class="panel-head">
+              <div>
+                <p class="panel-kicker">grown</p>
+                <h2 id="doneHeading">Things done</h2>
+              </div>
+              <span class="count" id="doneCount">0</span>
+            </div>
+
+            <form class="add-row" id="doneForm" autocomplete="off">
+              <input
+                type="text"
+                id="doneInput"
+                name="done"
+                maxlength="200"
+                placeholder="e.g. Shipped the landing tweak…"
+                aria-label="Add something done"
+                required
+              />
+              <button type="submit" class="add-btn">Add</button>
+            </form>
+
+            <ul class="list" id="doneList"></ul>
+            <p class="empty" id="doneEmpty">No wins logged yet. You’ve got this.</p>
+          </section>
+        </div>
+
+        <section class="note-panel" aria-labelledby="noteHeading">
+          <div class="panel-head">
+            <div>
+              <p class="panel-kicker">soft note</p>
+              <h2 id="noteHeading">How did the day feel?</h2>
+            </div>
+            <div class="moods" role="group" aria-label="Mood">
+              <button type="button" class="mood" data-mood="sunny" aria-pressed="false">
+                sunny
+              </button>
+              <button type="button" class="mood" data-mood="steady" aria-pressed="false">
+                steady
+              </button>
+              <button type="button" class="mood" data-mood="cloudy" aria-pressed="false">
+                cloudy
+              </button>
+              <button type="button" class="mood" data-mood="tired" aria-pressed="false">
+                tired
+              </button>
+            </div>
+          </div>
+          <textarea
+            id="noteInput"
+            rows="4"
+            maxlength="2000"
+            placeholder="Learnings, blockers, people who helped, little joys…"
+            aria-label="Day note"
+          ></textarea>
+        </section>
+
+        <footer class="actions">
+          <button type="button" class="ghost-btn" id="jumpToday">Jump to today</button>
+          <button type="button" class="ghost-btn" id="copyDay">Copy day summary</button>
+          <span class="save-status" id="saveStatus" aria-live="polite">Saved on this device</span>
+        </footer>
+      </section>
     </main>
 
     <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>

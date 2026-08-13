@@ -1,7 +1,26 @@
 (() => {
   const STORAGE_KEY = "sprig-intern-log-v1";
+  const VIEW_KEY = "sprig-view-v1";
 
   const els = {
+    tabDashboard: document.getElementById("tabDashboard"),
+    tabDay: document.getElementById("tabDay"),
+    viewDashboard: document.getElementById("viewDashboard"),
+    viewDay: document.getElementById("viewDay"),
+    openToday: document.getElementById("openToday"),
+    copyWeek: document.getElementById("copyWeek"),
+    backDashboard: document.getElementById("backDashboard"),
+    statDays: document.getElementById("statDays"),
+    statDone: document.getElementById("statDone"),
+    statTodo: document.getElementById("statTodo"),
+    statStreak: document.getElementById("statStreak"),
+    weekStrip: document.getElementById("weekStrip"),
+    weekDoneCount: document.getElementById("weekDoneCount"),
+    openTodoList: document.getElementById("openTodoList"),
+    openTodoEmpty: document.getElementById("openTodoEmpty"),
+    openTodoCount: document.getElementById("openTodoCount"),
+    recentList: document.getElementById("recentList"),
+    recentEmpty: document.getElementById("recentEmpty"),
     prevDay: document.getElementById("prevDay"),
     nextDay: document.getElementById("nextDay"),
     dateLabel: document.getElementById("dateLabel"),
@@ -28,6 +47,7 @@
   };
 
   let selectedDate = todayKey();
+  let currentView = localStorage.getItem(VIEW_KEY) === "day" ? "day" : "dashboard";
   let store = loadStore();
   let toastTimer = null;
   let noteTimer = null;
@@ -67,7 +87,7 @@
 
   function saveStore() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(store));
-    els.saveStatus.textContent = "Saved on this device";
+    if (els.saveStatus) els.saveStatus.textContent = "Saved on this device";
   }
 
   function emptyDay() {
@@ -77,6 +97,19 @@
   function dayData(key = selectedDate) {
     if (!store.days[key]) store.days[key] = emptyDay();
     return store.days[key];
+  }
+
+  function peekDay(key) {
+    return store.days[key] || emptyDay();
+  }
+
+  function dayHasContent(day) {
+    return Boolean(
+      (day.todos && day.todos.length) ||
+        (day.dones && day.dones.length) ||
+        (day.note && day.note.trim()) ||
+        day.mood
+    );
   }
 
   function uid() {
@@ -99,14 +132,165 @@
   }
 
   function prettyDate(key) {
-    const date = parseKey(key);
     const isToday = key === todayKey();
     const isYesterday = key === shiftDay(todayKey(), -1);
     if (isToday) return "Today";
     if (isYesterday) return "Yesterday";
-    return date.toLocaleDateString(undefined, {
+    return parseKey(key).toLocaleDateString(undefined, {
       month: "short",
       day: "numeric",
+    });
+  }
+
+  function moodLabel(mood) {
+    return mood || "no mood";
+  }
+
+  function setView(view) {
+    currentView = view === "day" ? "day" : "dashboard";
+    localStorage.setItem(VIEW_KEY, currentView);
+
+    const isDash = currentView === "dashboard";
+    els.viewDashboard.hidden = !isDash;
+    els.viewDay.hidden = isDash;
+    els.tabDashboard.setAttribute("aria-selected", isDash ? "true" : "false");
+    els.tabDay.setAttribute("aria-selected", isDash ? "false" : "true");
+
+    if (isDash) renderDashboard();
+    else renderDay();
+  }
+
+  function openDay(key) {
+    selectedDate = key > todayKey() ? todayKey() : key;
+    setView("day");
+  }
+
+  function contentKeys() {
+    return Object.keys(store.days)
+      .filter((key) => dayHasContent(store.days[key]))
+      .sort((a, b) => (a < b ? 1 : -1));
+  }
+
+  function computeStreak() {
+    let streak = 0;
+    let cursor = todayKey();
+    if (!dayHasContent(peekDay(cursor))) {
+      cursor = shiftDay(cursor, -1);
+    }
+    while (dayHasContent(peekDay(cursor))) {
+      streak += 1;
+      cursor = shiftDay(cursor, -1);
+    }
+    return streak;
+  }
+
+  function weekKeys() {
+    const end = todayKey();
+    const keys = [];
+    for (let i = 6; i >= 0; i -= 1) keys.push(shiftDay(end, -i));
+    return keys;
+  }
+
+  function renderDashboard() {
+    const keys = contentKeys();
+    let totalDone = 0;
+    let totalTodo = 0;
+    const openItems = [];
+
+    keys.forEach((key) => {
+      const day = peekDay(key);
+      totalDone += day.dones.length;
+      totalTodo += day.todos.length;
+      day.todos.forEach((item) => {
+        openItems.push({ key, text: item.text, id: item.id });
+      });
+    });
+
+    els.statDays.textContent = String(keys.length);
+    els.statDone.textContent = String(totalDone);
+    els.statTodo.textContent = String(totalTodo);
+    els.statStreak.textContent = String(computeStreak());
+
+    const week = weekKeys();
+    let weekDone = 0;
+    els.weekStrip.innerHTML = "";
+    week.forEach((key) => {
+      const day = peekDay(key);
+      const done = day.dones.length;
+      const todo = day.todos.length;
+      weekDone += done;
+      const activity = done + todo + (day.note?.trim() ? 1 : 0) + (day.mood ? 1 : 0);
+      const height = activity === 0 ? 0.18 : Math.min(1, 0.28 + activity * 0.16);
+
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = `week-day${key === todayKey() ? " is-today" : ""}${
+        activity === 0 ? " is-empty" : ""
+      }`;
+      btn.setAttribute(
+        "aria-label",
+        `${prettyDate(key)}: ${done} done, ${todo} to-do`
+      );
+      btn.innerHTML = `
+        <span class="week-label">${parseKey(key).toLocaleDateString(undefined, {
+          weekday: "short",
+        })}</span>
+        <span class="week-bar" style="transform: scaleY(${height})"></span>
+        <span class="week-count">${done}</span>
+      `;
+      btn.addEventListener("click", () => openDay(key));
+      els.weekStrip.appendChild(btn);
+    });
+    els.weekDoneCount.textContent = `${weekDone} done`;
+
+    els.openTodoList.innerHTML = "";
+    els.openTodoCount.textContent = String(openItems.length);
+    els.openTodoEmpty.hidden = openItems.length > 0;
+    openItems.slice(0, 8).forEach((item) => {
+      const li = document.createElement("li");
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "dash-item";
+      btn.innerHTML = `
+        <div>
+          <p class="dash-item-title"></p>
+          <p class="dash-item-meta"></p>
+        </div>
+        <span class="dash-item-side">open</span>
+      `;
+      btn.querySelector(".dash-item-title").textContent = item.text;
+      btn.querySelector(".dash-item-meta").textContent = prettyDate(item.key);
+      btn.addEventListener("click", () => openDay(item.key));
+      li.appendChild(btn);
+      els.openTodoList.appendChild(li);
+    });
+
+    els.recentList.innerHTML = "";
+    els.recentEmpty.hidden = keys.length > 0;
+    keys.slice(0, 8).forEach((key) => {
+      const day = peekDay(key);
+      const li = document.createElement("li");
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "dash-item";
+      btn.innerHTML = `
+        <div>
+          <p class="dash-item-title"></p>
+          <p class="dash-item-meta"></p>
+        </div>
+        <span class="dash-item-side"></span>
+      `;
+      btn.querySelector(".dash-item-title").textContent = prettyDate(key);
+      btn.querySelector(".dash-item-meta").textContent = `${day.dones.length} done · ${
+        day.todos.length
+      } to-do · ${moodLabel(day.mood)}`;
+      btn.querySelector(".dash-item-side").textContent = parseKey(key).toLocaleDateString(
+        undefined,
+        { weekday: "short" }
+      );
+      btn.addEventListener("click", () => openDay(key));
+      li.appendChild(btn);
+      els.recentList.appendChild(li);
     });
   }
 
@@ -154,7 +338,9 @@
 
     items.forEach((item) => {
       const li = document.createElement("li");
-      li.className = `item ${kind === "done" || item.done ? "done-item" : ""} ${item.done ? "is-checked" : ""}`;
+      li.className = `item ${kind === "done" || item.done ? "done-item" : ""} ${
+        item.done ? "is-checked" : ""
+      }`;
       li.dataset.id = item.id;
 
       const check = document.createElement("button");
@@ -192,11 +378,16 @@
     });
   }
 
-  function render() {
+  function renderDay() {
     updateChrome();
     renderList("todo");
     renderList("done");
     renderMoodAndNote();
+  }
+
+  function refresh() {
+    if (currentView === "dashboard") renderDashboard();
+    else renderDay();
   }
 
   function addItem(kind, text) {
@@ -233,7 +424,7 @@
       item.done = true;
       data.dones.unshift(item);
     } else {
-      const idx = data.dones.findIndex((i) => i.id !== undefined && i.id === id);
+      const idx = data.dones.findIndex((i) => i.id === id);
       if (idx === -1) return;
       const [item] = data.dones.splice(idx, 1);
       item.done = false;
@@ -248,39 +439,27 @@
   function setDate(key) {
     const max = todayKey();
     selectedDate = key > max ? max : key;
-    render();
+    renderDay();
   }
 
-  function buildSummary() {
-    const data = dayData();
-    const date = parseKey(selectedDate);
-    const title = date.toLocaleDateString(undefined, {
+  function buildDaySummary(key = selectedDate) {
+    const data = peekDay(key);
+    const title = parseKey(key).toLocaleDateString(undefined, {
       weekday: "long",
       month: "long",
       day: "numeric",
       year: "numeric",
     });
 
-    const moodMap = {
-      sunny: "sunny",
-      steady: "steady",
-      cloudy: "cloudy",
-      tired: "tired",
-    };
-
     const lines = [
       `Sprig — ${title}`,
-      data.mood ? `Mood: ${moodMap[data.mood] || data.mood}` : null,
+      data.mood ? `Mood: ${data.mood}` : null,
       "",
       "Done:",
-      ...(data.dones.length
-        ? data.dones.map((i) => `- ${i.text}`)
-        : ["- (none yet)"]),
+      ...(data.dones.length ? data.dones.map((i) => `- ${i.text}`) : ["- (none yet)"]),
       "",
       "To do:",
-      ...(data.todos.length
-        ? data.todos.map((i) => `- ${i.text}`)
-        : ["- (none yet)"]),
+      ...(data.todos.length ? data.todos.map((i) => `- ${i.text}`) : ["- (none yet)"]),
     ];
 
     if (data.note?.trim()) {
@@ -290,11 +469,28 @@
     return lines.filter((line) => line !== null).join("\n");
   }
 
-  async function copySummary() {
-    const text = buildSummary();
+  function buildWeekSummary() {
+    const lines = ["Sprig — week summary", ""];
+    weekKeys().forEach((key) => {
+      const day = peekDay(key);
+      if (!dayHasContent(day)) return;
+      lines.push(prettyDate(key));
+      if (day.dones.length) {
+        day.dones.forEach((i) => lines.push(`  ✓ ${i.text}`));
+      }
+      if (day.todos.length) {
+        day.todos.forEach((i) => lines.push(`  ○ ${i.text}`));
+      }
+      lines.push("");
+    });
+    if (lines.length <= 2) lines.push("(No logged days this week yet.)");
+    return lines.join("\n").trim();
+  }
+
+  async function copyText(text, toastMessage) {
     try {
       await navigator.clipboard.writeText(text);
-      showToast("Day summary copied");
+      showToast(toastMessage);
     } catch {
       const area = document.createElement("textarea");
       area.value = text;
@@ -302,9 +498,17 @@
       area.select();
       document.execCommand("copy");
       area.remove();
-      showToast("Day summary copied");
+      showToast(toastMessage);
     }
   }
+
+  els.tabDashboard.addEventListener("click", () => setView("dashboard"));
+  els.tabDay.addEventListener("click", () => setView("day"));
+  els.openToday.addEventListener("click", () => openDay(todayKey()));
+  els.backDashboard.addEventListener("click", () => setView("dashboard"));
+  els.copyWeek.addEventListener("click", () =>
+    copyText(buildWeekSummary(), "Week summary copied")
+  );
 
   els.prevDay.addEventListener("click", () => setDate(shiftDay(selectedDate, -1)));
   els.nextDay.addEventListener("click", () => {
@@ -354,11 +558,14 @@
   });
 
   els.jumpToday.addEventListener("click", () => setDate(todayKey()));
-  els.copyDay.addEventListener("click", copySummary);
+  els.copyDay.addEventListener("click", () =>
+    copyText(buildDaySummary(), "Day summary copied")
+  );
 
   // Seed a gentle first-run example for today only when empty
   if (!localStorage.getItem(STORAGE_KEY)) {
     const today = dayData(todayKey());
+    const yesterday = dayData(shiftDay(todayKey(), -1));
     today.todos = [
       {
         id: uid(),
@@ -377,8 +584,19 @@
     ];
     today.note = "First day in the log. Tiny steps count.";
     today.mood = "sunny";
+
+    yesterday.dones = [
+      {
+        id: uid(),
+        text: "Set up my intern tools",
+        done: true,
+        createdAt: Date.now() - 86400000,
+      },
+    ];
+    yesterday.mood = "steady";
+    yesterday.note = "Getting oriented.";
     saveStore();
   }
 
-  render();
+  setView(currentView);
 })();
