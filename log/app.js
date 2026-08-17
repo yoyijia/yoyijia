@@ -396,11 +396,35 @@
     if (!Array.isArray(store.refGroups)) store.refGroups = [];
 
     if (store.refGroups.length === 0) {
-      store.refGroups = [
-        { id: uid(), title: "Inbox", order: 0 },
-        { id: uid(), title: "Shortlist", order: 1 },
-        { id: uid(), title: "Archive", order: 2 },
-      ];
+      store.refGroups = [{ id: uid(), title: "Board", order: 0 }];
+    } else {
+      const titles = store.refGroups.map((g) => g.title);
+      const presets = ["Inbox", "Shortlist", "Archive"];
+      const onlyPresets =
+        store.refGroups.length === 3 &&
+        store.refGroups.every((g) => presets.includes(g.title)) &&
+        presets.every((t) => titles.includes(t));
+      if (onlyPresets) {
+        const boardId = uid();
+        const ordered = [...store.refGroups]
+          .sort((a, b) => a.order - b.order)
+          .flatMap((g) =>
+            store.references
+              .filter((r) => r.groupId === g.id)
+              .sort((a, b) => a.order - b.order)
+          );
+        store.refGroups = [{ id: boardId, title: "Board", order: 0 }];
+        ordered.forEach((ref, i) => {
+          ref.groupId = boardId;
+          ref.order = i;
+        });
+        store.references.forEach((ref) => {
+          if (!ordered.includes(ref)) {
+            ref.groupId = boardId;
+            ref.order = ordered.length;
+          }
+        });
+      }
     }
 
     store.refGroups = store.refGroups
@@ -2221,13 +2245,8 @@
         createdAt: Date.now(),
       },
     ];
-    const inboxId = uid();
-    const shortlistId = uid();
-    store.refGroups = [
-      { id: inboxId, title: "Inbox", order: 0 },
-      { id: shortlistId, title: "Shortlist", order: 1 },
-      { id: uid(), title: "Archive", order: 2 },
-    ];
+    const boardId = uid();
+    store.refGroups = [{ id: boardId, title: "Board", order: 0 }];
     store.references = [
       {
         id: uid(),
@@ -2235,7 +2254,7 @@
         url: "https://www.instagram.com/",
         format: "carousel",
         note: "Clean pacing + muted palette",
-        groupId: shortlistId,
+        groupId: boardId,
         order: 0,
         createdAt: Date.now(),
       },
@@ -2245,8 +2264,8 @@
         url: "https://www.instagram.com/reels/",
         format: "reel",
         note: "Hook in first 1s",
-        groupId: inboxId,
-        order: 0,
+        groupId: boardId,
+        order: 1,
         createdAt: Date.now() - 1000,
       },
     ];
