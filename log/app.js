@@ -20,6 +20,18 @@
 
   const TOOL_LABELS = Object.fromEntries(TOOL_OPTIONS.filter(([v]) => v));
 
+  const REF_FORMATS = [
+    ["reel", "Reel"],
+    ["carousel", "Carousel"],
+    ["static", "Static post"],
+    ["story", "Story"],
+    ["video", "Video"],
+    ["ad", "Ad"],
+    ["other", "Other"],
+  ];
+  const REF_FORMAT_LABELS = Object.fromEntries(REF_FORMATS);
+  const REF_FILTER_KEY = "sprig-ref-filter-v1";
+
   const RICH_COLORS = [
     { name: "Ink", value: "#243328" },
     { name: "Sage", value: "#3e6b4a" },
@@ -259,9 +271,11 @@
     saveSticky: document.getElementById("saveSticky"),
     swatches: [...document.querySelectorAll(".swatch")],
     notesTabLinks: document.getElementById("notesTabLinks"),
+    notesTabRefs: document.getElementById("notesTabRefs"),
     notesTabStickies: document.getElementById("notesTabStickies"),
     notesTabConsolidated: document.getElementById("notesTabConsolidated"),
     notesPanelLinks: document.getElementById("notesPanelLinks"),
+    notesPanelRefs: document.getElementById("notesPanelRefs"),
     notesPanelStickies: document.getElementById("notesPanelStickies"),
     notesPanelConsolidated: document.getElementById("notesPanelConsolidated"),
     linkForm: document.getElementById("linkForm"),
@@ -274,6 +288,18 @@
     linksList: document.getElementById("linksList"),
     linksEmpty: document.getElementById("linksEmpty"),
     linksCount: document.getElementById("linksCount"),
+    refForm: document.getElementById("refForm"),
+    refTitle: document.getElementById("refTitle"),
+    refFormat: document.getElementById("refFormat"),
+    refUrl: document.getElementById("refUrl"),
+    refNote: document.getElementById("refNote"),
+    refSubmitBtn: document.getElementById("refSubmitBtn"),
+    refCancelEdit: document.getElementById("refCancelEdit"),
+    refEditHint: document.getElementById("refEditHint"),
+    refFilters: document.getElementById("refFilters"),
+    refsList: document.getElementById("refsList"),
+    refsEmpty: document.getElementById("refsEmpty"),
+    refsCount: document.getElementById("refsCount"),
     allStickiesBoard: document.getElementById("allStickiesBoard"),
     allStickiesEmpty: document.getElementById("allStickiesEmpty"),
     allStickiesCount: document.getElementById("allStickiesCount"),
@@ -298,6 +324,12 @@
   let toastTimer = null;
   let stickyColor = "butter";
   let editingLinkId = null;
+  let editingRefId = null;
+  const savedRefFilter = localStorage.getItem(REF_FILTER_KEY) || "all";
+  let refFilter =
+    savedRefFilter === "all" || REF_FORMAT_LABELS[savedRefFilter]
+      ? savedRefFilter
+      : "all";
   const openEditors = new Set();
 
   const rich = {
@@ -332,20 +364,25 @@
   function loadStore() {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) return { days: {}, links: [], notes: [] };
+      if (!raw) return { days: {}, links: [], references: [], notes: [] };
       const parsed = JSON.parse(raw);
       return {
         days: parsed?.days && typeof parsed.days === "object" ? parsed.days : {},
         links: Array.isArray(parsed?.links) ? parsed.links : [],
+        references: Array.isArray(parsed?.references) ? parsed.references : [],
         notes: Array.isArray(parsed?.notes) ? parsed.notes : [],
       };
     } catch {
-      return { days: {}, links: [], notes: [] };
+      return { days: {}, links: [], references: [], notes: [] };
     }
   }
 
   function toolLabel(tool) {
     return TOOL_LABELS[tool] || "";
+  }
+
+  function refFormatLabel(format) {
+    return REF_FORMAT_LABELS[format] || format || "";
   }
 
   function looksLikeUrl(value) {
@@ -455,12 +492,16 @@
   }
 
   function setNotesTab(tab) {
-    notesTab = ["links", "stickies", "consolidated"].includes(tab) ? tab : "links";
+    notesTab = ["links", "refs", "stickies", "consolidated"].includes(tab)
+      ? tab
+      : "links";
     localStorage.setItem(NOTES_TAB_KEY, notesTab);
     els.notesPanelLinks.hidden = notesTab !== "links";
+    els.notesPanelRefs.hidden = notesTab !== "refs";
     els.notesPanelStickies.hidden = notesTab !== "stickies";
     els.notesPanelConsolidated.hidden = notesTab !== "consolidated";
     els.notesTabLinks.setAttribute("aria-selected", notesTab === "links" ? "true" : "false");
+    els.notesTabRefs.setAttribute("aria-selected", notesTab === "refs" ? "true" : "false");
     els.notesTabStickies.setAttribute("aria-selected", notesTab === "stickies" ? "true" : "false");
     els.notesTabConsolidated.setAttribute(
       "aria-selected",
@@ -982,6 +1023,7 @@
   function renderNotes() {
     setNotesTab(notesTab);
     renderLinksPanel();
+    renderRefsPanel();
     renderAllStickiesPanel();
     renderConsolidatedPanel();
   }
@@ -1098,6 +1140,171 @@
       row.append(left, side);
       li.appendChild(row);
       els.linksList.appendChild(li);
+    });
+  }
+
+  function clearRefEditing() {
+    editingRefId = null;
+    els.refTitle.value = "";
+    els.refUrl.value = "";
+    els.refFormat.value = "";
+    els.refNote.value = "";
+    els.refSubmitBtn.textContent = "Save reference";
+    els.refCancelEdit.hidden = true;
+    els.refEditHint.hidden = true;
+  }
+
+  function startRefEditing(ref) {
+    editingRefId = ref.id;
+    els.refTitle.value = ref.title || "";
+    els.refUrl.value = ref.url || "";
+    els.refFormat.value = ref.format || "";
+    els.refNote.value = ref.note || "";
+    els.refSubmitBtn.textContent = "Update reference";
+    els.refCancelEdit.hidden = false;
+    els.refEditHint.hidden = false;
+    els.refTitle.focus();
+    els.refTitle.select();
+    renderRefsPanel();
+    showToast("Editing reference");
+  }
+
+  function setRefFilter(filter) {
+    refFilter =
+      filter === "all" || REF_FORMAT_LABELS[filter] ? filter : "all";
+    localStorage.setItem(REF_FILTER_KEY, refFilter);
+    renderRefsPanel();
+  }
+
+  function renderRefFilters(allRefs) {
+    const counts = { all: allRefs.length };
+    REF_FORMATS.forEach(([value]) => {
+      counts[value] = allRefs.filter((r) => r.format === value).length;
+    });
+
+    const chips = [
+      ["all", "All"],
+      ...REF_FORMATS.filter(([value]) => counts[value] > 0 || value === refFilter),
+    ];
+
+    els.refFilters.innerHTML = "";
+    chips.forEach(([value, label]) => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = `ref-filter${refFilter === value ? " is-active" : ""}`;
+      btn.textContent = `${label} (${counts[value] || 0})`;
+      btn.setAttribute(
+        "aria-pressed",
+        refFilter === value ? "true" : "false"
+      );
+      btn.addEventListener("click", () => setRefFilter(value));
+      els.refFilters.appendChild(btn);
+    });
+  }
+
+  function renderRefsPanel() {
+    if (!store.references) store.references = [];
+    const all = store.references;
+    const filtered =
+      refFilter === "all"
+        ? all
+        : all.filter((r) => r.format === refFilter);
+
+    els.refsCount.textContent = String(filtered.length);
+    els.refsList.innerHTML = "";
+    els.refsEmpty.hidden = filtered.length > 0;
+    if (all.length === 0) {
+      els.refsEmpty.textContent =
+        "No references yet. Save ones you love and tag the format.";
+    } else if (filtered.length === 0) {
+      els.refsEmpty.textContent = `No ${refFormatLabel(refFilter).toLowerCase()} references yet.`;
+      els.refsEmpty.hidden = false;
+    }
+
+    renderRefFilters(all);
+
+    filtered.forEach((ref) => {
+      const li = document.createElement("li");
+      const row = document.createElement("div");
+      row.className = `dash-item${ref.id === editingRefId ? " is-editing" : ""}`;
+      row.style.cursor = "default";
+
+      const left = document.createElement("div");
+      const titleRow = document.createElement("div");
+      titleRow.style.display = "flex";
+      titleRow.style.alignItems = "center";
+      titleRow.style.gap = "0.45rem";
+      titleRow.style.flexWrap = "wrap";
+
+      const title = document.createElement("p");
+      title.className = "dash-item-title";
+      title.style.margin = "0";
+      title.textContent = ref.title || "Untitled reference";
+
+      const chip = document.createElement("span");
+      chip.className = "ref-format-chip";
+      chip.dataset.format = ref.format || "other";
+      chip.textContent = refFormatLabel(ref.format) || "Other";
+
+      titleRow.append(title, chip);
+
+      const meta = document.createElement("p");
+      meta.className = "dash-item-meta";
+      const bits = [];
+      if (ref.id === editingRefId) bits.push("editing");
+      if (ref.note) bits.push(ref.note);
+      else if (ref.url) bits.push(ref.url);
+      meta.textContent = bits.join(" · ") || "Good reference";
+
+      left.append(titleRow, meta);
+
+      const side = document.createElement("div");
+      side.style.display = "flex";
+      side.style.gap = "0.35rem";
+      side.style.alignItems = "center";
+      side.style.flexWrap = "wrap";
+
+      if (looksLikeUrl(ref.url)) {
+        const open = document.createElement("a");
+        open.className = "dash-item-side";
+        open.href = ref.url;
+        open.target = "_blank";
+        open.rel = "noopener noreferrer";
+        open.textContent = "Open";
+        side.appendChild(open);
+      }
+
+      const edit = document.createElement("button");
+      edit.type = "button";
+      edit.className = "dash-item-side as-btn";
+      edit.textContent = ref.id === editingRefId ? "Editing…" : "Edit";
+      edit.disabled = ref.id === editingRefId;
+      edit.setAttribute(
+        "aria-label",
+        ref.id === editingRefId
+          ? "Currently editing this reference"
+          : "Edit reference"
+      );
+      edit.addEventListener("click", () => startRefEditing(ref));
+      side.appendChild(edit);
+
+      const del = document.createElement("button");
+      del.type = "button";
+      del.className = "delete";
+      del.setAttribute("aria-label", "Delete reference");
+      del.textContent = "×";
+      del.addEventListener("click", () => {
+        if (editingRefId === ref.id) clearRefEditing();
+        store.references = store.references.filter((r) => r.id !== ref.id);
+        saveStore();
+        renderRefsPanel();
+        showToast("Reference removed");
+      });
+      side.appendChild(del);
+
+      row.append(left, side);
+      li.appendChild(row);
+      els.refsList.appendChild(li);
     });
   }
 
@@ -1263,6 +1470,13 @@
         `Link: ${l.title} [${toolLabel(l.tool) || "link"}] ${l.url || ""}`.trim()
       );
     });
+    (store.references || []).forEach((r) => {
+      lines.push(
+        `Reference: ${r.title} [${refFormatLabel(r.format) || "ref"}] ${r.url || ""}${
+          r.note ? ` — ${r.note}` : ""
+        }`.trim()
+      );
+    });
     return lines.join("\n").trim() || "No notes yet.";
   }
 
@@ -1417,6 +1631,9 @@
   els.notesTabLinks.addEventListener("click", () => {
     setNotesTab("links");
   });
+  els.notesTabRefs.addEventListener("click", () => {
+    setNotesTab("refs");
+  });
   els.notesTabStickies.addEventListener("click", () => {
     setNotesTab("stickies");
   });
@@ -1520,6 +1737,59 @@
   els.linkCancelEdit.addEventListener("click", () => {
     clearLinkEditing();
     renderLinksPanel();
+    showToast("Edit cancelled");
+  });
+
+  els.refForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const title = els.refTitle.value.trim();
+    const url = els.refUrl.value.trim();
+    const format = els.refFormat.value;
+    const note = els.refNote.value.trim();
+    if (!title || !url || !format) {
+      showToast("Add a title, format, and URL");
+      return;
+    }
+
+    if (!store.references) store.references = [];
+
+    if (editingRefId) {
+      const existing = store.references.find((r) => r.id === editingRefId);
+      if (!existing) {
+        clearRefEditing();
+        showToast("Reference not found");
+        renderRefsPanel();
+        return;
+      }
+      existing.title = title;
+      existing.url = url;
+      existing.format = format;
+      existing.note = note;
+      existing.updatedAt = Date.now();
+      saveStore();
+      clearRefEditing();
+      renderRefsPanel();
+      showToast("Reference updated");
+      return;
+    }
+
+    store.references.unshift({
+      id: uid(),
+      title,
+      url,
+      format,
+      note,
+      createdAt: Date.now(),
+    });
+    saveStore();
+    clearRefEditing();
+    renderRefsPanel();
+    showToast("Reference saved");
+  });
+
+  els.refCancelEdit.addEventListener("click", () => {
+    clearRefEditing();
+    renderRefsPanel();
     showToast("Edit cancelled");
   });
 
@@ -1634,6 +1904,24 @@
         url: "Brand-Kit.psd",
         tool: "photoshop",
         createdAt: Date.now(),
+      },
+    ];
+    store.references = [
+      {
+        id: uid(),
+        title: "Soft product carousel",
+        url: "https://www.instagram.com/",
+        format: "carousel",
+        note: "Clean pacing + muted palette",
+        createdAt: Date.now(),
+      },
+      {
+        id: uid(),
+        title: "Quick tip reel",
+        url: "https://www.instagram.com/reels/",
+        format: "reel",
+        note: "Hook in first 1s",
+        createdAt: Date.now() - 1000,
       },
     ];
     store.notes = [

@@ -407,8 +407,8 @@
           <p class="eyebrow">gathered leaves</p>
           <h1 id="notesTitle">Notes overview</h1>
           <p class="lede">
-            Links, stickies, and consolidated notes from your internship days —
-            all in one place.
+            Links, good references, stickies, and consolidated notes from your
+            internship days — all in one place.
           </p>
         </section>
 
@@ -423,6 +423,17 @@
             data-notes-tab="links"
           >
             Links
+          </button>
+          <button
+            type="button"
+            class="notes-tab"
+            role="tab"
+            id="notesTabRefs"
+            aria-controls="notesPanelRefs"
+            aria-selected="false"
+            data-notes-tab="refs"
+          >
+            References
           </button>
           <button
             type="button"
@@ -506,6 +517,79 @@
           </form>
           <ul class="dash-list" id="linksList"></ul>
           <p class="empty" id="linksEmpty">No saved links yet. Add one above.</p>
+        </section>
+
+        <section
+          class="panel notes-panel"
+          id="notesPanelRefs"
+          role="tabpanel"
+          aria-labelledby="notesTabRefs"
+          hidden
+        >
+          <div class="panel-head">
+            <div>
+              <p class="panel-kicker">inspo shelf</p>
+              <h2>Good references</h2>
+            </div>
+            <span class="count" id="refsCount">0</span>
+          </div>
+          <form class="add-stack" id="refForm" autocomplete="off">
+            <div class="add-row link-form-row">
+              <input
+                type="text"
+                id="refTitle"
+                maxlength="160"
+                placeholder="Reference title…"
+                aria-label="Reference title"
+                required
+              />
+              <button type="submit" class="add-btn" id="refSubmitBtn">Save reference</button>
+              <button type="button" class="ghost-btn" id="refCancelEdit" hidden>
+                Cancel
+              </button>
+            </div>
+            <p class="link-edit-hint" id="refEditHint" hidden>
+              Editing a reference — update the fields, then hit Update reference.
+            </p>
+            <div class="add-meta">
+              <select id="refFormat" aria-label="Content format" required>
+                <option value="">Format…</option>
+                <option value="reel">Reel</option>
+                <option value="carousel">Carousel</option>
+                <option value="static">Static post</option>
+                <option value="story">Story</option>
+                <option value="video">Video</option>
+                <option value="ad">Ad</option>
+                <option value="other">Other</option>
+              </select>
+              <input
+                type="text"
+                id="refUrl"
+                maxlength="500"
+                placeholder="https://… (IG, TikTok, Pinterest…)"
+                aria-label="Reference URL"
+                required
+              />
+            </div>
+            <input
+              type="text"
+              id="refNote"
+              class="ref-note-input"
+              maxlength="240"
+              placeholder="Why it’s good (optional)…"
+              aria-label="Why this reference is good"
+            />
+          </form>
+          <div
+            class="ref-filters"
+            id="refFilters"
+            role="group"
+            aria-label="Filter by format"
+          ></div>
+          <ul class="dash-list" id="refsList"></ul>
+          <p class="empty" id="refsEmpty">
+            No references yet. Save ones you love and tag the format.
+          </p>
         </section>
 
         <section
