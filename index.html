@@ -541,7 +541,7 @@
               <input
                 type="text"
                 id="refTitle"
-                maxlength="160"
+                maxlength="240"
                 placeholder="Reference title…"
                 aria-label="Reference title"
                 required
@@ -574,14 +574,14 @@
                 required
               />
             </div>
-            <input
-              type="text"
+            <textarea
               id="refNote"
               class="ref-note-input"
-              maxlength="240"
-              placeholder="Why it’s good (optional)…"
-              aria-label="Why this reference is good"
-            />
+              rows="5"
+              maxlength="8000"
+              placeholder="Write more about this reference — why it works, what to steal, notes for branding/marketing…"
+              aria-label="Reference notes"
+            ></textarea>
             <div class="ref-tag-composer">
               <div class="ref-tag-draft" id="refTagDraft" aria-live="polite"></div>
               <div class="ref-tag-input-row">

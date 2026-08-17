@@ -1756,9 +1756,11 @@
       const label =
         refFilter.kind === "tag"
           ? refFilter.value
-          : refFilter.kind === "format"
-            ? refFormatLabel(refFilter.value).toLowerCase()
-            : "matching";
+          : refFilter.kind === "untagged"
+            ? "untagged"
+            : refFilter.kind === "format"
+              ? refFormatLabel(refFilter.value).toLowerCase()
+              : "matching";
       els.refsEmpty.textContent = `No ${label} references on the board.`;
     } else {
       els.refsEmpty.hidden = true;
@@ -2493,5 +2495,6 @@
   }
 
   ensureRefBoard();
+  renderDraftRefTags();
   setView(currentView);
 })();
