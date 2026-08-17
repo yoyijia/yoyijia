@@ -31,6 +31,16 @@
   ];
   const REF_FORMAT_LABELS = Object.fromEntries(REF_FORMATS);
   const REF_FILTER_KEY = "sprig-ref-filter-v1";
+  const REF_TAG_SUGGESTIONS = [
+    "branding",
+    "marketing",
+    "social",
+    "campaign",
+    "product",
+    "packaging",
+    "typography",
+    "color",
+  ];
 
   const RICH_COLORS = [
     { name: "Ink", value: "#243328" },
@@ -297,6 +307,7 @@
     refTagInput: document.getElementById("refTagInput"),
     refTagAdd: document.getElementById("refTagAdd"),
     refTagSuggestions: document.getElementById("refTagSuggestions"),
+    refTagQuick: document.getElementById("refTagQuick"),
     refSubmitBtn: document.getElementById("refSubmitBtn"),
     refCancelEdit: document.getElementById("refCancelEdit"),
     refEditHint: document.getElementById("refEditHint"),
@@ -394,6 +405,9 @@
   function parseRefFilter(raw) {
     const value = String(raw || "all");
     if (!value || value === "all") return { kind: "all", value: "all" };
+    if (value === "untagged" || value === "tag:") {
+      return { kind: "untagged", value: "untagged" };
+    }
     if (value.startsWith("tag:")) {
       const tag = normalizeTag(value.slice(4));
       return tag ? { kind: "tag", value: tag } : { kind: "all", value: "all" };
@@ -409,6 +423,7 @@
   }
 
   function serializeRefFilter(filter) {
+    if (filter?.kind === "untagged") return "untagged";
     if (filter?.kind === "tag" && filter.value) return `tag:${filter.value}`;
     if (filter?.kind === "format" && filter.value) return `format:${filter.value}`;
     return "all";
@@ -457,6 +472,7 @@
   function matchesRefFilter(ref) {
     if (refFilter.kind === "format") return ref.format === refFilter.value;
     if (refFilter.kind === "tag") return refHasTag(ref, refFilter.value);
+    if (refFilter.kind === "untagged") return !(ref.tags && ref.tags.length);
     return true;
   }
 
@@ -1379,6 +1395,28 @@
       .filter((tag) => !draftKeys.has(tag.toLowerCase()))
       .map((tag) => `<option value="${tag.replace(/"/g, "&quot;")}"></option>`)
       .join("");
+
+    const quickPool = [];
+    const seen = new Set();
+    [...REF_TAG_SUGGESTIONS, ...known].forEach((tag) => {
+      const key = tag.toLowerCase();
+      if (seen.has(key) || draftKeys.has(key)) return;
+      seen.add(key);
+      quickPool.push(tag);
+    });
+
+    els.refTagQuick.innerHTML = "";
+    quickPool.slice(0, 8).forEach((tag) => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "ref-tag-suggest";
+      btn.textContent = `+ ${tag}`;
+      btn.addEventListener("click", () => {
+        addDraftRefTag(tag);
+        els.refTagInput.focus();
+      });
+      els.refTagQuick.appendChild(btn);
+    });
   }
 
   function addDraftRefTag(raw) {
@@ -1434,6 +1472,17 @@
     addChip("All", formatCounts.all, refFilter.kind === "all", () =>
       setRefFilter("all")
     );
+
+    const untaggedCount = allRefs.filter((r) => !(r.tags && r.tags.length)).length;
+    if (untaggedCount > 0 || refFilter.kind === "untagged") {
+      addChip(
+        "No tag",
+        untaggedCount,
+        refFilter.kind === "untagged",
+        () => setRefFilter({ kind: "untagged", value: "untagged" }),
+        " is-tag"
+      );
+    }
 
     REF_FORMATS.forEach(([value, label]) => {
       const count = formatCounts[value] || 0;
