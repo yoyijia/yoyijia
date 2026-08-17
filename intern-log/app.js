@@ -291,7 +291,6 @@
     refForm: document.getElementById("refForm"),
     refTitle: document.getElementById("refTitle"),
     refFormat: document.getElementById("refFormat"),
-    refGroup: document.getElementById("refGroup"),
     refUrl: document.getElementById("refUrl"),
     refNote: document.getElementById("refNote"),
     refSubmitBtn: document.getElementById("refSubmitBtn"),
@@ -457,28 +456,16 @@
       .sort((a, b) => a.order - b.order);
   }
 
-  function fillRefGroupSelect(selectedId) {
-    ensureRefBoard();
-    const groups = sortedRefGroups();
-    const current =
-      selectedId && groups.some((g) => g.id === selectedId)
-        ? selectedId
-        : groups[0]?.id || "";
-    els.refGroup.innerHTML = groups
-      .map(
-        (g) =>
-          `<option value="${g.id}" ${g.id === current ? "selected" : ""}>${escapeAttr(
-            g.title
-          )}</option>`
-      )
-      .join("");
-  }
-
   function escapeAttr(value) {
     return String(value || "")
       .replace(/&/g, "&amp;")
       .replace(/"/g, "&quot;")
       .replace(/</g, "&lt;");
+  }
+
+  function defaultRefGroupId() {
+    ensureRefBoard();
+    return sortedRefGroups()[0]?.id || "";
   }
 
   function nextOrderInGroup(groupId) {
@@ -1279,7 +1266,6 @@
     els.refUrl.value = "";
     els.refFormat.value = "";
     els.refNote.value = "";
-    fillRefGroupSelect(sortedRefGroups()[0]?.id);
     els.refSubmitBtn.textContent = "Save reference";
     els.refCancelEdit.hidden = true;
     els.refEditHint.hidden = true;
@@ -1291,7 +1277,6 @@
     els.refUrl.value = ref.url || "";
     els.refFormat.value = ref.format || "";
     els.refNote.value = ref.note || "";
-    fillRefGroupSelect(ref.groupId);
     els.refSubmitBtn.textContent = "Update reference";
     els.refCancelEdit.hidden = false;
     els.refEditHint.hidden = false;
@@ -1502,7 +1487,6 @@
     if (next === group.title) return;
     group.title = next;
     saveStore();
-    fillRefGroupSelect(els.refGroup.value);
     showToast("Group renamed");
   }
 
@@ -1522,12 +1506,6 @@
       g.order = i;
     });
     reindexGroup(fallback);
-    if (editingRefId) {
-      const editing = store.references.find((r) => r.id === editingRefId);
-      if (editing) fillRefGroupSelect(editing.groupId);
-    } else {
-      fillRefGroupSelect(fallback);
-    }
     saveStore();
     renderRefsPanel();
     showToast("Group removed");
@@ -1542,7 +1520,6 @@
     };
     store.refGroups.push(group);
     saveStore();
-    fillRefGroupSelect(group.id);
     renderRefsPanel();
     showToast("Group added");
     const input = els.refBoard.querySelector(
@@ -1577,7 +1554,6 @@
     }
 
     renderRefFilters(all);
-    if (!editingRefId) fillRefGroupSelect(els.refGroup.value);
 
     sortedRefGroups().forEach((group) => {
       const column = document.createElement("section");
@@ -2074,9 +2050,8 @@
     const url = els.refUrl.value.trim();
     const format = els.refFormat.value;
     const note = els.refNote.value.trim();
-    const groupId = els.refGroup.value || sortedRefGroups()[0]?.id;
-    if (!title || !url || !format || !groupId) {
-      showToast("Add a title, format, group, and URL");
+    if (!title || !url || !format) {
+      showToast("Add a title, format, and URL");
       return;
     }
 
@@ -2088,22 +2063,21 @@
         renderRefsPanel();
         return;
       }
-      const fromGroup = existing.groupId;
       existing.title = title;
       existing.url = url;
       existing.format = format;
       existing.note = note;
-      existing.groupId = groupId;
       existing.updatedAt = Date.now();
-      if (fromGroup !== groupId) {
-        existing.order = nextOrderInGroup(groupId);
-        reindexGroup(fromGroup);
-        reindexGroup(groupId);
-      }
       saveStore();
       clearRefEditing();
       renderRefsPanel();
       showToast("Reference updated");
+      return;
+    }
+
+    const groupId = defaultRefGroupId();
+    if (!groupId) {
+      showToast("Add a board group first");
       return;
     }
 
