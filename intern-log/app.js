@@ -456,22 +456,9 @@
       .sort((a, b) => a.order - b.order);
   }
 
-  function escapeAttr(value) {
-    return String(value || "")
-      .replace(/&/g, "&amp;")
-      .replace(/"/g, "&quot;")
-      .replace(/</g, "&lt;");
-  }
-
   function defaultRefGroupId() {
     ensureRefBoard();
     return sortedRefGroups()[0]?.id || "";
-  }
-
-  function nextOrderInGroup(groupId) {
-    const items = refsInGroup(groupId);
-    if (!items.length) return 0;
-    return Math.max(...items.map((r) => r.order)) + 1;
   }
 
   function reindexGroup(groupId) {
@@ -2255,6 +2242,5 @@
   }
 
   ensureRefBoard();
-  fillRefGroupSelect();
   setView(currentView);
 })();
