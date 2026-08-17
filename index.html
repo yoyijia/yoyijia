@@ -741,6 +741,28 @@
       </div>
     </div>
 
+    <div class="draw-modal" id="refViewModal" hidden>
+      <div
+        class="draw-modal-panel ref-view-panel"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="refViewTitle"
+      >
+        <div class="draw-modal-head">
+          <div>
+            <p class="panel-kicker" id="refViewKicker">reference</p>
+            <h2 id="refViewTitle">Reference</h2>
+          </div>
+          <div class="ref-view-head-actions">
+            <button type="button" class="ghost-btn" id="refViewEdit">Edit</button>
+            <button type="button" class="ghost-btn" id="refViewClose">Close</button>
+          </div>
+        </div>
+        <div class="ref-view-meta" id="refViewMeta"></div>
+        <div class="ref-view-body" id="refViewBody"></div>
+      </div>
+    </div>
+
     <script src="app.js"></script>
   </body>
 </html>
