@@ -531,7 +531,10 @@
               <p class="panel-kicker">inspo shelf</p>
               <h2>Good references</h2>
             </div>
-            <span class="count" id="refsCount">0</span>
+            <div class="panel-head-actions">
+              <span class="count" id="refsCount">0</span>
+              <button type="button" class="ghost-btn" id="addRefGroup">Add group</button>
+            </div>
           </div>
           <form class="add-stack" id="refForm" autocomplete="off">
             <div class="add-row link-form-row">
@@ -551,7 +554,7 @@
             <p class="link-edit-hint" id="refEditHint" hidden>
               Editing a reference — update the fields, then hit Update reference.
             </p>
-            <div class="add-meta">
+            <div class="add-meta ref-form-meta">
               <select id="refFormat" aria-label="Content format" required>
                 <option value="">Format…</option>
                 <option value="reel">Reel</option>
@@ -562,6 +565,7 @@
                 <option value="ad">Ad</option>
                 <option value="other">Other</option>
               </select>
+              <select id="refGroup" aria-label="Board group"></select>
               <input
                 type="text"
                 id="refUrl"
@@ -586,9 +590,10 @@
             role="group"
             aria-label="Filter by format"
           ></div>
-          <ul class="dash-list" id="refsList"></ul>
+          <p class="ref-board-hint">Drag cards between groups to organize your board.</p>
+          <div class="ref-board" id="refBoard" aria-label="References board"></div>
           <p class="empty" id="refsEmpty">
-            No references yet. Save ones you love and tag the format.
+            No references yet. Save ones you love, tag the format, and drag them into groups.
           </p>
         </section>
 
