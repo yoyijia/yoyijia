@@ -31,6 +31,16 @@
   ];
   const REF_FORMAT_LABELS = Object.fromEntries(REF_FORMATS);
   const REF_FILTER_KEY = "sprig-ref-filter-v1";
+  const REF_TAG_SUGGESTIONS = [
+    "branding",
+    "marketing",
+    "social",
+    "campaign",
+    "product",
+    "packaging",
+    "typography",
+    "color",
+  ];
 
   const RICH_COLORS = [
     { name: "Ink", value: "#243328" },
@@ -297,6 +307,7 @@
     refTagInput: document.getElementById("refTagInput"),
     refTagAdd: document.getElementById("refTagAdd"),
     refTagSuggestions: document.getElementById("refTagSuggestions"),
+    refTagQuick: document.getElementById("refTagQuick"),
     refSubmitBtn: document.getElementById("refSubmitBtn"),
     refCancelEdit: document.getElementById("refCancelEdit"),
     refEditHint: document.getElementById("refEditHint"),
@@ -1379,6 +1390,28 @@
       .filter((tag) => !draftKeys.has(tag.toLowerCase()))
       .map((tag) => `<option value="${tag.replace(/"/g, "&quot;")}"></option>`)
       .join("");
+
+    const quickPool = [];
+    const seen = new Set();
+    [...REF_TAG_SUGGESTIONS, ...known].forEach((tag) => {
+      const key = tag.toLowerCase();
+      if (seen.has(key) || draftKeys.has(key)) return;
+      seen.add(key);
+      quickPool.push(tag);
+    });
+
+    els.refTagQuick.innerHTML = "";
+    quickPool.slice(0, 8).forEach((tag) => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "ref-tag-suggest";
+      btn.textContent = `+ ${tag}`;
+      btn.addEventListener("click", () => {
+        addDraftRefTag(tag);
+        els.refTagInput.focus();
+      });
+      els.refTagQuick.appendChild(btn);
+    });
   }
 
   function addDraftRefTag(raw) {
