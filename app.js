@@ -41,6 +41,16 @@
     "typography",
     "color",
   ];
+  const DRAW_COLORS = [
+    { name: "Ink", value: "#243328" },
+    { name: "Coral", value: "#e07a5f" },
+    { name: "Sage", value: "#3e6b4a" },
+    { name: "Sky", value: "#2f6f9f" },
+    { name: "Amber", value: "#b45309" },
+    { name: "White", value: "#fff8ef" },
+  ];
+  const MEDIA_DB_NAME = "sprig-media-v1";
+  const MEDIA_STORE = "images";
 
   const RICH_COLORS = [
     { name: "Ink", value: "#243328" },
@@ -303,6 +313,11 @@
     refFormat: document.getElementById("refFormat"),
     refUrl: document.getElementById("refUrl"),
     refNote: document.getElementById("refNote"),
+    refPointList: document.getElementById("refPointList"),
+    refPointAdd: document.getElementById("refPointAdd"),
+    refImageInput: document.getElementById("refImageInput"),
+    refImageGrid: document.getElementById("refImageGrid"),
+    refImageEmpty: document.getElementById("refImageEmpty"),
     refTagDraft: document.getElementById("refTagDraft"),
     refTagInput: document.getElementById("refTagInput"),
     refTagAdd: document.getElementById("refTagAdd"),
@@ -316,6 +331,17 @@
     refsEmpty: document.getElementById("refsEmpty"),
     refsCount: document.getElementById("refsCount"),
     addRefGroup: document.getElementById("addRefGroup"),
+    drawModal: document.getElementById("drawModal"),
+    drawClose: document.getElementById("drawClose"),
+    drawPen: document.getElementById("drawPen"),
+    drawEraser: document.getElementById("drawEraser"),
+    drawSize: document.getElementById("drawSize"),
+    drawColors: document.getElementById("drawColors"),
+    drawClear: document.getElementById("drawClear"),
+    drawSave: document.getElementById("drawSave"),
+    drawStage: document.getElementById("drawStage"),
+    drawBase: document.getElementById("drawBase"),
+    drawLayer: document.getElementById("drawLayer"),
     allStickiesBoard: document.getElementById("allStickiesBoard"),
     allStickiesEmpty: document.getElementById("allStickiesEmpty"),
     allStickiesCount: document.getElementById("allStickiesCount"),
@@ -342,8 +368,13 @@
   let editingLinkId = null;
   let editingRefId = null;
   let draftRefTags = [];
+  let draftKeyPoints = [];
+  let draftImages = []; // { id, url }
   let refFilter = parseRefFilter(localStorage.getItem(REF_FILTER_KEY) || "all");
   let refDrag = null;
+  let drawSession = null;
+  let mediaDbPromise = null;
+  const objectUrlCache = new Map();
   const openEditors = new Set();
 
   const rich = {
@@ -529,6 +560,8 @@
       if (!ref.groupId || !groupIds.has(ref.groupId)) ref.groupId = fallback;
       if (typeof ref.order !== "number") ref.order = i;
       ref.tags = normalizeRefTags(ref.tags);
+      ref.keyPoints = normalizeKeyPoints(ref.keyPoints);
+      ref.images = normalizeRefImages(ref.images);
     });
   }
 
@@ -634,6 +667,135 @@
 
   function uid() {
     return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
+  }
+
+  function openMediaDb() {
+    if (mediaDbPromise) return mediaDbPromise;
+    mediaDbPromise = new Promise((resolve, reject) => {
+      const req = indexedDB.open(MEDIA_DB_NAME, 1);
+      req.onupgradeneeded = () => {
+        const db = req.result;
+        if (!db.objectStoreNames.contains(MEDIA_STORE)) {
+          db.createObjectStore(MEDIA_STORE);
+        }
+      };
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error || new Error("Media DB failed"));
+    });
+    return mediaDbPromise;
+  }
+
+  async function putMediaBlob(id, blob) {
+    const db = await openMediaDb();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction(MEDIA_STORE, "readwrite");
+      tx.objectStore(MEDIA_STORE).put(blob, id);
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => reject(tx.error);
+    });
+  }
+
+  async function getMediaBlob(id) {
+    const db = await openMediaDb();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction(MEDIA_STORE, "readonly");
+      const req = tx.objectStore(MEDIA_STORE).get(id);
+      req.onsuccess = () => resolve(req.result || null);
+      req.onerror = () => reject(req.error);
+    });
+  }
+
+  async function deleteMediaBlob(id) {
+    const db = await openMediaDb();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction(MEDIA_STORE, "readwrite");
+      tx.objectStore(MEDIA_STORE).delete(id);
+      tx.oncomplete = () => resolve();
+      tx.onerror = () => reject(tx.error);
+    });
+  }
+
+  function revokeCachedUrl(id) {
+    const url = objectUrlCache.get(id);
+    if (url) {
+      URL.revokeObjectURL(url);
+      objectUrlCache.delete(id);
+    }
+  }
+
+  async function getMediaUrl(id) {
+    if (objectUrlCache.has(id)) return objectUrlCache.get(id);
+    const blob = await getMediaBlob(id);
+    if (!blob) return "";
+    const url = URL.createObjectURL(blob);
+    objectUrlCache.set(id, url);
+    return url;
+  }
+
+  function compressImageFile(file, maxWidth = 1600, quality = 0.84) {
+    return new Promise((resolve, reject) => {
+      if (!file || !file.type.startsWith("image/")) {
+        reject(new Error("Not an image"));
+        return;
+      }
+      const img = new Image();
+      const src = URL.createObjectURL(file);
+      img.onload = () => {
+        const scale = Math.min(1, maxWidth / img.width);
+        const canvas = document.createElement("canvas");
+        canvas.width = Math.max(1, Math.round(img.width * scale));
+        canvas.height = Math.max(1, Math.round(img.height * scale));
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        URL.revokeObjectURL(src);
+        canvas.toBlob(
+          (blob) => {
+            if (!blob) reject(new Error("Compress failed"));
+            else resolve(blob);
+          },
+          "image/jpeg",
+          quality
+        );
+      };
+      img.onerror = () => {
+        URL.revokeObjectURL(src);
+        reject(new Error("Image load failed"));
+      };
+      img.src = src;
+    });
+  }
+
+  function normalizeKeyPoints(points) {
+    if (!Array.isArray(points)) return [];
+    return points
+      .map((p) => String(p || "").trim())
+      .filter(Boolean)
+      .slice(0, 40);
+  }
+
+  function normalizeRefImages(images) {
+    if (!Array.isArray(images)) return [];
+    return images
+      .map((img) => {
+        if (typeof img === "string") return { id: img };
+        if (img && img.id) return { id: img.id, name: img.name || "" };
+        return null;
+      })
+      .filter(Boolean);
+  }
+
+  async function deleteRefImages(images) {
+    const list = normalizeRefImages(images);
+    await Promise.all(
+      list.map(async (img) => {
+        revokeCachedUrl(img.id);
+        try {
+          await deleteMediaBlob(img.id);
+        } catch {
+          /* ignore */
+        }
+      })
+    );
   }
 
   function showToast(message) {
@@ -1334,9 +1496,15 @@
     });
   }
 
-  function clearRefEditing() {
+  function clearRefEditing({ discardDraftImages = false } = {}) {
     editingRefId = null;
     draftRefTags = [];
+    draftKeyPoints = [""];
+    const orphanImages = discardDraftImages ? [...draftImages] : [];
+    draftImages.forEach((img) => {
+      if (img.url && !objectUrlCache.has(img.id)) URL.revokeObjectURL(img.url);
+    });
+    draftImages = [];
     els.refTitle.value = "";
     els.refUrl.value = "";
     els.refFormat.value = "";
@@ -1346,11 +1514,26 @@
     els.refCancelEdit.hidden = true;
     els.refEditHint.hidden = true;
     renderDraftRefTags();
+    renderDraftKeyPoints();
+    renderDraftImages();
+    if (orphanImages.length) {
+      deleteRefImages(orphanImages);
+    }
   }
 
   function startRefEditing(ref) {
     editingRefId = ref.id;
     draftRefTags = normalizeRefTags(ref.tags);
+    draftKeyPoints = normalizeKeyPoints(ref.keyPoints);
+    if (!draftKeyPoints.length) draftKeyPoints = [""];
+    draftImages.forEach((img) => {
+      if (img.url) URL.revokeObjectURL(img.url);
+    });
+    draftImages = normalizeRefImages(ref.images).map((img) => ({
+      id: img.id,
+      name: img.name || "",
+      url: "",
+    }));
     els.refTitle.value = ref.title || "";
     els.refUrl.value = ref.url || "";
     els.refFormat.value = ref.format || "";
@@ -1360,10 +1543,315 @@
     els.refCancelEdit.hidden = false;
     els.refEditHint.hidden = false;
     renderDraftRefTags();
+    renderDraftKeyPoints();
+    renderDraftImages();
     els.refTitle.focus();
     els.refTitle.select();
     renderRefsPanel();
     showToast("Editing reference");
+  }
+
+  function renderDraftKeyPoints() {
+    els.refPointList.innerHTML = "";
+    if (!draftKeyPoints.length) draftKeyPoints = [""];
+    draftKeyPoints.forEach((point, index) => {
+      const li = document.createElement("li");
+      li.className = "ref-point-row";
+
+      const bullet = document.createElement("span");
+      bullet.className = "ref-point-bullet";
+      bullet.setAttribute("aria-hidden", "true");
+
+      const input = document.createElement("input");
+      input.type = "text";
+      input.maxLength = 280;
+      input.value = point;
+      input.placeholder = `Key point ${index + 1}…`;
+      input.setAttribute("aria-label", `Key point ${index + 1}`);
+      input.addEventListener("input", () => {
+        draftKeyPoints[index] = input.value;
+      });
+      input.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          draftKeyPoints.splice(index + 1, 0, "");
+          renderDraftKeyPoints();
+          const next = els.refPointList.querySelectorAll("input")[index + 1];
+          next?.focus();
+        } else if (e.key === "Backspace" && !input.value && draftKeyPoints.length > 1) {
+          e.preventDefault();
+          draftKeyPoints.splice(index, 1);
+          renderDraftKeyPoints();
+          const prev = els.refPointList.querySelectorAll("input")[
+            Math.max(0, index - 1)
+          ];
+          prev?.focus();
+        }
+      });
+
+      const del = document.createElement("button");
+      del.type = "button";
+      del.className = "delete";
+      del.setAttribute("aria-label", "Remove key point");
+      del.textContent = "×";
+      del.addEventListener("click", () => {
+        draftKeyPoints.splice(index, 1);
+        if (!draftKeyPoints.length) draftKeyPoints = [""];
+        renderDraftKeyPoints();
+      });
+
+      li.append(bullet, input, del);
+      els.refPointList.appendChild(li);
+    });
+  }
+
+  async function renderDraftImages() {
+    els.refImageGrid.innerHTML = "";
+    const has = draftImages.length > 0;
+    els.refImageEmpty.hidden = has;
+    els.refImageEmpty.textContent = has
+      ? ""
+      : "Upload screenshots or inspo, then tap an image to draw on it.";
+
+    for (const img of draftImages) {
+      if (!img.url) {
+        try {
+          img.url = await getMediaUrl(img.id);
+        } catch {
+          img.url = "";
+        }
+      }
+      const card = document.createElement("div");
+      card.className = "ref-image-card";
+
+      if (img.url) {
+        const image = document.createElement("img");
+        image.src = img.url;
+        image.alt = img.name || "Reference image";
+        card.appendChild(image);
+      }
+
+      const actions = document.createElement("div");
+      actions.className = "ref-image-actions";
+
+      const drawBtn = document.createElement("button");
+      drawBtn.type = "button";
+      drawBtn.textContent = "Draw";
+      drawBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        openDrawModal(img.id);
+      });
+
+      const delBtn = document.createElement("button");
+      delBtn.type = "button";
+      delBtn.textContent = "Delete";
+      delBtn.addEventListener("click", async (e) => {
+        e.stopPropagation();
+        await removeDraftImage(img.id);
+      });
+
+      actions.append(drawBtn, delBtn);
+      card.appendChild(actions);
+      card.addEventListener("click", () => openDrawModal(img.id));
+      els.refImageGrid.appendChild(card);
+    }
+  }
+
+  async function removeDraftImage(imageId) {
+    draftImages = draftImages.filter((img) => img.id !== imageId);
+    revokeCachedUrl(imageId);
+    try {
+      await deleteMediaBlob(imageId);
+    } catch {
+      /* ignore */
+    }
+    if (editingRefId) {
+      const ref = store.references.find((r) => r.id === editingRefId);
+      if (ref) {
+        ref.images = normalizeRefImages(ref.images).filter((i) => i.id !== imageId);
+        saveStore();
+      }
+    }
+    renderDraftImages();
+    renderRefsPanel();
+    showToast("Image removed");
+  }
+
+  async function addDraftImagesFromFiles(fileList) {
+    const files = [...(fileList || [])].filter((f) => f.type.startsWith("image/"));
+    if (!files.length) {
+      showToast("Choose an image file");
+      return;
+    }
+    for (const file of files.slice(0, 8)) {
+      try {
+        const blob = await compressImageFile(file);
+        const id = uid();
+        await putMediaBlob(id, blob);
+        const url = URL.createObjectURL(blob);
+        objectUrlCache.set(id, url);
+        draftImages.push({ id, name: file.name || "", url });
+      } catch {
+        showToast("Could not add one image");
+      }
+    }
+    if (editingRefId) {
+      const ref = store.references.find((r) => r.id === editingRefId);
+      if (ref) {
+        ref.images = draftImages.map((img) => ({
+          id: img.id,
+          name: img.name || "",
+        }));
+        saveStore();
+      }
+    }
+    renderDraftImages();
+    renderRefsPanel();
+    showToast(files.length > 1 ? "Images added" : "Image added");
+  }
+
+  function setupDrawColors() {
+    els.drawColors.innerHTML = "";
+    DRAW_COLORS.forEach((color, i) => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = `draw-color${i === 0 ? " is-active" : ""}`;
+      btn.style.background = color.value;
+      btn.title = color.name;
+      btn.setAttribute("aria-label", color.name);
+      btn.addEventListener("click", () => {
+        if (!drawSession) return;
+        drawSession.color = color.value;
+        els.drawColors.querySelectorAll(".draw-color").forEach((el) => {
+          el.classList.toggle("is-active", el === btn);
+        });
+      });
+      els.drawColors.appendChild(btn);
+    });
+  }
+
+  function setDrawTool(tool) {
+    if (!drawSession) return;
+    drawSession.tool = tool;
+    els.drawPen.classList.toggle("is-active", tool === "pen");
+    els.drawEraser.classList.toggle("is-active", tool === "eraser");
+  }
+
+  async function openDrawModal(imageId) {
+    const blob = await getMediaBlob(imageId);
+    if (!blob) {
+      showToast("Image not found");
+      return;
+    }
+    const img = new Image();
+    const url = URL.createObjectURL(blob);
+    await new Promise((resolve, reject) => {
+      img.onload = resolve;
+      img.onerror = reject;
+      img.src = url;
+    });
+
+    drawSession = {
+      imageId,
+      tool: "pen",
+      color: DRAW_COLORS[0].value,
+      drawing: false,
+      lastX: 0,
+      lastY: 0,
+      sourceUrl: url,
+      sourceImg: img,
+    };
+
+    els.drawModal.hidden = false;
+    setDrawTool("pen");
+    resizeDrawCanvases();
+    paintDrawBase();
+    const layer = els.drawLayer.getContext("2d");
+    layer.clearRect(0, 0, els.drawLayer.width, els.drawLayer.height);
+  }
+
+  function closeDrawModal() {
+    if (drawSession?.sourceUrl) URL.revokeObjectURL(drawSession.sourceUrl);
+    drawSession = null;
+    els.drawModal.hidden = true;
+  }
+
+  function resizeDrawCanvases() {
+    if (!drawSession?.sourceImg) return;
+    const img = drawSession.sourceImg;
+    const maxW = Math.min(els.drawStage.clientWidth || 800, 900);
+    const scale = Math.min(1, maxW / img.width);
+    const w = Math.max(1, Math.round(img.width * scale));
+    const h = Math.max(1, Math.round(img.height * scale));
+    els.drawStage.style.height = `${h}px`;
+    [els.drawBase, els.drawLayer].forEach((canvas) => {
+      canvas.width = w;
+      canvas.height = h;
+    });
+  }
+
+  function paintDrawBase() {
+    if (!drawSession?.sourceImg) return;
+    const ctx = els.drawBase.getContext("2d");
+    ctx.clearRect(0, 0, els.drawBase.width, els.drawBase.height);
+    ctx.drawImage(drawSession.sourceImg, 0, 0, els.drawBase.width, els.drawBase.height);
+  }
+
+  function drawPointerPos(e) {
+    const rect = els.drawLayer.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * els.drawLayer.width;
+    const y = ((e.clientY - rect.top) / rect.height) * els.drawLayer.height;
+    return { x, y };
+  }
+
+  function strokeDraw(from, to) {
+    if (!drawSession) return;
+    const ctx = els.drawLayer.getContext("2d");
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    ctx.lineWidth = Number(els.drawSize.value) || 6;
+    if (drawSession.tool === "eraser") {
+      ctx.globalCompositeOperation = "destination-out";
+      ctx.strokeStyle = "rgba(0,0,0,1)";
+    } else {
+      ctx.globalCompositeOperation = "source-over";
+      ctx.strokeStyle = drawSession.color;
+    }
+    ctx.beginPath();
+    ctx.moveTo(from.x, from.y);
+    ctx.lineTo(to.x, to.y);
+    ctx.stroke();
+  }
+
+  async function saveDrawing() {
+    if (!drawSession) return;
+    const out = document.createElement("canvas");
+    out.width = els.drawBase.width;
+    out.height = els.drawBase.height;
+    const ctx = out.getContext("2d");
+    ctx.drawImage(els.drawBase, 0, 0);
+    ctx.drawImage(els.drawLayer, 0, 0);
+    const blob = await new Promise((resolve) =>
+      out.toBlob((b) => resolve(b), "image/jpeg", 0.9)
+    );
+    if (!blob) {
+      showToast("Could not save drawing");
+      return;
+    }
+    const id = drawSession.imageId;
+    await putMediaBlob(id, blob);
+    revokeCachedUrl(id);
+    const url = URL.createObjectURL(blob);
+    objectUrlCache.set(id, url);
+    const draft = draftImages.find((img) => img.id === id);
+    if (draft) {
+      if (draft.url && draft.url !== url) URL.revokeObjectURL(draft.url);
+      draft.url = url;
+    }
+    closeDrawModal();
+    renderDraftImages();
+    renderRefsPanel();
+    showToast("Drawing saved");
   }
 
   function renderDraftRefTags() {
@@ -1640,6 +2128,51 @@
       card.appendChild(tagRow);
     }
 
+    const points = normalizeKeyPoints(ref.keyPoints);
+    if (points.length) {
+      const list = document.createElement("ul");
+      list.className = "ref-card-points";
+      points.slice(0, 4).forEach((point) => {
+        const li = document.createElement("li");
+        li.textContent = point;
+        list.appendChild(li);
+      });
+      if (points.length > 4) {
+        const more = document.createElement("li");
+        more.textContent = `+${points.length - 4} more`;
+        list.appendChild(more);
+      }
+      card.appendChild(list);
+    }
+
+    const images = normalizeRefImages(ref.images);
+    if (images.length) {
+      const thumbs = document.createElement("div");
+      thumbs.className = "ref-card-thumbs";
+      images.slice(0, 4).forEach((img) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "ref-card-thumb";
+        btn.setAttribute("aria-label", "Open image to draw");
+        const photo = document.createElement("img");
+        photo.alt = "";
+        getMediaUrl(img.id)
+          .then((url) => {
+            if (url) photo.src = url;
+          })
+          .catch(() => {});
+        btn.appendChild(photo);
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          startRefEditing(ref);
+          openDrawModal(img.id);
+        });
+        btn.addEventListener("pointerdown", (e) => e.stopPropagation());
+        thumbs.appendChild(btn);
+      });
+      card.appendChild(thumbs);
+    }
+
     if (ref.note) {
       const note = document.createElement("p");
       note.className = "ref-card-note";
@@ -1678,8 +2211,9 @@
     del.className = "delete";
     del.setAttribute("aria-label", "Delete reference");
     del.textContent = "×";
-    del.addEventListener("click", () => {
+    del.addEventListener("click", async () => {
       if (editingRefId === ref.id) clearRefEditing();
+      await deleteRefImages(ref.images);
       store.references = store.references.filter((r) => r.id !== ref.id);
       saveStore();
       renderRefsPanel();
@@ -1998,6 +2532,10 @@
           group ? ` {${group.title}}` : ""
         }${
           (r.tags || []).length ? ` #${(r.tags || []).join(" #")}` : ""
+        }${
+          (r.keyPoints || []).length
+            ? `\n  - ${(r.keyPoints || []).join("\n  - ")}`
+            : ""
         } ${r.url || ""}${r.note ? ` — ${r.note}` : ""}`.trim()
       );
     });
@@ -2273,6 +2811,11 @@
     const format = els.refFormat.value;
     const note = els.refNote.value.trim();
     const tags = normalizeRefTags(draftRefTags);
+    const keyPoints = normalizeKeyPoints(draftKeyPoints);
+    const images = draftImages.map((img) => ({
+      id: img.id,
+      name: img.name || "",
+    }));
     if (!title || !url || !format) {
       showToast("Add a title, format, and URL");
       return;
@@ -2291,6 +2834,8 @@
       existing.format = format;
       existing.note = note;
       existing.tags = tags;
+      existing.keyPoints = keyPoints;
+      existing.images = images;
       existing.updatedAt = Date.now();
       saveStore();
       clearRefEditing();
@@ -2312,6 +2857,8 @@
       format,
       note,
       tags,
+      keyPoints,
+      images,
       groupId,
       order: -1,
       createdAt: Date.now(),
@@ -2321,6 +2868,78 @@
     clearRefEditing();
     renderRefsPanel();
     showToast("Reference saved");
+  });
+
+  els.refPointAdd.addEventListener("click", () => {
+    draftKeyPoints.push("");
+    renderDraftKeyPoints();
+    const inputs = els.refPointList.querySelectorAll("input");
+    inputs[inputs.length - 1]?.focus();
+  });
+
+  els.refImageInput.addEventListener("change", async () => {
+    const files = els.refImageInput.files;
+    await addDraftImagesFromFiles(files);
+    els.refImageInput.value = "";
+  });
+
+  els.drawClose.addEventListener("click", () => closeDrawModal());
+  els.drawPen.addEventListener("click", () => setDrawTool("pen"));
+  els.drawEraser.addEventListener("click", () => setDrawTool("eraser"));
+  els.drawClear.addEventListener("click", () => {
+    if (!drawSession) return;
+    const ctx = els.drawLayer.getContext("2d");
+    ctx.clearRect(0, 0, els.drawLayer.width, els.drawLayer.height);
+  });
+  els.drawSave.addEventListener("click", () => {
+    saveDrawing().catch(() => showToast("Could not save drawing"));
+  });
+
+  const onDrawPointerDown = (e) => {
+    if (!drawSession || e.button != null && e.button !== 0) return;
+    e.preventDefault();
+    els.drawLayer.setPointerCapture?.(e.pointerId);
+    drawSession.drawing = true;
+    const pos = drawPointerPos(e);
+    drawSession.lastX = pos.x;
+    drawSession.lastY = pos.y;
+    strokeDraw(pos, pos);
+  };
+  const onDrawPointerMove = (e) => {
+    if (!drawSession?.drawing) return;
+    e.preventDefault();
+    const pos = drawPointerPos(e);
+    strokeDraw(
+      { x: drawSession.lastX, y: drawSession.lastY },
+      pos
+    );
+    drawSession.lastX = pos.x;
+    drawSession.lastY = pos.y;
+  };
+  const onDrawPointerUp = (e) => {
+    if (!drawSession) return;
+    drawSession.drawing = false;
+    try {
+      els.drawLayer.releasePointerCapture?.(e.pointerId);
+    } catch {
+      /* ignore */
+    }
+  };
+  els.drawLayer.addEventListener("pointerdown", onDrawPointerDown);
+  els.drawLayer.addEventListener("pointermove", onDrawPointerMove);
+  els.drawLayer.addEventListener("pointerup", onDrawPointerUp);
+  els.drawLayer.addEventListener("pointercancel", onDrawPointerUp);
+  window.addEventListener("resize", () => {
+    if (!drawSession) return;
+    const layer = document.createElement("canvas");
+    layer.width = els.drawLayer.width;
+    layer.height = els.drawLayer.height;
+    layer.getContext("2d").drawImage(els.drawLayer, 0, 0);
+    resizeDrawCanvases();
+    paintDrawBase();
+    els.drawLayer
+      .getContext("2d")
+      .drawImage(layer, 0, 0, els.drawLayer.width, els.drawLayer.height);
   });
 
   els.refTagAdd.addEventListener("click", () => {
@@ -2352,7 +2971,7 @@
   });
 
   els.refCancelEdit.addEventListener("click", () => {
-    clearRefEditing();
+    clearRefEditing({ discardDraftImages: false });
     renderRefsPanel();
     showToast("Edit cancelled");
   });
@@ -2510,6 +3129,10 @@
   }
 
   ensureRefBoard();
+  setupDrawColors();
+  draftKeyPoints = [""];
+  renderDraftKeyPoints();
   renderDraftRefTags();
+  renderDraftImages();
   setView(currentView);
 })();

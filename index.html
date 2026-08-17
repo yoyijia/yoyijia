@@ -577,12 +577,44 @@
             <textarea
               id="refNote"
               class="ref-note-input"
-              rows="5"
+              rows="4"
               maxlength="8000"
-              placeholder="Write more about this reference — why it works, what to steal, notes for branding/marketing…"
+              placeholder="Extra notes (optional)…"
               aria-label="Reference notes"
             ></textarea>
           </form>
+
+          <div class="ref-studio" aria-label="Reference key points and images">
+            <div class="ref-studio-block">
+              <div class="ref-studio-head">
+                <p class="ref-studio-title">Key points</p>
+                <button type="button" class="ghost-btn" id="refPointAdd">Add point</button>
+              </div>
+              <ul class="ref-point-list" id="refPointList"></ul>
+              <p class="ref-studio-hint">Notion-style bullets — capture what matters about this reference.</p>
+            </div>
+
+            <div class="ref-studio-block">
+              <div class="ref-studio-head">
+                <p class="ref-studio-title">Images</p>
+                <label class="ghost-btn ref-upload-btn">
+                  Add image
+                  <input
+                    type="file"
+                    id="refImageInput"
+                    accept="image/*"
+                    multiple
+                    hidden
+                  />
+                </label>
+              </div>
+              <div class="ref-image-grid" id="refImageGrid"></div>
+              <p class="ref-studio-hint" id="refImageEmpty">
+                Upload screenshots or inspo, then tap an image to draw on it.
+              </p>
+            </div>
+          </div>
+
           <div class="ref-tag-composer">
             <div class="ref-tag-draft" id="refTagDraft" aria-live="polite"></div>
             <div class="ref-tag-input-row">
@@ -681,6 +713,33 @@
     </main>
 
     <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+    <div class="draw-modal" id="drawModal" hidden>
+      <div class="draw-modal-panel" role="dialog" aria-modal="true" aria-labelledby="drawModalTitle">
+        <div class="draw-modal-head">
+          <div>
+            <p class="panel-kicker">annotate</p>
+            <h2 id="drawModalTitle">Draw on image</h2>
+          </div>
+          <button type="button" class="ghost-btn" id="drawClose">Close</button>
+        </div>
+        <div class="draw-toolbar" role="toolbar" aria-label="Drawing tools">
+          <button type="button" class="draw-tool is-active" data-tool="pen" id="drawPen">Pen</button>
+          <button type="button" class="draw-tool" data-tool="eraser" id="drawEraser">Eraser</button>
+          <label class="draw-size">
+            Size
+            <input type="range" id="drawSize" min="2" max="28" value="6" />
+          </label>
+          <div class="draw-colors" id="drawColors" role="group" aria-label="Pen color"></div>
+          <button type="button" class="ghost-btn" id="drawClear">Clear marks</button>
+          <button type="button" class="add-btn" id="drawSave">Save drawing</button>
+        </div>
+        <div class="draw-stage" id="drawStage">
+          <canvas id="drawBase" aria-hidden="true"></canvas>
+          <canvas id="drawLayer" aria-label="Drawing layer"></canvas>
+        </div>
+      </div>
+    </div>
 
     <script src="app.js"></script>
   </body>
