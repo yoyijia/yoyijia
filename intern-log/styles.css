@@ -1452,6 +1452,96 @@ h2 {
   color: #7a5a12;
 }
 
+.ref-tag-composer {
+  display: grid;
+  gap: 0.4rem;
+  margin-top: 0.45rem;
+}
+
+.ref-tag-draft {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  min-height: 0;
+}
+
+.ref-tag-draft:empty {
+  display: none;
+}
+
+.ref-tag-input-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.4rem;
+}
+
+.ref-tag-input-row input {
+  width: 100%;
+  border: 1.5px solid var(--line);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.72);
+  padding: 0.65rem 0.85rem;
+  font: inherit;
+  color: var(--ink);
+}
+
+.ref-tag-input-row input:focus {
+  outline: 2px solid rgba(95, 143, 106, 0.35);
+  border-color: var(--sage);
+}
+
+.ref-tag-hint {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.ref-tag-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  border-radius: 999px;
+  padding: 0.2rem 0.55rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  background: rgba(58, 74, 52, 0.08);
+  color: var(--ink-soft);
+  border: 1px solid rgba(58, 74, 52, 0.12);
+}
+
+.ref-tag-chip button {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 0.9rem;
+  line-height: 1;
+  padding: 0;
+  cursor: pointer;
+  opacity: 0.7;
+}
+
+.ref-tag-chip button:hover {
+  opacity: 1;
+}
+
+.ref-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.ref-filter.is-tag {
+  background: rgba(58, 74, 52, 0.06);
+}
+
+.ref-filter.is-tag.is-active {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: #fff8ef;
+}
+
 .panel-head-actions {
   display: flex;
   align-items: center;
