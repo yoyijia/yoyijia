@@ -291,15 +291,17 @@
     refForm: document.getElementById("refForm"),
     refTitle: document.getElementById("refTitle"),
     refFormat: document.getElementById("refFormat"),
+    refGroup: document.getElementById("refGroup"),
     refUrl: document.getElementById("refUrl"),
     refNote: document.getElementById("refNote"),
     refSubmitBtn: document.getElementById("refSubmitBtn"),
     refCancelEdit: document.getElementById("refCancelEdit"),
     refEditHint: document.getElementById("refEditHint"),
     refFilters: document.getElementById("refFilters"),
-    refsList: document.getElementById("refsList"),
+    refBoard: document.getElementById("refBoard"),
     refsEmpty: document.getElementById("refsEmpty"),
     refsCount: document.getElementById("refsCount"),
+    addRefGroup: document.getElementById("addRefGroup"),
     allStickiesBoard: document.getElementById("allStickiesBoard"),
     allStickiesEmpty: document.getElementById("allStickiesEmpty"),
     allStickiesCount: document.getElementById("allStickiesCount"),
@@ -330,6 +332,7 @@
     savedRefFilter === "all" || REF_FORMAT_LABELS[savedRefFilter]
       ? savedRefFilter
       : "all";
+  let refDrag = null;
   const openEditors = new Set();
 
   const rich = {
@@ -364,16 +367,19 @@
   function loadStore() {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) return { days: {}, links: [], references: [], notes: [] };
+      if (!raw) {
+        return { days: {}, links: [], references: [], refGroups: [], notes: [] };
+      }
       const parsed = JSON.parse(raw);
       return {
         days: parsed?.days && typeof parsed.days === "object" ? parsed.days : {},
         links: Array.isArray(parsed?.links) ? parsed.links : [],
         references: Array.isArray(parsed?.references) ? parsed.references : [],
+        refGroups: Array.isArray(parsed?.refGroups) ? parsed.refGroups : [],
         notes: Array.isArray(parsed?.notes) ? parsed.notes : [],
       };
     } catch {
-      return { days: {}, links: [], references: [], notes: [] };
+      return { days: {}, links: [], references: [], refGroups: [], notes: [] };
     }
   }
 
@@ -383,6 +389,106 @@
 
   function refFormatLabel(format) {
     return REF_FORMAT_LABELS[format] || format || "";
+  }
+
+  function ensureRefBoard() {
+    if (!Array.isArray(store.references)) store.references = [];
+    if (!Array.isArray(store.refGroups)) store.refGroups = [];
+
+    if (store.refGroups.length === 0) {
+      store.refGroups = [
+        { id: uid(), title: "Inbox", order: 0 },
+        { id: uid(), title: "Shortlist", order: 1 },
+        { id: uid(), title: "Archive", order: 2 },
+      ];
+    }
+
+    store.refGroups = store.refGroups
+      .map((g, i) => ({
+        id: g.id || uid(),
+        title: (g.title || "Group").trim() || "Group",
+        order: typeof g.order === "number" ? g.order : i,
+      }))
+      .sort((a, b) => a.order - b.order);
+    store.refGroups.forEach((g, i) => {
+      g.order = i;
+    });
+
+    const groupIds = new Set(store.refGroups.map((g) => g.id));
+    const fallback = store.refGroups[0].id;
+    store.references.forEach((ref, i) => {
+      if (!ref.groupId || !groupIds.has(ref.groupId)) ref.groupId = fallback;
+      if (typeof ref.order !== "number") ref.order = i;
+    });
+  }
+
+  function sortedRefGroups() {
+    ensureRefBoard();
+    return [...store.refGroups].sort((a, b) => a.order - b.order);
+  }
+
+  function refsInGroup(groupId, refs = store.references) {
+    return refs
+      .filter((r) => r.groupId === groupId)
+      .sort((a, b) => a.order - b.order);
+  }
+
+  function fillRefGroupSelect(selectedId) {
+    ensureRefBoard();
+    const groups = sortedRefGroups();
+    const current =
+      selectedId && groups.some((g) => g.id === selectedId)
+        ? selectedId
+        : groups[0]?.id || "";
+    els.refGroup.innerHTML = groups
+      .map(
+        (g) =>
+          `<option value="${g.id}" ${g.id === current ? "selected" : ""}>${escapeAttr(
+            g.title
+          )}</option>`
+      )
+      .join("");
+  }
+
+  function escapeAttr(value) {
+    return String(value || "")
+      .replace(/&/g, "&amp;")
+      .replace(/"/g, "&quot;")
+      .replace(/</g, "&lt;");
+  }
+
+  function nextOrderInGroup(groupId) {
+    const items = refsInGroup(groupId);
+    if (!items.length) return 0;
+    return Math.max(...items.map((r) => r.order)) + 1;
+  }
+
+  function reindexGroup(groupId) {
+    refsInGroup(groupId).forEach((ref, i) => {
+      ref.order = i;
+    });
+  }
+
+  function moveRefToGroup(refId, targetGroupId, beforeRefId = null) {
+    ensureRefBoard();
+    const ref = store.references.find((r) => r.id === refId);
+    if (!ref || !store.refGroups.some((g) => g.id === targetGroupId)) return;
+    const fromGroup = ref.groupId;
+    ref.groupId = targetGroupId;
+
+    let siblings = refsInGroup(targetGroupId).filter((r) => r.id !== refId);
+    if (beforeRefId) {
+      const idx = siblings.findIndex((r) => r.id === beforeRefId);
+      if (idx >= 0) siblings.splice(idx, 0, ref);
+      else siblings.push(ref);
+    } else {
+      siblings.push(ref);
+    }
+    siblings.forEach((r, i) => {
+      r.order = i;
+    });
+    if (fromGroup !== targetGroupId) reindexGroup(fromGroup);
+    saveStore();
   }
 
   function looksLikeUrl(value) {
@@ -1149,6 +1255,7 @@
     els.refUrl.value = "";
     els.refFormat.value = "";
     els.refNote.value = "";
+    fillRefGroupSelect(sortedRefGroups()[0]?.id);
     els.refSubmitBtn.textContent = "Save reference";
     els.refCancelEdit.hidden = true;
     els.refEditHint.hidden = true;
@@ -1160,6 +1267,7 @@
     els.refUrl.value = ref.url || "";
     els.refFormat.value = ref.format || "";
     els.refNote.value = ref.note || "";
+    fillRefGroupSelect(ref.groupId);
     els.refSubmitBtn.textContent = "Update reference";
     els.refCancelEdit.hidden = false;
     els.refEditHint.hidden = false;
@@ -1202,8 +1310,228 @@
     });
   }
 
+  function endRefDrag() {
+    if (!refDrag) return;
+    refDrag.card?.classList.remove("is-dragging");
+    refDrag.ghost?.remove();
+    document.querySelectorAll(".ref-column.is-drop-target").forEach((el) => {
+      el.classList.remove("is-drop-target");
+    });
+    document.querySelectorAll(".ref-card.is-drag-over").forEach((el) => {
+      el.classList.remove("is-drag-over");
+    });
+    window.removeEventListener("pointermove", onRefDragMove);
+    window.removeEventListener("pointerup", onRefDragEnd);
+    window.removeEventListener("pointercancel", onRefDragEnd);
+    refDrag = null;
+  }
+
+  function onRefDragMove(e) {
+    if (!refDrag) return;
+    if (refDrag.ghost) {
+      refDrag.ghost.style.left = `${e.clientX + 12}px`;
+      refDrag.ghost.style.top = `${e.clientY + 12}px`;
+    }
+
+    document.querySelectorAll(".ref-column.is-drop-target").forEach((el) => {
+      el.classList.remove("is-drop-target");
+    });
+    document.querySelectorAll(".ref-card.is-drag-over").forEach((el) => {
+      el.classList.remove("is-drag-over");
+    });
+
+    const el = document.elementFromPoint(e.clientX, e.clientY);
+    const column = el?.closest?.(".ref-column");
+    const card = el?.closest?.(".ref-card");
+    if (column) column.classList.add("is-drop-target");
+    if (card && card.dataset.refId !== refDrag.refId) {
+      card.classList.add("is-drag-over");
+    }
+  }
+
+  function onRefDragEnd(e) {
+    if (!refDrag) return;
+    const el = document.elementFromPoint(e.clientX, e.clientY);
+    const column = el?.closest?.(".ref-column");
+    const overCard = el?.closest?.(".ref-card");
+    const targetGroupId = column?.dataset?.groupId;
+    const beforeRefId =
+      overCard && overCard.dataset.refId !== refDrag.refId
+        ? overCard.dataset.refId
+        : null;
+
+    if (targetGroupId) {
+      moveRefToGroup(refDrag.refId, targetGroupId, beforeRefId);
+      endRefDrag();
+      renderRefsPanel();
+      showToast("Moved on board");
+      return;
+    }
+    endRefDrag();
+  }
+
+  function startRefDrag(e, card, ref) {
+    if (e.button != null && e.button !== 0) return;
+    if (e.target.closest("a, button, input, select, textarea")) return;
+    e.preventDefault();
+
+    endRefDrag();
+    const ghost = document.createElement("div");
+    ghost.className = "ref-drag-ghost";
+    ghost.textContent = ref.title || "Reference";
+    ghost.style.left = `${e.clientX + 12}px`;
+    ghost.style.top = `${e.clientY + 12}px`;
+    document.body.appendChild(ghost);
+
+    card.classList.add("is-dragging");
+    refDrag = { refId: ref.id, card, ghost };
+    window.addEventListener("pointermove", onRefDragMove);
+    window.addEventListener("pointerup", onRefDragEnd);
+    window.addEventListener("pointercancel", onRefDragEnd);
+  }
+
+  function createRefCard(ref) {
+    const card = document.createElement("article");
+    card.className = `ref-card${ref.id === editingRefId ? " is-editing" : ""}`;
+    card.dataset.refId = ref.id;
+    card.tabIndex = 0;
+    card.setAttribute("aria-grabbed", "false");
+
+    const handle = document.createElement("span");
+    handle.className = "ref-card-handle";
+    handle.setAttribute("aria-hidden", "true");
+    handle.textContent = "⠿";
+
+    const top = document.createElement("div");
+    top.className = "ref-card-top";
+
+    const title = document.createElement("p");
+    title.className = "ref-card-title";
+    title.textContent = ref.title || "Untitled reference";
+
+    const chip = document.createElement("span");
+    chip.className = "ref-format-chip";
+    chip.dataset.format = ref.format || "other";
+    chip.textContent = refFormatLabel(ref.format) || "Other";
+
+    top.append(title, chip);
+
+    card.append(handle, top);
+
+    if (ref.note) {
+      const note = document.createElement("p");
+      note.className = "ref-card-note";
+      note.textContent = ref.note;
+      card.appendChild(note);
+    } else if (ref.id === editingRefId) {
+      const note = document.createElement("p");
+      note.className = "ref-card-note";
+      note.textContent = "editing…";
+      card.appendChild(note);
+    }
+
+    const actions = document.createElement("div");
+    actions.className = "ref-card-actions";
+
+    if (looksLikeUrl(ref.url)) {
+      const open = document.createElement("a");
+      open.className = "dash-item-side";
+      open.href = ref.url;
+      open.target = "_blank";
+      open.rel = "noopener noreferrer";
+      open.textContent = "Open";
+      actions.appendChild(open);
+    }
+
+    const edit = document.createElement("button");
+    edit.type = "button";
+    edit.className = "dash-item-side as-btn";
+    edit.textContent = ref.id === editingRefId ? "Editing…" : "Edit";
+    edit.disabled = ref.id === editingRefId;
+    edit.addEventListener("click", () => startRefEditing(ref));
+    actions.appendChild(edit);
+
+    const del = document.createElement("button");
+    del.type = "button";
+    del.className = "delete";
+    del.setAttribute("aria-label", "Delete reference");
+    del.textContent = "×";
+    del.addEventListener("click", () => {
+      if (editingRefId === ref.id) clearRefEditing();
+      store.references = store.references.filter((r) => r.id !== ref.id);
+      saveStore();
+      renderRefsPanel();
+      showToast("Reference removed");
+    });
+    actions.appendChild(del);
+
+    card.appendChild(actions);
+    card.addEventListener("pointerdown", (e) => startRefDrag(e, card, ref));
+    return card;
+  }
+
+  function renameRefGroup(groupId, title) {
+    ensureRefBoard();
+    const group = store.refGroups.find((g) => g.id === groupId);
+    if (!group) return;
+    const next = title.trim() || group.title;
+    if (next === group.title) return;
+    group.title = next;
+    saveStore();
+    fillRefGroupSelect(els.refGroup.value);
+    showToast("Group renamed");
+  }
+
+  function deleteRefGroup(groupId) {
+    ensureRefBoard();
+    if (store.refGroups.length <= 1) {
+      showToast("Keep at least one group");
+      return;
+    }
+    const remaining = store.refGroups.filter((g) => g.id !== groupId);
+    const fallback = remaining[0].id;
+    store.references.forEach((ref) => {
+      if (ref.groupId === groupId) ref.groupId = fallback;
+    });
+    store.refGroups = remaining;
+    store.refGroups.forEach((g, i) => {
+      g.order = i;
+    });
+    reindexGroup(fallback);
+    if (editingRefId) {
+      const editing = store.references.find((r) => r.id === editingRefId);
+      if (editing) fillRefGroupSelect(editing.groupId);
+    } else {
+      fillRefGroupSelect(fallback);
+    }
+    saveStore();
+    renderRefsPanel();
+    showToast("Group removed");
+  }
+
+  function addRefGroup(title = "New group") {
+    ensureRefBoard();
+    const group = {
+      id: uid(),
+      title,
+      order: store.refGroups.length,
+    };
+    store.refGroups.push(group);
+    saveStore();
+    fillRefGroupSelect(group.id);
+    renderRefsPanel();
+    showToast("Group added");
+    const input = els.refBoard.querySelector(
+      `.ref-column[data-group-id="${group.id}"] .ref-column-title`
+    );
+    if (input) {
+      input.focus();
+      input.select();
+    }
+  }
+
   function renderRefsPanel() {
-    if (!store.references) store.references = [];
+    ensureRefBoard();
     const all = store.references;
     const filtered =
       refFilter === "all"
@@ -1211,100 +1539,74 @@
         : all.filter((r) => r.format === refFilter);
 
     els.refsCount.textContent = String(filtered.length);
-    els.refsList.innerHTML = "";
-    els.refsEmpty.hidden = filtered.length > 0;
+    els.refBoard.innerHTML = "";
+    els.refsEmpty.hidden = filtered.length > 0 || all.length === 0;
     if (all.length === 0) {
-      els.refsEmpty.textContent =
-        "No references yet. Save ones you love and tag the format.";
-    } else if (filtered.length === 0) {
-      els.refsEmpty.textContent = `No ${refFormatLabel(refFilter).toLowerCase()} references yet.`;
       els.refsEmpty.hidden = false;
+      els.refsEmpty.textContent =
+        "No references yet. Save ones you love, tag the format, and drag them into groups.";
+    } else if (filtered.length === 0) {
+      els.refsEmpty.hidden = false;
+      els.refsEmpty.textContent = `No ${refFormatLabel(refFilter).toLowerCase()} references on the board.`;
+    } else {
+      els.refsEmpty.hidden = true;
     }
 
     renderRefFilters(all);
+    if (!editingRefId) fillRefGroupSelect(els.refGroup.value);
 
-    filtered.forEach((ref) => {
-      const li = document.createElement("li");
-      const row = document.createElement("div");
-      row.className = `dash-item${ref.id === editingRefId ? " is-editing" : ""}`;
-      row.style.cursor = "default";
+    sortedRefGroups().forEach((group) => {
+      const column = document.createElement("section");
+      column.className = "ref-column";
+      column.dataset.groupId = group.id;
 
-      const left = document.createElement("div");
-      const titleRow = document.createElement("div");
-      titleRow.style.display = "flex";
-      titleRow.style.alignItems = "center";
-      titleRow.style.gap = "0.45rem";
-      titleRow.style.flexWrap = "wrap";
+      const head = document.createElement("div");
+      head.className = "ref-column-head";
 
-      const title = document.createElement("p");
-      title.className = "dash-item-title";
-      title.style.margin = "0";
-      title.textContent = ref.title || "Untitled reference";
+      const titleInput = document.createElement("input");
+      titleInput.className = "ref-column-title";
+      titleInput.type = "text";
+      titleInput.maxLength = 40;
+      titleInput.value = group.title;
+      titleInput.setAttribute("aria-label", "Group name");
+      titleInput.addEventListener("change", () => {
+        renameRefGroup(group.id, titleInput.value);
+      });
+      titleInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          titleInput.blur();
+        }
+      });
 
-      const chip = document.createElement("span");
-      chip.className = "ref-format-chip";
-      chip.dataset.format = ref.format || "other";
-      chip.textContent = refFormatLabel(ref.format) || "Other";
+      const count = document.createElement("span");
+      count.className = "ref-column-count";
+      const groupRefs = refsInGroup(group.id, filtered);
+      count.textContent = String(groupRefs.length);
 
-      titleRow.append(title, chip);
+      const delGroup = document.createElement("button");
+      delGroup.type = "button";
+      delGroup.className = "delete ref-column-delete";
+      delGroup.setAttribute("aria-label", `Delete group ${group.title}`);
+      delGroup.textContent = "×";
+      delGroup.addEventListener("click", () => deleteRefGroup(group.id));
 
-      const meta = document.createElement("p");
-      meta.className = "dash-item-meta";
-      const bits = [];
-      if (ref.id === editingRefId) bits.push("editing");
-      if (ref.note) bits.push(ref.note);
-      else if (ref.url) bits.push(ref.url);
-      meta.textContent = bits.join(" · ") || "Good reference";
+      head.append(titleInput, count, delGroup);
 
-      left.append(titleRow, meta);
+      const list = document.createElement("div");
+      list.className = "ref-column-list";
 
-      const side = document.createElement("div");
-      side.style.display = "flex";
-      side.style.gap = "0.35rem";
-      side.style.alignItems = "center";
-      side.style.flexWrap = "wrap";
-
-      if (looksLikeUrl(ref.url)) {
-        const open = document.createElement("a");
-        open.className = "dash-item-side";
-        open.href = ref.url;
-        open.target = "_blank";
-        open.rel = "noopener noreferrer";
-        open.textContent = "Open";
-        side.appendChild(open);
+      if (!groupRefs.length) {
+        const empty = document.createElement("p");
+        empty.className = "ref-column-empty";
+        empty.textContent = "Drop references here";
+        list.appendChild(empty);
+      } else {
+        groupRefs.forEach((ref) => list.appendChild(createRefCard(ref)));
       }
 
-      const edit = document.createElement("button");
-      edit.type = "button";
-      edit.className = "dash-item-side as-btn";
-      edit.textContent = ref.id === editingRefId ? "Editing…" : "Edit";
-      edit.disabled = ref.id === editingRefId;
-      edit.setAttribute(
-        "aria-label",
-        ref.id === editingRefId
-          ? "Currently editing this reference"
-          : "Edit reference"
-      );
-      edit.addEventListener("click", () => startRefEditing(ref));
-      side.appendChild(edit);
-
-      const del = document.createElement("button");
-      del.type = "button";
-      del.className = "delete";
-      del.setAttribute("aria-label", "Delete reference");
-      del.textContent = "×";
-      del.addEventListener("click", () => {
-        if (editingRefId === ref.id) clearRefEditing();
-        store.references = store.references.filter((r) => r.id !== ref.id);
-        saveStore();
-        renderRefsPanel();
-        showToast("Reference removed");
-      });
-      side.appendChild(del);
-
-      row.append(left, side);
-      li.appendChild(row);
-      els.refsList.appendChild(li);
+      column.append(head, list);
+      els.refBoard.appendChild(column);
     });
   }
 
@@ -1471,10 +1773,11 @@
       );
     });
     (store.references || []).forEach((r) => {
+      const group = (store.refGroups || []).find((g) => g.id === r.groupId);
       lines.push(
-        `Reference: ${r.title} [${refFormatLabel(r.format) || "ref"}] ${r.url || ""}${
-          r.note ? ` — ${r.note}` : ""
-        }`.trim()
+        `Reference: ${r.title} [${refFormatLabel(r.format) || "ref"}]${
+          group ? ` {${group.title}}` : ""
+        } ${r.url || ""}${r.note ? ` — ${r.note}` : ""}`.trim()
       );
     });
     return lines.join("\n").trim() || "No notes yet.";
@@ -1742,16 +2045,16 @@
 
   els.refForm.addEventListener("submit", (e) => {
     e.preventDefault();
+    ensureRefBoard();
     const title = els.refTitle.value.trim();
     const url = els.refUrl.value.trim();
     const format = els.refFormat.value;
     const note = els.refNote.value.trim();
-    if (!title || !url || !format) {
-      showToast("Add a title, format, and URL");
+    const groupId = els.refGroup.value || sortedRefGroups()[0]?.id;
+    if (!title || !url || !format || !groupId) {
+      showToast("Add a title, format, group, and URL");
       return;
     }
-
-    if (!store.references) store.references = [];
 
     if (editingRefId) {
       const existing = store.references.find((r) => r.id === editingRefId);
@@ -1761,11 +2064,18 @@
         renderRefsPanel();
         return;
       }
+      const fromGroup = existing.groupId;
       existing.title = title;
       existing.url = url;
       existing.format = format;
       existing.note = note;
+      existing.groupId = groupId;
       existing.updatedAt = Date.now();
+      if (fromGroup !== groupId) {
+        existing.order = nextOrderInGroup(groupId);
+        reindexGroup(fromGroup);
+        reindexGroup(groupId);
+      }
       saveStore();
       clearRefEditing();
       renderRefsPanel();
@@ -1779,8 +2089,11 @@
       url,
       format,
       note,
+      groupId,
+      order: -1,
       createdAt: Date.now(),
     });
+    reindexGroup(groupId);
     saveStore();
     clearRefEditing();
     renderRefsPanel();
@@ -1792,6 +2105,8 @@
     renderRefsPanel();
     showToast("Edit cancelled");
   });
+
+  els.addRefGroup.addEventListener("click", () => addRefGroup());
 
   els.noteForm.addEventListener("submit", (e) => {
     e.preventDefault();
@@ -1906,6 +2221,13 @@
         createdAt: Date.now(),
       },
     ];
+    const inboxId = uid();
+    const shortlistId = uid();
+    store.refGroups = [
+      { id: inboxId, title: "Inbox", order: 0 },
+      { id: shortlistId, title: "Shortlist", order: 1 },
+      { id: uid(), title: "Archive", order: 2 },
+    ];
     store.references = [
       {
         id: uid(),
@@ -1913,6 +2235,8 @@
         url: "https://www.instagram.com/",
         format: "carousel",
         note: "Clean pacing + muted palette",
+        groupId: shortlistId,
+        order: 0,
         createdAt: Date.now(),
       },
       {
@@ -1921,6 +2245,8 @@
         url: "https://www.instagram.com/reels/",
         format: "reel",
         note: "Hook in first 1s",
+        groupId: inboxId,
+        order: 0,
         createdAt: Date.now() - 1000,
       },
     ];
@@ -1935,5 +2261,7 @@
     saveStore();
   }
 
+  ensureRefBoard();
+  fillRefGroupSelect();
   setView(currentView);
 })();
