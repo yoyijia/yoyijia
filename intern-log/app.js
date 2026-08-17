@@ -342,6 +342,13 @@
     drawStage: document.getElementById("drawStage"),
     drawBase: document.getElementById("drawBase"),
     drawLayer: document.getElementById("drawLayer"),
+    refViewModal: document.getElementById("refViewModal"),
+    refViewTitle: document.getElementById("refViewTitle"),
+    refViewKicker: document.getElementById("refViewKicker"),
+    refViewMeta: document.getElementById("refViewMeta"),
+    refViewBody: document.getElementById("refViewBody"),
+    refViewEdit: document.getElementById("refViewEdit"),
+    refViewClose: document.getElementById("refViewClose"),
     allStickiesBoard: document.getElementById("allStickiesBoard"),
     allStickiesEmpty: document.getElementById("allStickiesEmpty"),
     allStickiesCount: document.getElementById("allStickiesCount"),
@@ -373,6 +380,7 @@
   let refFilter = parseRefFilter(localStorage.getItem(REF_FILTER_KEY) || "all");
   let refDrag = null;
   let drawSession = null;
+  let viewingRefId = null;
   let mediaDbPromise = null;
   const objectUrlCache = new Map();
   const openEditors = new Set();
@@ -1770,6 +1778,132 @@
     layer.clearRect(0, 0, els.drawLayer.width, els.drawLayer.height);
   }
 
+  function closeRefViewer() {
+    viewingRefId = null;
+    els.refViewModal.hidden = true;
+    els.refViewBody.innerHTML = "";
+    els.refViewMeta.innerHTML = "";
+  }
+
+  async function openRefViewer(refId) {
+    ensureRefBoard();
+    const ref = store.references.find((r) => r.id === refId);
+    if (!ref) {
+      showToast("Reference not found");
+      return;
+    }
+    viewingRefId = ref.id;
+    els.refViewTitle.textContent = ref.title || "Untitled reference";
+    els.refViewKicker.textContent = refFormatLabel(ref.format) || "reference";
+
+    els.refViewMeta.innerHTML = "";
+    const formatChip = document.createElement("span");
+    formatChip.className = "ref-format-chip";
+    formatChip.dataset.format = ref.format || "other";
+    formatChip.textContent = refFormatLabel(ref.format) || "Other";
+    els.refViewMeta.appendChild(formatChip);
+
+    normalizeRefTags(ref.tags).forEach((tag) => {
+      const chip = document.createElement("span");
+      chip.className = "ref-tag-chip";
+      chip.textContent = tag;
+      els.refViewMeta.appendChild(chip);
+    });
+
+    els.refViewBody.innerHTML = "";
+
+    const points = normalizeKeyPoints(ref.keyPoints);
+    if (points.length) {
+      const section = document.createElement("section");
+      const heading = document.createElement("p");
+      heading.className = "ref-view-section-title";
+      heading.textContent = "Key points";
+      const list = document.createElement("ul");
+      list.className = "ref-view-points";
+      points.forEach((point) => {
+        const li = document.createElement("li");
+        li.textContent = point;
+        list.appendChild(li);
+      });
+      section.append(heading, list);
+      els.refViewBody.appendChild(section);
+    }
+
+    const images = normalizeRefImages(ref.images);
+    if (images.length) {
+      const section = document.createElement("section");
+      const heading = document.createElement("p");
+      heading.className = "ref-view-section-title";
+      heading.textContent = "Images — tap to draw";
+      const grid = document.createElement("div");
+      grid.className = "ref-view-images";
+      for (const img of images) {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "ref-view-image";
+        btn.setAttribute("aria-label", "Open image to draw");
+        const photo = document.createElement("img");
+        photo.alt = img.name || "Reference image";
+        try {
+          const url = await getMediaUrl(img.id);
+          if (url) photo.src = url;
+        } catch {
+          /* ignore */
+        }
+        btn.appendChild(photo);
+        btn.addEventListener("click", () => {
+          openDrawModal(img.id);
+        });
+        grid.appendChild(btn);
+      }
+      section.append(heading, grid);
+      els.refViewBody.appendChild(section);
+    }
+
+    if (ref.note?.trim()) {
+      const section = document.createElement("section");
+      const heading = document.createElement("p");
+      heading.className = "ref-view-section-title";
+      heading.textContent = "Notes";
+      const note = document.createElement("p");
+      note.className = "ref-view-note";
+      note.textContent = ref.note;
+      section.append(heading, note);
+      els.refViewBody.appendChild(section);
+    }
+
+    if (ref.url?.trim()) {
+      const section = document.createElement("section");
+      const heading = document.createElement("p");
+      heading.className = "ref-view-section-title";
+      heading.textContent = "Link";
+      if (looksLikeUrl(ref.url)) {
+        const link = document.createElement("a");
+        link.className = "ref-view-link";
+        link.href = ref.url;
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+        link.textContent = ref.url;
+        section.append(heading, link);
+      } else {
+        const text = document.createElement("p");
+        text.className = "ref-view-note";
+        text.textContent = ref.url;
+        section.append(heading, text);
+      }
+      els.refViewBody.appendChild(section);
+    }
+
+    if (!els.refViewBody.children.length) {
+      const empty = document.createElement("p");
+      empty.className = "ref-view-empty";
+      empty.textContent = "No details yet — hit Edit to add key points, images, or notes.";
+      els.refViewBody.appendChild(empty);
+    }
+
+    els.refViewModal.hidden = false;
+  }
+
   function closeDrawModal() {
     if (drawSession?.sourceUrl) URL.revokeObjectURL(drawSession.sourceUrl);
     drawSession = null;
@@ -2188,15 +2322,13 @@
     const actions = document.createElement("div");
     actions.className = "ref-card-actions";
 
-    if (looksLikeUrl(ref.url)) {
-      const open = document.createElement("a");
-      open.className = "dash-item-side";
-      open.href = ref.url;
-      open.target = "_blank";
-      open.rel = "noopener noreferrer";
-      open.textContent = "Open";
-      actions.appendChild(open);
-    }
+    const open = document.createElement("button");
+    open.type = "button";
+    open.className = "dash-item-side as-btn";
+    open.textContent = "Open";
+    open.setAttribute("aria-label", "Open reference");
+    open.addEventListener("click", () => openRefViewer(ref.id));
+    actions.appendChild(open);
 
     const edit = document.createElement("button");
     edit.type = "button";
@@ -2213,6 +2345,7 @@
     del.textContent = "×";
     del.addEventListener("click", async () => {
       if (editingRefId === ref.id) clearRefEditing();
+      if (viewingRefId === ref.id) closeRefViewer();
       await deleteRefImages(ref.images);
       store.references = store.references.filter((r) => r.id !== ref.id);
       saveStore();
@@ -2893,6 +3026,28 @@
   });
   els.drawSave.addEventListener("click", () => {
     saveDrawing().catch(() => showToast("Could not save drawing"));
+  });
+
+  els.refViewClose.addEventListener("click", () => closeRefViewer());
+  els.refViewEdit.addEventListener("click", () => {
+    if (!viewingRefId) return;
+    const ref = store.references.find((r) => r.id === viewingRefId);
+    closeRefViewer();
+    if (ref) {
+      startRefEditing(ref);
+      els.refTitle?.scrollIntoView?.({ behavior: "smooth", block: "center" });
+    }
+  });
+  els.refViewModal.addEventListener("click", (e) => {
+    if (e.target === els.refViewModal) closeRefViewer();
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "Escape") return;
+    if (!els.drawModal.hidden) {
+      closeDrawModal();
+      return;
+    }
+    if (!els.refViewModal.hidden) closeRefViewer();
   });
 
   const onDrawPointerDown = (e) => {
