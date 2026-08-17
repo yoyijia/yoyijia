@@ -1459,10 +1459,6 @@ h2 {
   flex-wrap: wrap;
 }
 
-.ref-form-meta {
-  grid-template-columns: minmax(110px, 0.7fr) minmax(110px, 0.7fr) 1.4fr;
-}
-
 .ref-board-hint {
   margin: 0.35rem 0 0.65rem;
   color: var(--ink-soft);
@@ -1670,10 +1666,6 @@ h2 {
 
 @media (max-width: 620px) {
   .link-form-row {
-    grid-template-columns: 1fr;
-  }
-
-  .ref-form-meta {
     grid-template-columns: 1fr;
   }
 }
