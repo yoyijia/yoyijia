@@ -541,7 +541,7 @@
               <input
                 type="text"
                 id="refTitle"
-                maxlength="160"
+                maxlength="240"
                 placeholder="Reference title…"
                 aria-label="Reference title"
                 required
@@ -582,31 +582,32 @@
               placeholder="Write more about this reference — why it works, what to steal, notes for branding/marketing…"
               aria-label="Reference notes"
             ></textarea>
-            <div class="ref-tag-composer">
-              <div class="ref-tag-draft" id="refTagDraft" aria-live="polite"></div>
-              <div class="ref-tag-input-row">
-                <input
-                  type="text"
-                  id="refTagInput"
-                  maxlength="40"
-                  placeholder="Add a tag… branding, marketing…"
-                  aria-label="Add a custom tag"
-                  list="refTagSuggestions"
-                />
-                <button type="button" class="ghost-btn" id="refTagAdd">Add tag</button>
-              </div>
-              <datalist id="refTagSuggestions"></datalist>
-              <div
-                class="ref-tag-suggestions"
-                id="refTagQuick"
-                role="group"
-                aria-label="Suggested tags"
-              ></div>
-              <p class="ref-tag-hint">
-                Type your own tag, or tap a suggestion. Press Enter to add.
-              </p>
-            </div>
           </form>
+          <div class="ref-tag-composer">
+            <div class="ref-tag-draft" id="refTagDraft" aria-live="polite"></div>
+            <div class="ref-tag-input-row">
+              <input
+                type="text"
+                id="refTagInput"
+                maxlength="40"
+                placeholder="Add another tag…"
+                aria-label="Add a custom tag"
+                list="refTagSuggestions"
+                autocomplete="off"
+              />
+              <button type="button" class="ghost-btn" id="refTagAdd">Add tag</button>
+            </div>
+            <datalist id="refTagSuggestions"></datalist>
+            <div
+              class="ref-tag-suggestions"
+              id="refTagQuick"
+              role="group"
+              aria-label="Suggested tags"
+            ></div>
+            <p class="ref-tag-hint">
+              Add as many tags as you want — tap a suggestion or type and press Enter.
+            </p>
+          </div>
           <div
             class="ref-filters"
             id="refFilters"

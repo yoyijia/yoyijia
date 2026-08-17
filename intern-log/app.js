@@ -405,6 +405,9 @@
   function parseRefFilter(raw) {
     const value = String(raw || "all");
     if (!value || value === "all") return { kind: "all", value: "all" };
+    if (value === "untagged" || value === "tag:") {
+      return { kind: "untagged", value: "untagged" };
+    }
     if (value.startsWith("tag:")) {
       const tag = normalizeTag(value.slice(4));
       return tag ? { kind: "tag", value: tag } : { kind: "all", value: "all" };
@@ -420,6 +423,7 @@
   }
 
   function serializeRefFilter(filter) {
+    if (filter?.kind === "untagged") return "untagged";
     if (filter?.kind === "tag" && filter.value) return `tag:${filter.value}`;
     if (filter?.kind === "format" && filter.value) return `format:${filter.value}`;
     return "all";
@@ -468,6 +472,7 @@
   function matchesRefFilter(ref) {
     if (refFilter.kind === "format") return ref.format === refFilter.value;
     if (refFilter.kind === "tag") return refHasTag(ref, refFilter.value);
+    if (refFilter.kind === "untagged") return !(ref.tags && ref.tags.length);
     return true;
   }
 
@@ -1416,7 +1421,7 @@
 
   function addDraftRefTag(raw) {
     const parts = String(raw || "")
-      .split(/[,]+/)
+      .split(/[,;]+/)
       .map(normalizeTag)
       .filter(Boolean);
     if (!parts.length) return false;
@@ -1429,6 +1434,11 @@
     if (added) {
       els.refTagInput.value = "";
       renderDraftRefTags();
+      showToast(
+        draftRefTags.length === 1
+          ? "Tag added — add more if you want"
+          : `${draftRefTags.length} tags ready`
+      );
     }
     return added;
   }
@@ -1467,6 +1477,17 @@
     addChip("All", formatCounts.all, refFilter.kind === "all", () =>
       setRefFilter("all")
     );
+
+    const untaggedCount = allRefs.filter((r) => !(r.tags && r.tags.length)).length;
+    if (untaggedCount > 0 || refFilter.kind === "untagged") {
+      addChip(
+        "No tag",
+        untaggedCount,
+        refFilter.kind === "untagged",
+        () => setRefFilter({ kind: "untagged", value: "untagged" }),
+        " is-tag"
+      );
+    }
 
     REF_FORMATS.forEach(([value, label]) => {
       const count = formatCounts[value] || 0;
@@ -1740,9 +1761,11 @@
       const label =
         refFilter.kind === "tag"
           ? refFilter.value
-          : refFilter.kind === "format"
-            ? refFormatLabel(refFilter.value).toLowerCase()
-            : "matching";
+          : refFilter.kind === "untagged"
+            ? "untagged"
+            : refFilter.kind === "format"
+              ? refFormatLabel(refFilter.value).toLowerCase()
+              : "matching";
       els.refsEmpty.textContent = `No ${label} references on the board.`;
     } else {
       els.refsEmpty.hidden = true;
@@ -2311,10 +2334,20 @@
   els.refTagInput.addEventListener("keydown", (e) => {
     if (e.key === "Enter" || e.key === ",") {
       e.preventDefault();
+      e.stopPropagation();
       addDraftRefTag(els.refTagInput.value);
-    } else if (e.key === "Backspace" && !els.refTagInput.value && draftRefTags.length) {
+      return;
+    }
+    if (e.key === "Backspace" && !els.refTagInput.value && draftRefTags.length) {
       draftRefTags.pop();
       renderDraftRefTags();
+    }
+  });
+
+  els.refTagInput.addEventListener("keyup", (e) => {
+    if (e.key === "Enter" || e.key === ",") {
+      e.preventDefault();
+      e.stopPropagation();
     }
   });
 
@@ -2477,5 +2510,6 @@
   }
 
   ensureRefBoard();
+  renderDraftRefTags();
   setView(currentView);
 })();
