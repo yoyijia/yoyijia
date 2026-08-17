@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Sprig — a soft daily log for internship wins and to-dos."
+    />
+    <title>Sprig — Intern Daily Log</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Figtree:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="bg" aria-hidden="true">
+      <div class="blob blob-a"></div>
+      <div class="blob blob-b"></div>
+      <div class="blob blob-c"></div>
+      <svg class="vine" viewBox="0 0 200 800" fill="none" aria-hidden="true">
+        <path
+          class="vine-path"
+          d="M40 0 C60 80 20 120 50 200 C80 280 10 340 40 420 C70 500 20 560 45 640 C70 720 30 760 40 800"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+        />
+      </svg>
+    </div>
+
+    <header class="top">
+      <a class="brand" href="./" aria-label="Sprig home">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 40 40" width="36" height="36">
+            <circle cx="20" cy="20" r="18" fill="#DCEAD9" />
+            <path
+              d="M20 28 C20 28 12 22 12 16.5 C12 13.5 14.2 11.5 17 11.5 C18.5 11.5 19.6 12.1 20 13 C20.4 12.1 21.5 11.5 23 11.5 C25.8 11.5 28 13.5 28 16.5 C28 22 20 28 20 28 Z"
+              fill="#5F8F6A"
+            />
+            <path
+              d="M20 28 V32"
+              stroke="#3E6B4A"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+          </svg>
+        </span>
+        <span class="brand-text">
+          <span class="brand-name">Sprig</span>
+          <span class="brand-tag">intern daily log</span>
+        </span>
+      </a>
+
+      <nav class="view-tabs" role="tablist" aria-label="Sprig views">
+        <button
+          type="button"
+          class="view-tab"
+          role="tab"
+          id="tabDashboard"
+          aria-controls="viewDashboard"
+          aria-selected="true"
+          data-view="dashboard"
+        >
+          Dashboard
+        </button>
+        <button
+          type="button"
+          class="view-tab"
+          role="tab"
+          id="tabDay"
+          aria-controls="viewDay"
+          aria-selected="false"
+          data-view="day"
+        >
+          Day log
+        </button>
+        <button
+          type="button"
+          class="view-tab"
+          role="tab"
+          id="tabNotes"
+          aria-controls="viewNotes"
+          aria-selected="false"
+          data-view="notes"
+        >
+          Notes
+        </button>
+      </nav>
+    </header>
+
+    <main class="page">
+      <!-- DASHBOARD -->
+      <section
+        class="view view-dashboard"
+        id="viewDashboard"
+        role="tabpanel"
+        aria-labelledby="tabDashboard"
+      >
+        <section class="hero-line" aria-labelledby="dashTitle">
+          <p class="eyebrow">your garden</p>
+          <h1 id="dashTitle">Internship dashboard</h1>
+          <p class="lede">
+            A soft overview of what you’ve planted, grown, and still want to tend.
+          </p>
+          <div class="hero-actions">
+            <button type="button" class="add-btn" id="openToday">Open today’s log</button>
+            <button type="button" class="ghost-btn" id="copyWeek">Copy week summary</button>
+          </div>
+        </section>
+
+        <section class="metrics" aria-label="Internship snapshot">
+          <article class="metric">
+            <p class="metric-label">Days logged</p>
+            <p class="metric-value" id="statDays">0</p>
+          </article>
+          <article class="metric">
+            <p class="metric-label">Things done</p>
+            <p class="metric-value" id="statDone">0</p>
+          </article>
+          <article class="metric">
+            <p class="metric-label">Still to do</p>
+            <p class="metric-value" id="statTodo">0</p>
+          </article>
+          <article class="metric metric-streak">
+            <p class="metric-label">Streak</p>
+            <p class="metric-value"><span id="statStreak">0</span><span class="metric-unit"> days</span></p>
+          </article>
+        </section>
+
+        <section class="panel week-panel" aria-labelledby="weekHeading">
+          <div class="panel-head">
+            <div>
+              <p class="panel-kicker">this week</p>
+              <h2 id="weekHeading">Growth rhythm</h2>
+            </div>
+            <span class="count" id="weekDoneCount">0 done</span>
+          </div>
+          <div class="week-strip" id="weekStrip" aria-label="Last seven days"></div>
+        </section>
+
+        <div class="dash-columns">
+          <section class="panel panel-open" aria-labelledby="openHeading">
+            <div class="panel-head">
+              <div>
+                <p class="panel-kicker">still growing</p>
+                <h2 id="openHeading">Open to-dos</h2>
+              </div>
+              <span class="count" id="openTodoCount">0</span>
+            </div>
+            <ul class="dash-list" id="openTodoList"></ul>
+            <p class="empty" id="openTodoEmpty">No open to-dos. Nice and clear.</p>
+          </section>
+
+          <section class="panel panel-recent" aria-labelledby="recentHeading">
+            <div class="panel-head">
+              <div>
+                <p class="panel-kicker">recent soil</p>
+                <h2 id="recentHeading">Recent days</h2>
+              </div>
+            </div>
+            <ul class="dash-list" id="recentList"></ul>
+            <p class="empty" id="recentEmpty">Start logging today to fill your garden.</p>
+          </section>
+        </div>
+      </section>
+
+      <!-- DAY LOG -->
+      <section
+        class="view view-day"
+        id="viewDay"
+        role="tabpanel"
+        aria-labelledby="tabDay"
+        hidden
+      >
+        <div class="day-toolbar">
+          <div class="date-nav" role="group" aria-label="Choose day">
+            <button type="button" class="icon-btn" id="prevDay" aria-label="Previous day">
+              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+                <path
+                  d="M15 6 L9 12 L15 18"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </button>
+            <button type="button" class="date-pill" id="dateLabel" aria-live="polite">
+              Today
+            </button>
+            <input type="date" id="datePicker" class="date-picker" aria-label="Pick a date" />
+            <button type="button" class="icon-btn" id="nextDay" aria-label="Next day">
+              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+                <path
+                  d="M9 6 L15 12 L9 18"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            </button>
+          </div>
+          <button type="button" class="ghost-btn" id="backDashboard">Back to dashboard</button>
+        </div>
+
+        <section class="hero-line" aria-labelledby="dayTitle">
+          <p class="eyebrow" id="weekdayLabel">Wednesday</p>
+          <h1 id="dayTitle">What grew today?</h1>
+          <p class="lede" id="dayHint">
+            Plant a to-do, pin a sticky reminder, and keep track of what grew
+            today.
+          </p>
+        </section>
+
+        <div class="columns">
+          <section class="panel panel-todo" aria-labelledby="todoHeading">
+            <div class="panel-head">
+              <div>
+                <p class="panel-kicker">to plant</p>
+                <h2 id="todoHeading">Things to do</h2>
+              </div>
+              <span class="count" id="todoCount">0</span>
+            </div>
+
+            <form class="add-stack" id="todoForm" autocomplete="off">
+              <div class="add-row">
+                <input
+                  type="text"
+                  id="todoInput"
+                  name="todo"
+                  maxlength="200"
+                  placeholder="e.g. Review PR feedback…"
+                  aria-label="Add a to-do"
+                  required
+                />
+                <button type="submit" class="add-btn">Add</button>
+              </div>
+              <div class="add-meta">
+                <select id="todoTool" aria-label="Tool or file type">
+                  <option value="">Tool / file type</option>
+                  <option value="figma">Figma</option>
+                  <option value="gdoc">Google Doc</option>
+                  <option value="gsheets">Google Sheets</option>
+                  <option value="photoshop">Photoshop</option>
+                  <option value="illustrator">Illustrator</option>
+                  <option value="notion">Notion</option>
+                  <option value="slack">Slack</option>
+                  <option value="github">GitHub</option>
+                  <option value="miro">Miro</option>
+                  <option value="drive">Drive</option>
+                  <option value="other">Other</option>
+                </select>
+                <input
+                  type="text"
+                  id="todoFile"
+                  maxlength="300"
+                  placeholder="File name or link…"
+                  aria-label="File name or link"
+                />
+              </div>
+              <div
+                id="todoDetail"
+                class="rt-host"
+                data-placeholder="Optional details — notes, next steps…"
+                data-aria="To-do details"
+              ></div>
+            </form>
+
+            <ul class="list" id="todoList"></ul>
+            <p class="empty" id="todoEmpty">Nothing planted yet. Add one above.</p>
+          </section>
+
+          <section class="panel panel-done" aria-labelledby="doneHeading">
+            <div class="panel-head">
+              <div>
+                <p class="panel-kicker">grown</p>
+                <h2 id="doneHeading">Things done</h2>
+              </div>
+              <span class="count" id="doneCount">0</span>
+            </div>
+
+            <form class="add-stack" id="doneForm" autocomplete="off">
+              <div class="add-row">
+                <input
+                  type="text"
+                  id="doneInput"
+                  name="done"
+                  maxlength="200"
+                  placeholder="e.g. Shipped the landing tweak…"
+                  aria-label="Add something done"
+                  required
+                />
+                <button type="submit" class="add-btn">Add</button>
+              </div>
+              <div class="add-meta">
+                <select id="doneTool" aria-label="Tool or file type">
+                  <option value="">Tool / file type</option>
+                  <option value="figma">Figma</option>
+                  <option value="gdoc">Google Doc</option>
+                  <option value="gsheets">Google Sheets</option>
+                  <option value="photoshop">Photoshop</option>
+                  <option value="illustrator">Illustrator</option>
+                  <option value="notion">Notion</option>
+                  <option value="slack">Slack</option>
+                  <option value="github">GitHub</option>
+                  <option value="miro">Miro</option>
+                  <option value="drive">Drive</option>
+                  <option value="other">Other</option>
+                </select>
+                <input
+                  type="text"
+                  id="doneFile"
+                  maxlength="300"
+                  placeholder="File name or link…"
+                  aria-label="File name or link"
+                />
+              </div>
+              <div
+                id="doneDetail"
+                class="rt-host"
+                data-placeholder="Optional details — what you learned, impact, follow-ups…"
+                data-aria="Done details"
+              ></div>
+            </form>
+
+            <ul class="list" id="doneList"></ul>
+            <p class="empty" id="doneEmpty">No wins logged yet. You’ve got this.</p>
+          </section>
+        </div>
+
+        <section class="stickies-panel" aria-labelledby="stickyHeading">
+          <div class="panel-head">
+            <div>
+              <p class="panel-kicker">post-its</p>
+              <h2 id="stickyHeading">Reminders & little notes</h2>
+            </div>
+            <div class="moods" role="group" aria-label="Mood">
+              <button type="button" class="mood" data-mood="sunny" aria-pressed="false">
+                sunny
+              </button>
+              <button type="button" class="mood" data-mood="steady" aria-pressed="false">
+                steady
+              </button>
+              <button type="button" class="mood" data-mood="cloudy" aria-pressed="false">
+                cloudy
+              </button>
+              <button type="button" class="mood" data-mood="tired" aria-pressed="false">
+                tired
+              </button>
+            </div>
+          </div>
+
+          <form class="sticky-composer sticky-note color-butter" id="stickyForm" autocomplete="off">
+            <p class="sticky-label">New sticky</p>
+            <input
+              type="text"
+              id="stickyTitle"
+              maxlength="120"
+              placeholder="Reminder title (optional)"
+              aria-label="Sticky title"
+            />
+            <div
+              id="stickyBody"
+              class="rt-host rt-host-sticky"
+              data-placeholder="Write your reminder… e.g. email mentor about Friday demo"
+              data-aria="Sticky reminder"
+            ></div>
+            <div class="sticky-composer-actions">
+              <div class="sticky-swatches" role="group" aria-label="Sticky color">
+                <button type="button" class="swatch is-active" data-color="butter" aria-label="Butter" aria-pressed="true"></button>
+                <button type="button" class="swatch" data-color="peach" aria-label="Peach" aria-pressed="false"></button>
+                <button type="button" class="swatch" data-color="mint" aria-label="Mint" aria-pressed="false"></button>
+                <button type="button" class="swatch" data-color="sky" aria-label="Sky" aria-pressed="false"></button>
+              </div>
+              <button type="submit" class="save-sticky-btn" id="saveSticky">Save sticky</button>
+            </div>
+          </form>
+
+          <div class="sticky-board" id="stickyBoard" aria-live="polite"></div>
+          <p class="empty" id="stickyEmpty">No stickies yet — write one above and hit Save sticky.</p>
+        </section>
+
+        <footer class="actions">
+          <button type="button" class="ghost-btn" id="jumpToday">Jump to today</button>
+          <button type="button" class="ghost-btn" id="copyDay">Copy day summary</button>
+          <span class="save-status" id="saveStatus" aria-live="polite">Saved on this device</span>
+        </footer>
+      </section>
+
+      <!-- NOTES OVERVIEW -->
+      <section
+        class="view view-notes"
+        id="viewNotes"
+        role="tabpanel"
+        aria-labelledby="tabNotes"
+        hidden
+      >
+        <section class="hero-line" aria-labelledby="notesTitle">
+          <p class="eyebrow">gathered leaves</p>
+          <h1 id="notesTitle">Notes overview</h1>
+          <p class="lede">
+            Links, stickies, and consolidated notes from your internship days —
+            all in one place.
+          </p>
+        </section>
+
+        <div class="notes-tabs" role="tablist" aria-label="Notes sections">
+          <button
+            type="button"
+            class="notes-tab"
+            role="tab"
+            id="notesTabLinks"
+            aria-controls="notesPanelLinks"
+            aria-selected="true"
+            data-notes-tab="links"
+          >
+            Links
+          </button>
+          <button
+            type="button"
+            class="notes-tab"
+            role="tab"
+            id="notesTabStickies"
+            aria-controls="notesPanelStickies"
+            aria-selected="false"
+            data-notes-tab="stickies"
+          >
+            Stickies
+          </button>
+          <button
+            type="button"
+            class="notes-tab"
+            role="tab"
+            id="notesTabConsolidated"
+            aria-controls="notesPanelConsolidated"
+            aria-selected="false"
+            data-notes-tab="consolidated"
+          >
+            Consolidated
+          </button>
+        </div>
+
+        <section
+          class="panel notes-panel"
+          id="notesPanelLinks"
+          role="tabpanel"
+          aria-labelledby="notesTabLinks"
+        >
+          <div class="panel-head">
+            <div>
+              <p class="panel-kicker">saved links</p>
+              <h2>Project links</h2>
+            </div>
+            <span class="count" id="linksCount">0</span>
+          </div>
+          <form class="add-stack" id="linkForm" autocomplete="off">
+            <div class="add-row link-form-row">
+              <input
+                type="text"
+                id="linkTitle"
+                maxlength="160"
+                placeholder="Link title…"
+                aria-label="Link title"
+                required
+              />
+              <button type="submit" class="add-btn" id="linkSubmitBtn">Save link</button>
+              <button type="button" class="ghost-btn" id="linkCancelEdit" hidden>
+                Cancel
+              </button>
+            </div>
+            <p class="link-edit-hint" id="linkEditHint" hidden>
+              Editing a saved link — update the fields, then hit Update link.
+            </p>
+            <div class="add-meta">
+              <select id="linkTool" aria-label="Tool or file type">
+                <option value="">Tool / file type</option>
+                <option value="figma">Figma</option>
+                <option value="gdoc">Google Doc</option>
+                <option value="gsheets">Google Sheets</option>
+                <option value="photoshop">Photoshop</option>
+                <option value="illustrator">Illustrator</option>
+                <option value="notion">Notion</option>
+                <option value="slack">Slack</option>
+                <option value="github">GitHub</option>
+                <option value="miro">Miro</option>
+                <option value="drive">Drive</option>
+                <option value="other">Other</option>
+              </select>
+              <input
+                type="text"
+                id="linkUrl"
+                maxlength="500"
+                placeholder="https://… or file name"
+                aria-label="URL or file name"
+                required
+              />
+            </div>
+          </form>
+          <ul class="dash-list" id="linksList"></ul>
+          <p class="empty" id="linksEmpty">No saved links yet. Add one above.</p>
+        </section>
+
+        <section
+          class="panel notes-panel"
+          id="notesPanelStickies"
+          role="tabpanel"
+          aria-labelledby="notesTabStickies"
+          hidden
+        >
+          <div class="panel-head">
+            <div>
+              <p class="panel-kicker">all stickies</p>
+              <h2>Reminder wall</h2>
+            </div>
+            <span class="count" id="allStickiesCount">0</span>
+          </div>
+          <div class="sticky-board" id="allStickiesBoard"></div>
+          <p class="empty" id="allStickiesEmpty">No stickies yet — add some in Day log.</p>
+        </section>
+
+        <section
+          class="panel notes-panel"
+          id="notesPanelConsolidated"
+          role="tabpanel"
+          aria-labelledby="notesTabConsolidated"
+          hidden
+        >
+          <div class="panel-head">
+            <div>
+              <p class="panel-kicker">everything gathered</p>
+              <h2>Consolidated notes</h2>
+            </div>
+            <button type="button" class="ghost-btn" id="copyNotes">Copy all notes</button>
+          </div>
+          <form class="add-stack" id="noteForm" autocomplete="off">
+            <div class="add-row">
+              <input
+                type="text"
+                id="noteTitle"
+                maxlength="160"
+                placeholder="Notebook title…"
+                aria-label="Notebook title"
+                required
+              />
+              <button type="submit" class="add-btn">Add note</button>
+            </div>
+            <div
+              id="noteBody"
+              class="rt-host"
+              data-placeholder="Write a lasting note — decisions, feedback, learnings…"
+              data-aria="Notebook body"
+            ></div>
+          </form>
+          <div class="consolidated-list" id="consolidatedList"></div>
+          <p class="empty" id="consolidatedEmpty">
+            Notes from tasks, stickies, and your notebook will appear here.
+          </p>
+        </section>
+      </section>
+    </main>
+
+    <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
