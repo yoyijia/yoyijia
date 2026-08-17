@@ -293,6 +293,10 @@
     refFormat: document.getElementById("refFormat"),
     refUrl: document.getElementById("refUrl"),
     refNote: document.getElementById("refNote"),
+    refTagDraft: document.getElementById("refTagDraft"),
+    refTagInput: document.getElementById("refTagInput"),
+    refTagAdd: document.getElementById("refTagAdd"),
+    refTagSuggestions: document.getElementById("refTagSuggestions"),
     refSubmitBtn: document.getElementById("refSubmitBtn"),
     refCancelEdit: document.getElementById("refCancelEdit"),
     refEditHint: document.getElementById("refEditHint"),
@@ -326,11 +330,8 @@
   let stickyColor = "butter";
   let editingLinkId = null;
   let editingRefId = null;
-  const savedRefFilter = localStorage.getItem(REF_FILTER_KEY) || "all";
-  let refFilter =
-    savedRefFilter === "all" || REF_FORMAT_LABELS[savedRefFilter]
-      ? savedRefFilter
-      : "all";
+  let draftRefTags = [];
+  let refFilter = parseRefFilter(localStorage.getItem(REF_FILTER_KEY) || "all");
   let refDrag = null;
   const openEditors = new Set();
 
@@ -390,6 +391,75 @@
     return REF_FORMAT_LABELS[format] || format || "";
   }
 
+  function parseRefFilter(raw) {
+    const value = String(raw || "all");
+    if (!value || value === "all") return { kind: "all", value: "all" };
+    if (value.startsWith("tag:")) {
+      const tag = normalizeTag(value.slice(4));
+      return tag ? { kind: "tag", value: tag } : { kind: "all", value: "all" };
+    }
+    if (value.startsWith("format:")) {
+      const format = value.slice(7);
+      return REF_FORMAT_LABELS[format]
+        ? { kind: "format", value: format }
+        : { kind: "all", value: "all" };
+    }
+    if (REF_FORMAT_LABELS[value]) return { kind: "format", value };
+    return { kind: "all", value: "all" };
+  }
+
+  function serializeRefFilter(filter) {
+    if (filter?.kind === "tag" && filter.value) return `tag:${filter.value}`;
+    if (filter?.kind === "format" && filter.value) return `format:${filter.value}`;
+    return "all";
+  }
+
+  function normalizeTag(value) {
+    return String(value || "")
+      .trim()
+      .replace(/\s+/g, " ")
+      .slice(0, 40);
+  }
+
+  function normalizeRefTags(tags) {
+    if (!Array.isArray(tags)) return [];
+    const seen = new Set();
+    const out = [];
+    tags.forEach((tag) => {
+      const next = normalizeTag(tag);
+      if (!next) return;
+      const key = next.toLowerCase();
+      if (seen.has(key)) return;
+      seen.add(key);
+      out.push(next);
+    });
+    return out;
+  }
+
+  function refHasTag(ref, tag) {
+    const key = normalizeTag(tag).toLowerCase();
+    return (ref.tags || []).some((t) => t.toLowerCase() === key);
+  }
+
+  function collectKnownTags(refs = store.references || []) {
+    const map = new Map();
+    refs.forEach((ref) => {
+      (ref.tags || []).forEach((tag) => {
+        const key = tag.toLowerCase();
+        if (!map.has(key)) map.set(key, tag);
+      });
+    });
+    return [...map.values()].sort((a, b) =>
+      a.localeCompare(b, undefined, { sensitivity: "base" })
+    );
+  }
+
+  function matchesRefFilter(ref) {
+    if (refFilter.kind === "format") return ref.format === refFilter.value;
+    if (refFilter.kind === "tag") return refHasTag(ref, refFilter.value);
+    return true;
+  }
+
   function ensureRefBoard() {
     if (!Array.isArray(store.references)) store.references = [];
     if (!Array.isArray(store.refGroups)) store.refGroups = [];
@@ -442,6 +512,7 @@
     store.references.forEach((ref, i) => {
       if (!ref.groupId || !groupIds.has(ref.groupId)) ref.groupId = fallback;
       if (typeof ref.order !== "number") ref.order = i;
+      ref.tags = normalizeRefTags(ref.tags);
     });
   }
 
@@ -1249,61 +1320,149 @@
 
   function clearRefEditing() {
     editingRefId = null;
+    draftRefTags = [];
     els.refTitle.value = "";
     els.refUrl.value = "";
     els.refFormat.value = "";
     els.refNote.value = "";
+    els.refTagInput.value = "";
     els.refSubmitBtn.textContent = "Save reference";
     els.refCancelEdit.hidden = true;
     els.refEditHint.hidden = true;
+    renderDraftRefTags();
   }
 
   function startRefEditing(ref) {
     editingRefId = ref.id;
+    draftRefTags = normalizeRefTags(ref.tags);
     els.refTitle.value = ref.title || "";
     els.refUrl.value = ref.url || "";
     els.refFormat.value = ref.format || "";
     els.refNote.value = ref.note || "";
+    els.refTagInput.value = "";
     els.refSubmitBtn.textContent = "Update reference";
     els.refCancelEdit.hidden = false;
     els.refEditHint.hidden = false;
+    renderDraftRefTags();
     els.refTitle.focus();
     els.refTitle.select();
     renderRefsPanel();
     showToast("Editing reference");
   }
 
-  function setRefFilter(filter) {
-    refFilter =
-      filter === "all" || REF_FORMAT_LABELS[filter] ? filter : "all";
-    localStorage.setItem(REF_FILTER_KEY, refFilter);
+  function renderDraftRefTags() {
+    els.refTagDraft.innerHTML = "";
+    draftRefTags.forEach((tag) => {
+      const chip = document.createElement("span");
+      chip.className = "ref-tag-chip";
+      chip.appendChild(document.createTextNode(tag));
+      const remove = document.createElement("button");
+      remove.type = "button";
+      remove.setAttribute("aria-label", `Remove tag ${tag}`);
+      remove.textContent = "×";
+      remove.addEventListener("click", () => {
+        draftRefTags = draftRefTags.filter(
+          (t) => t.toLowerCase() !== tag.toLowerCase()
+        );
+        renderDraftRefTags();
+      });
+      chip.appendChild(remove);
+      els.refTagDraft.appendChild(chip);
+    });
+    updateRefTagSuggestions();
+  }
+
+  function updateRefTagSuggestions() {
+    const known = collectKnownTags();
+    const draftKeys = new Set(draftRefTags.map((t) => t.toLowerCase()));
+    els.refTagSuggestions.innerHTML = known
+      .filter((tag) => !draftKeys.has(tag.toLowerCase()))
+      .map((tag) => `<option value="${tag.replace(/"/g, "&quot;")}"></option>`)
+      .join("");
+  }
+
+  function addDraftRefTag(raw) {
+    const parts = String(raw || "")
+      .split(/[,]+/)
+      .map(normalizeTag)
+      .filter(Boolean);
+    if (!parts.length) return false;
+    let added = false;
+    parts.forEach((tag) => {
+      if (draftRefTags.some((t) => t.toLowerCase() === tag.toLowerCase())) return;
+      draftRefTags.push(tag);
+      added = true;
+    });
+    if (added) {
+      els.refTagInput.value = "";
+      renderDraftRefTags();
+    }
+    return added;
+  }
+
+  function setRefFilter(next) {
+    refFilter = parseRefFilter(
+      typeof next === "string" ? next : serializeRefFilter(next)
+    );
+    localStorage.setItem(REF_FILTER_KEY, serializeRefFilter(refFilter));
     renderRefsPanel();
   }
 
   function renderRefFilters(allRefs) {
-    const counts = { all: allRefs.length };
+    const formatCounts = { all: allRefs.length };
     REF_FORMATS.forEach(([value]) => {
-      counts[value] = allRefs.filter((r) => r.format === value).length;
+      formatCounts[value] = allRefs.filter((r) => r.format === value).length;
     });
 
-    const chips = [
-      ["all", "All"],
-      ...REF_FORMATS.filter(([value]) => counts[value] > 0 || value === refFilter),
-    ];
+    const tagCounts = {};
+    collectKnownTags(allRefs).forEach((tag) => {
+      tagCounts[tag] = allRefs.filter((r) => refHasTag(r, tag)).length;
+    });
 
     els.refFilters.innerHTML = "";
-    chips.forEach(([value, label]) => {
+
+    const addChip = (label, count, active, onClick, extraClass = "") => {
       const btn = document.createElement("button");
       btn.type = "button";
-      btn.className = `ref-filter${refFilter === value ? " is-active" : ""}`;
-      btn.textContent = `${label} (${counts[value] || 0})`;
-      btn.setAttribute(
-        "aria-pressed",
-        refFilter === value ? "true" : "false"
-      );
-      btn.addEventListener("click", () => setRefFilter(value));
+      btn.className = `ref-filter${extraClass}${active ? " is-active" : ""}`;
+      btn.textContent = `${label} (${count})`;
+      btn.setAttribute("aria-pressed", active ? "true" : "false");
+      btn.addEventListener("click", onClick);
       els.refFilters.appendChild(btn);
+    };
+
+    addChip("All", formatCounts.all, refFilter.kind === "all", () =>
+      setRefFilter("all")
+    );
+
+    REF_FORMATS.forEach(([value, label]) => {
+      const count = formatCounts[value] || 0;
+      if (
+        count === 0 &&
+        !(refFilter.kind === "format" && refFilter.value === value)
+      ) {
+        return;
+      }
+      addChip(
+        label,
+        count,
+        refFilter.kind === "format" && refFilter.value === value,
+        () => setRefFilter({ kind: "format", value })
+      );
     });
+
+    Object.keys(tagCounts)
+      .sort((a, b) => a.localeCompare(b, undefined, { sensitivity: "base" }))
+      .forEach((tag) => {
+        addChip(
+          tag,
+          tagCounts[tag],
+          refFilter.kind === "tag" &&
+            refFilter.value.toLowerCase() === tag.toLowerCase(),
+          () => setRefFilter({ kind: "tag", value: tag }),
+          " is-tag"
+        );
+      });
   }
 
   function endRefDrag() {
@@ -1414,6 +1573,19 @@
 
     card.append(handle, top);
 
+    const tags = normalizeRefTags(ref.tags);
+    if (tags.length) {
+      const tagRow = document.createElement("div");
+      tagRow.className = "ref-card-tags";
+      tags.forEach((tag) => {
+        const tagChip = document.createElement("span");
+        tagChip.className = "ref-tag-chip";
+        tagChip.textContent = tag;
+        tagRow.appendChild(tagChip);
+      });
+      card.appendChild(tagRow);
+    }
+
     if (ref.note) {
       const note = document.createElement("p");
       note.className = "ref-card-note";
@@ -1521,10 +1693,7 @@
   function renderRefsPanel() {
     ensureRefBoard();
     const all = store.references;
-    const filtered =
-      refFilter === "all"
-        ? all
-        : all.filter((r) => r.format === refFilter);
+    const filtered = all.filter(matchesRefFilter);
 
     els.refsCount.textContent = String(filtered.length);
     els.refBoard.innerHTML = "";
@@ -1532,15 +1701,22 @@
     if (all.length === 0) {
       els.refsEmpty.hidden = false;
       els.refsEmpty.textContent =
-        "No references yet. Save ones you love, tag the format, and drag them into groups.";
+        "No references yet. Save ones you love, tag them, and drag into groups.";
     } else if (filtered.length === 0) {
       els.refsEmpty.hidden = false;
-      els.refsEmpty.textContent = `No ${refFormatLabel(refFilter).toLowerCase()} references on the board.`;
+      const label =
+        refFilter.kind === "tag"
+          ? refFilter.value
+          : refFilter.kind === "format"
+            ? refFormatLabel(refFilter.value).toLowerCase()
+            : "matching";
+      els.refsEmpty.textContent = `No ${label} references on the board.`;
     } else {
       els.refsEmpty.hidden = true;
     }
 
     renderRefFilters(all);
+    updateRefTagSuggestions();
 
     sortedRefGroups().forEach((group) => {
       const column = document.createElement("section");
@@ -1764,6 +1940,8 @@
       lines.push(
         `Reference: ${r.title} [${refFormatLabel(r.format) || "ref"}]${
           group ? ` {${group.title}}` : ""
+        }${
+          (r.tags || []).length ? ` #${(r.tags || []).join(" #")}` : ""
         } ${r.url || ""}${r.note ? ` — ${r.note}` : ""}`.trim()
       );
     });
@@ -2033,10 +2211,12 @@
   els.refForm.addEventListener("submit", (e) => {
     e.preventDefault();
     ensureRefBoard();
+    if (els.refTagInput.value.trim()) addDraftRefTag(els.refTagInput.value);
     const title = els.refTitle.value.trim();
     const url = els.refUrl.value.trim();
     const format = els.refFormat.value;
     const note = els.refNote.value.trim();
+    const tags = normalizeRefTags(draftRefTags);
     if (!title || !url || !format) {
       showToast("Add a title, format, and URL");
       return;
@@ -2054,6 +2234,7 @@
       existing.url = url;
       existing.format = format;
       existing.note = note;
+      existing.tags = tags;
       existing.updatedAt = Date.now();
       saveStore();
       clearRefEditing();
@@ -2074,6 +2255,7 @@
       url,
       format,
       note,
+      tags,
       groupId,
       order: -1,
       createdAt: Date.now(),
@@ -2083,6 +2265,24 @@
     clearRefEditing();
     renderRefsPanel();
     showToast("Reference saved");
+  });
+
+  els.refTagAdd.addEventListener("click", () => {
+    if (!addDraftRefTag(els.refTagInput.value)) {
+      showToast("Type a tag first");
+      return;
+    }
+    els.refTagInput.focus();
+  });
+
+  els.refTagInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === ",") {
+      e.preventDefault();
+      addDraftRefTag(els.refTagInput.value);
+    } else if (e.key === "Backspace" && !els.refTagInput.value && draftRefTags.length) {
+      draftRefTags.pop();
+      renderDraftRefTags();
+    }
   });
 
   els.refCancelEdit.addEventListener("click", () => {
@@ -2215,6 +2415,7 @@
         url: "https://www.instagram.com/",
         format: "carousel",
         note: "Clean pacing + muted palette",
+        tags: ["branding", "product"],
         groupId: boardId,
         order: 0,
         createdAt: Date.now(),
@@ -2225,6 +2426,7 @@
         url: "https://www.instagram.com/reels/",
         format: "reel",
         note: "Hook in first 1s",
+        tags: ["marketing"],
         groupId: boardId,
         order: 1,
         createdAt: Date.now() - 1000,

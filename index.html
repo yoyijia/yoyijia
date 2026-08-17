@@ -582,12 +582,28 @@
               placeholder="Why it’s good (optional)…"
               aria-label="Why this reference is good"
             />
+            <div class="ref-tag-composer">
+              <div class="ref-tag-draft" id="refTagDraft" aria-live="polite"></div>
+              <div class="ref-tag-input-row">
+                <input
+                  type="text"
+                  id="refTagInput"
+                  maxlength="40"
+                  placeholder="Add a tag… branding, marketing…"
+                  aria-label="Add a custom tag"
+                  list="refTagSuggestions"
+                />
+                <button type="button" class="ghost-btn" id="refTagAdd">Add tag</button>
+              </div>
+              <datalist id="refTagSuggestions"></datalist>
+              <p class="ref-tag-hint">Press Enter or Add tag. Custom tags like branding or marketing.</p>
+            </div>
           </form>
           <div
             class="ref-filters"
             id="refFilters"
             role="group"
-            aria-label="Filter by format"
+            aria-label="Filter by format or tag"
           ></div>
           <p class="ref-board-hint">Drag cards between groups to organize your board.</p>
           <div class="ref-board" id="refBoard" aria-label="References board"></div>
