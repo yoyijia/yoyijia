@@ -1421,7 +1421,7 @@
 
   function addDraftRefTag(raw) {
     const parts = String(raw || "")
-      .split(/[,]+/)
+      .split(/[,;]+/)
       .map(normalizeTag)
       .filter(Boolean);
     if (!parts.length) return false;
@@ -1434,6 +1434,11 @@
     if (added) {
       els.refTagInput.value = "";
       renderDraftRefTags();
+      showToast(
+        draftRefTags.length === 1
+          ? "Tag added — add more if you want"
+          : `${draftRefTags.length} tags ready`
+      );
     }
     return added;
   }
@@ -2329,10 +2334,20 @@
   els.refTagInput.addEventListener("keydown", (e) => {
     if (e.key === "Enter" || e.key === ",") {
       e.preventDefault();
+      e.stopPropagation();
       addDraftRefTag(els.refTagInput.value);
-    } else if (e.key === "Backspace" && !els.refTagInput.value && draftRefTags.length) {
+      return;
+    }
+    if (e.key === "Backspace" && !els.refTagInput.value && draftRefTags.length) {
       draftRefTags.pop();
       renderDraftRefTags();
+    }
+  });
+
+  els.refTagInput.addEventListener("keyup", (e) => {
+    if (e.key === "Enter" || e.key === ",") {
+      e.preventDefault();
+      e.stopPropagation();
     }
   });
 
