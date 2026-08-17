@@ -268,6 +268,9 @@
     linkTitle: document.getElementById("linkTitle"),
     linkTool: document.getElementById("linkTool"),
     linkUrl: document.getElementById("linkUrl"),
+    linkSubmitBtn: document.getElementById("linkSubmitBtn"),
+    linkCancelEdit: document.getElementById("linkCancelEdit"),
+    linkEditHint: document.getElementById("linkEditHint"),
     linksList: document.getElementById("linksList"),
     linksEmpty: document.getElementById("linksEmpty"),
     linksCount: document.getElementById("linksCount"),
@@ -294,6 +297,7 @@
   let store = loadStore();
   let toastTimer = null;
   let stickyColor = "butter";
+  let editingLinkId = null;
   const openEditors = new Set();
 
   const rich = {
@@ -982,6 +986,30 @@
     renderConsolidatedPanel();
   }
 
+  function clearLinkEditing() {
+    editingLinkId = null;
+    els.linkTitle.value = "";
+    els.linkUrl.value = "";
+    els.linkTool.value = "";
+    els.linkSubmitBtn.textContent = "Save link";
+    els.linkCancelEdit.hidden = true;
+    els.linkEditHint.hidden = true;
+  }
+
+  function startLinkEditing(link) {
+    editingLinkId = link.id;
+    els.linkTitle.value = link.title || "";
+    els.linkUrl.value = link.url || "";
+    els.linkTool.value = link.tool || "";
+    els.linkSubmitBtn.textContent = "Update link";
+    els.linkCancelEdit.hidden = false;
+    els.linkEditHint.hidden = false;
+    els.linkTitle.focus();
+    els.linkTitle.select();
+    renderLinksPanel();
+    showToast("Editing link");
+  }
+
   function renderLinksPanel() {
     const saved = store.links || [];
     const fromTasks = collectTaskFiles();
@@ -997,7 +1025,9 @@
     combined.forEach((link) => {
       const li = document.createElement("li");
       const row = document.createElement("div");
-      row.className = "dash-item";
+      row.className = `dash-item${
+        link.kind === "link" && link.id === editingLinkId ? " is-editing" : ""
+      }`;
       row.style.cursor = "default";
 
       const left = document.createElement("div");
@@ -1011,6 +1041,7 @@
       if (link.tool) bits.push(toolLabel(link.tool));
       if (link.source) bits.push(link.source);
       if (link.url) bits.push(link.url);
+      if (link.kind === "link" && link.id === editingLinkId) bits.unshift("editing");
       meta.textContent = bits.join(" · ") || "Saved link";
 
       left.append(title, meta);
@@ -1019,6 +1050,7 @@
       side.style.display = "flex";
       side.style.gap = "0.35rem";
       side.style.alignItems = "center";
+      side.style.flexWrap = "wrap";
 
       if (looksLikeUrl(link.url)) {
         const open = document.createElement("a");
@@ -1036,12 +1068,25 @@
       }
 
       if (link.kind === "link") {
+        const edit = document.createElement("button");
+        edit.type = "button";
+        edit.className = "dash-item-side as-btn";
+        edit.textContent = link.id === editingLinkId ? "Editing…" : "Edit";
+        edit.setAttribute(
+          "aria-label",
+          link.id === editingLinkId ? "Currently editing this link" : "Edit link"
+        );
+        edit.disabled = link.id === editingLinkId;
+        edit.addEventListener("click", () => startLinkEditing(link));
+        side.appendChild(edit);
+
         const del = document.createElement("button");
         del.type = "button";
         del.className = "delete";
         del.setAttribute("aria-label", "Delete link");
         del.textContent = "×";
         del.addEventListener("click", () => {
+          if (editingLinkId === link.id) clearLinkEditing();
           store.links = store.links.filter((l) => l.id !== link.id);
           saveStore();
           renderLinksPanel();
@@ -1435,7 +1480,30 @@
     e.preventDefault();
     const title = els.linkTitle.value.trim();
     const url = els.linkUrl.value.trim();
-    if (!title || !url) return;
+    if (!title || !url) {
+      showToast("Add a title and link/file");
+      return;
+    }
+
+    if (editingLinkId) {
+      const existing = (store.links || []).find((l) => l.id === editingLinkId);
+      if (!existing) {
+        clearLinkEditing();
+        showToast("Link not found");
+        renderLinksPanel();
+        return;
+      }
+      existing.title = title;
+      existing.url = url;
+      existing.tool = els.linkTool.value || "";
+      existing.updatedAt = Date.now();
+      saveStore();
+      clearLinkEditing();
+      renderLinksPanel();
+      showToast("Link updated");
+      return;
+    }
+
     store.links.unshift({
       id: uid(),
       title,
@@ -1444,11 +1512,15 @@
       createdAt: Date.now(),
     });
     saveStore();
-    els.linkTitle.value = "";
-    els.linkUrl.value = "";
-    els.linkTool.value = "";
+    clearLinkEditing();
     renderLinksPanel();
     showToast("Link saved");
+  });
+
+  els.linkCancelEdit.addEventListener("click", () => {
+    clearLinkEditing();
+    renderLinksPanel();
+    showToast("Edit cancelled");
   });
 
   els.noteForm.addEventListener("submit", (e) => {

@@ -462,7 +462,7 @@
             <span class="count" id="linksCount">0</span>
           </div>
           <form class="add-stack" id="linkForm" autocomplete="off">
-            <div class="add-row">
+            <div class="add-row link-form-row">
               <input
                 type="text"
                 id="linkTitle"
@@ -471,8 +471,14 @@
                 aria-label="Link title"
                 required
               />
-              <button type="submit" class="add-btn">Save link</button>
+              <button type="submit" class="add-btn" id="linkSubmitBtn">Save link</button>
+              <button type="button" class="ghost-btn" id="linkCancelEdit" hidden>
+                Cancel
+              </button>
             </div>
+            <p class="link-edit-hint" id="linkEditHint" hidden>
+              Editing a saved link — update the fields, then hit Update link.
+            </p>
             <div class="add-meta">
               <select id="linkTool" aria-label="Tool or file type">
                 <option value="">Tool / file type</option>

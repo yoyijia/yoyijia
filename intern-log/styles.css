@@ -1342,14 +1342,31 @@ h2 {
   color: var(--ink-soft);
 }
 
-@media (max-width: 620px) {
-  .add-meta,
-  .item-meta-row {
-    grid-template-columns: 1fr;
-  }
+.link-form-row {
+  grid-template-columns: 1fr auto auto;
+}
 
-  .notes-tabs {
-    width: 100%;
+.link-edit-hint {
+  margin: 0;
+  color: var(--coral);
+  font-size: 0.86rem;
+  font-weight: 600;
+}
+
+.dash-item.is-editing {
+  border-color: rgba(95, 143, 106, 0.45);
+  background: rgba(220, 234, 217, 0.45);
+}
+
+.dash-item-side.as-btn {
+  border: 0;
+  cursor: pointer;
+  font: inherit;
+}
+
+@media (max-width: 620px) {
+  .link-form-row {
+    grid-template-columns: 1fr;
   }
 }
 
