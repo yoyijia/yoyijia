@@ -2467,7 +2467,7 @@
     if (els.refBoardHint) {
       els.refBoardHint.textContent = expandedGroup
         ? "Expanded group — open any card, or go back to see all groups."
-        : "Tap Open on a group to expand it — easier than sideways scrolling.";
+        : "Each group has an Open group button — tap it to browse that group full-width.";
     }
 
     els.refsEmpty.hidden = filtered.length > 0 || all.length === 0;
@@ -2573,16 +2573,6 @@
       const groupRefs = refsInGroup(group.id, filtered);
       count.textContent = String(groupRefs.length);
 
-      const expand = document.createElement("button");
-      expand.type = "button";
-      expand.className = "ref-column-expand";
-      expand.textContent = "Open";
-      expand.setAttribute("aria-label", `Expand ${group.title}`);
-      expand.addEventListener("click", (e) => {
-        e.stopPropagation();
-        setExpandedGroup(group.id);
-      });
-
       const delGroup = document.createElement("button");
       delGroup.type = "button";
       delGroup.className = "delete ref-column-delete";
@@ -2593,7 +2583,7 @@
         deleteRefGroup(group.id);
       });
 
-      head.append(titleInput, count, expand, delGroup);
+      head.append(titleInput, count, delGroup);
 
       const list = document.createElement("div");
       list.className = "ref-column-list";
@@ -2601,25 +2591,26 @@
       if (!groupRefs.length) {
         const empty = document.createElement("p");
         empty.className = "ref-column-empty";
-        empty.textContent = "Drop references here";
+        empty.textContent = "No cards yet — drop or add references here";
         list.appendChild(empty);
       } else {
-        groupRefs.slice(0, 3).forEach((ref) => list.appendChild(createRefCard(ref)));
-        if (groupRefs.length > 3) {
-          const more = document.createElement("button");
-          more.type = "button";
-          more.className = "ref-column-expand";
-          more.style.alignSelf = "stretch";
-          more.textContent = `View all ${groupRefs.length}`;
-          more.addEventListener("click", (e) => {
-            e.stopPropagation();
-            setExpandedGroup(group.id);
-          });
-          list.appendChild(more);
-        }
+        groupRefs.slice(0, 2).forEach((ref) => list.appendChild(createRefCard(ref)));
       }
 
-      column.append(head, list);
+      const openGroup = document.createElement("button");
+      openGroup.type = "button";
+      openGroup.className = "ref-open-group";
+      openGroup.textContent =
+        groupRefs.length > 0
+          ? `Open group · ${groupRefs.length}`
+          : "Open group";
+      openGroup.setAttribute("aria-label", `Open group ${group.title}`);
+      openGroup.addEventListener("click", (e) => {
+        e.stopPropagation();
+        setExpandedGroup(group.id);
+      });
+
+      column.append(head, list, openGroup);
       column.addEventListener("click", (e) => {
         if (e.target.closest("input, button, a, .ref-card")) return;
         setExpandedGroup(group.id);
