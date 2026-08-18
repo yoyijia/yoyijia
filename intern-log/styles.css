@@ -1718,6 +1718,25 @@ h2 {
   background: var(--sage-mist);
 }
 
+.ref-open-group {
+  width: 100%;
+  margin-top: 0.15rem;
+  border: 0;
+  border-radius: 12px;
+  background: var(--sage);
+  color: #fff8ef;
+  padding: 0.7rem 0.85rem;
+  font: inherit;
+  font-size: 0.92rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 8px 18px rgba(62, 107, 74, 0.18);
+}
+
+.ref-open-group:hover {
+  background: var(--sage-deep);
+}
+
 .ref-column-delete {
   flex-shrink: 0;
 }
