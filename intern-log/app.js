@@ -31,6 +31,7 @@
   ];
   const REF_FORMAT_LABELS = Object.fromEntries(REF_FORMATS);
   const REF_FILTER_KEY = "sprig-ref-filter-v1";
+  const REF_GROUP_VIEW_KEY = "sprig-ref-group-view-v1";
   const REF_TAG_SUGGESTIONS = [
     "branding",
     "marketing",
@@ -328,6 +329,7 @@
     refEditHint: document.getElementById("refEditHint"),
     refFilters: document.getElementById("refFilters"),
     refBoard: document.getElementById("refBoard"),
+    refBoardHint: document.getElementById("refBoardHint"),
     refsEmpty: document.getElementById("refsEmpty"),
     refsCount: document.getElementById("refsCount"),
     addRefGroup: document.getElementById("addRefGroup"),
@@ -378,6 +380,7 @@
   let draftKeyPoints = [];
   let draftImages = []; // { id, url }
   let refFilter = parseRefFilter(localStorage.getItem(REF_FILTER_KEY) || "all");
+  let expandedGroupId = localStorage.getItem(REF_GROUP_VIEW_KEY) || null;
   let refDrag = null;
   let drawSession = null;
   let viewingRefId = null;
@@ -1985,6 +1988,7 @@
     closeDrawModal();
     renderDraftImages();
     renderRefsPanel();
+    if (viewingRefId) openRefViewer(viewingRefId);
     showToast("Drawing saved");
   }
 
@@ -2239,6 +2243,13 @@
     const title = document.createElement("p");
     title.className = "ref-card-title";
     title.textContent = ref.title || "Untitled reference";
+    title.style.cursor = "pointer";
+    title.title = "Open reference";
+    title.addEventListener("click", (e) => {
+      e.stopPropagation();
+      openRefViewer(ref.id);
+    });
+    title.addEventListener("pointerdown", (e) => e.stopPropagation());
 
     const chip = document.createElement("span");
     chip.className = "ref-format-chip";
@@ -2411,13 +2422,50 @@
     }
   }
 
+  function setExpandedGroup(groupId) {
+    ensureRefBoard();
+    if (groupId && store.refGroups.some((g) => g.id === groupId)) {
+      expandedGroupId = groupId;
+      localStorage.setItem(REF_GROUP_VIEW_KEY, groupId);
+    } else {
+      expandedGroupId = null;
+      localStorage.removeItem(REF_GROUP_VIEW_KEY);
+    }
+    renderRefsPanel();
+  }
+
   function renderRefsPanel() {
     ensureRefBoard();
     const all = store.references;
     const filtered = all.filter(matchesRefFilter);
+    const groups = sortedRefGroups();
 
-    els.refsCount.textContent = String(filtered.length);
+    if (
+      expandedGroupId &&
+      !groups.some((g) => g.id === expandedGroupId)
+    ) {
+      expandedGroupId = null;
+      localStorage.removeItem(REF_GROUP_VIEW_KEY);
+    }
+
+    const expandedGroup = expandedGroupId
+      ? groups.find((g) => g.id === expandedGroupId)
+      : null;
+
+    els.refsCount.textContent = String(
+      expandedGroup
+        ? refsInGroup(expandedGroup.id, filtered).length
+        : filtered.length
+    );
     els.refBoard.innerHTML = "";
+    els.refBoard.classList.toggle("is-expanded", Boolean(expandedGroup));
+
+    if (els.refBoardHint) {
+      els.refBoardHint.textContent = expandedGroup
+        ? "Expanded group — open any card, or go back to see all groups."
+        : "Tap Open on a group to expand it — easier than sideways scrolling.";
+    }
+
     els.refsEmpty.hidden = filtered.length > 0 || all.length === 0;
     if (all.length === 0) {
       els.refsEmpty.hidden = false;
@@ -2441,10 +2489,59 @@
     renderRefFilters(all);
     updateRefTagSuggestions();
 
-    sortedRefGroups().forEach((group) => {
+    if (expandedGroup) {
+      const back = document.createElement("div");
+      back.className = "ref-board-back";
+
+      const backBtn = document.createElement("button");
+      backBtn.type = "button";
+      backBtn.className = "ghost-btn";
+      backBtn.textContent = "← All groups";
+      backBtn.addEventListener("click", () => setExpandedGroup(null));
+
+      const title = document.createElement("h3");
+      title.className = "ref-board-back-title";
+      title.textContent = expandedGroup.title;
+
+      const count = document.createElement("span");
+      count.className = "ref-column-count";
+      const groupRefs = refsInGroup(expandedGroup.id, filtered);
+      count.textContent = String(groupRefs.length);
+
+      back.append(backBtn, title, count);
+      els.refBoard.appendChild(back);
+
       const column = document.createElement("section");
-      column.className = "ref-column";
+      column.className = "ref-column is-expanded-view";
+      column.dataset.groupId = expandedGroup.id;
+
+      const list = document.createElement("div");
+      list.className = "ref-column-list is-expanded-grid";
+
+      if (!groupRefs.length) {
+        const empty = document.createElement("p");
+        empty.className = "ref-column-empty";
+        empty.textContent = "No references in this group yet";
+        list.appendChild(empty);
+      } else {
+        groupRefs.forEach((ref) => list.appendChild(createRefCard(ref)));
+      }
+
+      column.appendChild(list);
+      els.refBoard.appendChild(column);
+      return;
+    }
+
+    groups.forEach((group) => {
+      const column = document.createElement("section");
+      column.className = "ref-column is-clickable";
       column.dataset.groupId = group.id;
+      column.setAttribute("role", "button");
+      column.setAttribute("tabindex", "0");
+      column.setAttribute(
+        "aria-label",
+        `Open group ${group.title}`
+      );
 
       const head = document.createElement("div");
       head.className = "ref-column-head";
@@ -2455,6 +2552,8 @@
       titleInput.maxLength = 40;
       titleInput.value = group.title;
       titleInput.setAttribute("aria-label", "Group name");
+      titleInput.addEventListener("click", (e) => e.stopPropagation());
+      titleInput.addEventListener("pointerdown", (e) => e.stopPropagation());
       titleInput.addEventListener("change", () => {
         renameRefGroup(group.id, titleInput.value);
       });
@@ -2470,14 +2569,27 @@
       const groupRefs = refsInGroup(group.id, filtered);
       count.textContent = String(groupRefs.length);
 
+      const expand = document.createElement("button");
+      expand.type = "button";
+      expand.className = "ref-column-expand";
+      expand.textContent = "Open";
+      expand.setAttribute("aria-label", `Expand ${group.title}`);
+      expand.addEventListener("click", (e) => {
+        e.stopPropagation();
+        setExpandedGroup(group.id);
+      });
+
       const delGroup = document.createElement("button");
       delGroup.type = "button";
       delGroup.className = "delete ref-column-delete";
       delGroup.setAttribute("aria-label", `Delete group ${group.title}`);
       delGroup.textContent = "×";
-      delGroup.addEventListener("click", () => deleteRefGroup(group.id));
+      delGroup.addEventListener("click", (e) => {
+        e.stopPropagation();
+        deleteRefGroup(group.id);
+      });
 
-      head.append(titleInput, count, delGroup);
+      head.append(titleInput, count, expand, delGroup);
 
       const list = document.createElement("div");
       list.className = "ref-column-list";
@@ -2488,10 +2600,33 @@
         empty.textContent = "Drop references here";
         list.appendChild(empty);
       } else {
-        groupRefs.forEach((ref) => list.appendChild(createRefCard(ref)));
+        groupRefs.slice(0, 3).forEach((ref) => list.appendChild(createRefCard(ref)));
+        if (groupRefs.length > 3) {
+          const more = document.createElement("button");
+          more.type = "button";
+          more.className = "ref-column-expand";
+          more.style.alignSelf = "stretch";
+          more.textContent = `View all ${groupRefs.length}`;
+          more.addEventListener("click", (e) => {
+            e.stopPropagation();
+            setExpandedGroup(group.id);
+          });
+          list.appendChild(more);
+        }
       }
 
       column.append(head, list);
+      column.addEventListener("click", (e) => {
+        if (e.target.closest("input, button, a, .ref-card")) return;
+        setExpandedGroup(group.id);
+      });
+      column.addEventListener("keydown", (e) => {
+        if (e.target !== column) return;
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          setExpandedGroup(group.id);
+        }
+      });
       els.refBoard.appendChild(column);
     });
   }
