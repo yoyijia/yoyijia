@@ -2137,7 +2137,14 @@ h2 {
   cursor: pointer;
 }
 
-.ref-card-points {
+.ref-card-group {
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--sage);
+}
   margin: 0;
   padding-left: 1.1rem;
   color: var(--ink-soft);
