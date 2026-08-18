@@ -2228,7 +2228,8 @@
     window.addEventListener("pointercancel", onRefDragEnd);
   }
 
-  function createRefCard(ref) {
+  function createRefCard(ref, options = {}) {
+    const showGroup = Boolean(options.showGroup);
     const card = document.createElement("article");
     card.className = `ref-card${ref.id === editingRefId ? " is-editing" : ""}`;
     card.dataset.refId = ref.id;
@@ -2262,6 +2263,16 @@
     top.append(title, chip);
 
     card.append(handle, top);
+
+    if (showGroup) {
+      const group = store.refGroups.find((g) => g.id === ref.groupId);
+      if (group) {
+        const groupLabel = document.createElement("p");
+        groupLabel.className = "ref-card-group";
+        groupLabel.textContent = group.title;
+        card.appendChild(groupLabel);
+      }
+    }
 
     const tags = normalizeRefTags(ref.tags);
     if (tags.length) {
@@ -3335,6 +3346,10 @@
   });
 
   els.addRefGroup.addEventListener("click", () => addRefGroup());
+  els.showAllRefs?.addEventListener("click", () =>
+    setExpandedGroup(ALL_GROUPS_VIEW)
+  );
+  els.showRefBoard?.addEventListener("click", () => setExpandedGroup(null));
 
   els.noteForm.addEventListener("submit", (e) => {
     e.preventDefault();
