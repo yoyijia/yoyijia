@@ -2397,6 +2397,10 @@
       g.order = i;
     });
     reindexGroup(fallback);
+    if (expandedGroupId === groupId) {
+      expandedGroupId = null;
+      localStorage.removeItem(REF_GROUP_VIEW_KEY);
+    }
     saveStore();
     renderRefsPanel();
     showToast("Group removed");
