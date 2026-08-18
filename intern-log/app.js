@@ -2267,9 +2267,16 @@
     if (showGroup) {
       const group = store.refGroups.find((g) => g.id === ref.groupId);
       if (group) {
-        const groupLabel = document.createElement("p");
+        const groupLabel = document.createElement("button");
+        groupLabel.type = "button";
         groupLabel.className = "ref-card-group";
         groupLabel.textContent = group.title;
+        groupLabel.title = `Open group ${group.title}`;
+        groupLabel.addEventListener("click", (e) => {
+          e.stopPropagation();
+          setExpandedGroup(group.id);
+        });
+        groupLabel.addEventListener("pointerdown", (e) => e.stopPropagation());
         card.appendChild(groupLabel);
       }
     }
@@ -2448,6 +2455,12 @@
     } else if (groupId && store.refGroups.some((g) => g.id === groupId)) {
       expandedGroupId = groupId;
       localStorage.setItem(REF_GROUP_VIEW_KEY, groupId);
+      const n = refsInGroup(groupId, store.references).length;
+      showToast(
+        n
+          ? `Opened group — ${n} item${n === 1 ? "" : "s"}`
+          : "Opened empty group"
+      );
     } else {
       expandedGroupId = null;
       localStorage.removeItem(REF_GROUP_VIEW_KEY);
@@ -2540,20 +2553,28 @@
         title.className = "ref-board-back-title";
         title.textContent = expandedGroup.title;
 
+        // Always show every card in this group (ignore format/tag filters here)
+        const groupRefs = refsInGroup(expandedGroup.id, store.references);
         const count = document.createElement("span");
         count.className = "ref-column-count";
-        const groupRefs = refsInGroup(expandedGroup.id, filtered);
         count.textContent = String(groupRefs.length);
 
         back.append(backBtn, allBtn, title, count);
         els.refBoard.appendChild(back);
+
+        els.refsCount.textContent = String(groupRefs.length);
+        if (els.refBoardHint) {
+          els.refBoardHint.textContent = `Showing all ${groupRefs.length} item${
+            groupRefs.length === 1 ? "" : "s"
+          } in “${expandedGroup.title}”.`;
+        }
 
         const column = document.createElement("section");
         column.className = "ref-column is-expanded-view";
         column.dataset.groupId = expandedGroup.id;
 
         const list = document.createElement("div");
-        list.className = "ref-column-list is-expanded-grid";
+        list.className = "ref-column-list is-expanded-grid is-group-full";
 
         if (!groupRefs.length) {
           const empty = document.createElement("p");
@@ -2568,6 +2589,7 @@
 
         column.appendChild(list);
         els.refBoard.appendChild(column);
+        els.refBoard.scrollIntoView({ behavior: "smooth", block: "start" });
         return;
       }
 
