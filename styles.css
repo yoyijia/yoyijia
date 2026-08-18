@@ -1600,6 +1600,26 @@ h2 {
   scroll-snap-type: x proximity;
 }
 
+.ref-board.is-expanded {
+  display: block;
+  overflow-x: visible;
+  scroll-snap-type: none;
+}
+
+.ref-board-back {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.55rem;
+  margin-bottom: 0.75rem;
+}
+
+.ref-board-back-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+}
+
 .ref-column {
   flex: 0 0 min(260px, 78vw);
   scroll-snap-align: start;
@@ -1614,6 +1634,27 @@ h2 {
     linear-gradient(180deg, rgba(255, 252, 245, 0.92), rgba(236, 244, 232, 0.55));
   box-shadow: 0 10px 28px rgba(58, 74, 52, 0.05);
   transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+}
+
+.ref-column.is-clickable {
+  cursor: pointer;
+}
+
+.ref-column.is-clickable:hover {
+  border-color: rgba(95, 143, 106, 0.45);
+  transform: translateY(-2px);
+}
+
+.ref-column.is-expanded-view {
+  flex: none;
+  width: 100%;
+  max-width: none;
+  min-height: 0;
+  cursor: default;
+}
+
+.ref-column.is-expanded-view:hover {
+  transform: none;
 }
 
 .ref-column.is-drop-target {
@@ -1660,6 +1701,23 @@ h2 {
   padding: 0.15rem 0.45rem;
 }
 
+.ref-column-expand {
+  flex-shrink: 0;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.75);
+  border-radius: 999px;
+  padding: 0.3rem 0.65rem;
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--sage-deep);
+  cursor: pointer;
+}
+
+.ref-column-expand:hover {
+  background: var(--sage-mist);
+}
+
 .ref-column-delete {
   flex-shrink: 0;
 }
@@ -1672,6 +1730,13 @@ h2 {
   flex: 1;
 }
 
+.ref-column-list.is-expanded-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+  gap: 0.75rem;
+  min-height: 0;
+}
+
 .ref-column-empty {
   margin: auto 0;
   padding: 1rem 0.5rem;
@@ -1682,6 +1747,10 @@ h2 {
   border: 1.5px dashed rgba(95, 143, 106, 0.28);
   border-radius: 14px;
   pointer-events: none;
+}
+
+.ref-column-list.is-expanded-grid .ref-column-empty {
+  grid-column: 1 / -1;
 }
 
 .ref-card {
