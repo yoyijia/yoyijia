@@ -332,6 +332,8 @@
     refBoardHint: document.getElementById("refBoardHint"),
     refsEmpty: document.getElementById("refsEmpty"),
     refsCount: document.getElementById("refsCount"),
+    showAllRefs: document.getElementById("showAllRefs"),
+    showRefBoard: document.getElementById("showRefBoard"),
     addRefGroup: document.getElementById("addRefGroup"),
     drawModal: document.getElementById("drawModal"),
     drawClose: document.getElementById("drawClose"),
@@ -380,7 +382,8 @@
   let draftKeyPoints = [];
   let draftImages = []; // { id, url }
   let refFilter = parseRefFilter(localStorage.getItem(REF_FILTER_KEY) || "all");
-  let expandedGroupId = localStorage.getItem(REF_GROUP_VIEW_KEY) || null;
+  const ALL_GROUPS_VIEW = "__all__";
+  let expandedGroupId = localStorage.getItem(REF_GROUP_VIEW_KEY) || ALL_GROUPS_VIEW;
   let refDrag = null;
   let drawSession = null;
   let viewingRefId = null;
@@ -2428,7 +2431,10 @@
 
   function setExpandedGroup(groupId) {
     ensureRefBoard();
-    if (groupId && store.refGroups.some((g) => g.id === groupId)) {
+    if (groupId === ALL_GROUPS_VIEW) {
+      expandedGroupId = ALL_GROUPS_VIEW;
+      localStorage.setItem(REF_GROUP_VIEW_KEY, ALL_GROUPS_VIEW);
+    } else if (groupId && store.refGroups.some((g) => g.id === groupId)) {
       expandedGroupId = groupId;
       localStorage.setItem(REF_GROUP_VIEW_KEY, groupId);
     } else {
@@ -2446,15 +2452,19 @@
 
     if (
       expandedGroupId &&
+      expandedGroupId !== ALL_GROUPS_VIEW &&
       !groups.some((g) => g.id === expandedGroupId)
     ) {
-      expandedGroupId = null;
-      localStorage.removeItem(REF_GROUP_VIEW_KEY);
+      expandedGroupId = ALL_GROUPS_VIEW;
+      localStorage.setItem(REF_GROUP_VIEW_KEY, ALL_GROUPS_VIEW);
     }
 
-    const expandedGroup = expandedGroupId
-      ? groups.find((g) => g.id === expandedGroupId)
-      : null;
+    const showingAll = expandedGroupId === ALL_GROUPS_VIEW;
+    const expandedGroup =
+      expandedGroupId && !showingAll
+        ? groups.find((g) => g.id === expandedGroupId)
+        : null;
+    const isExpanded = showingAll || Boolean(expandedGroup);
 
     els.refsCount.textContent = String(
       expandedGroup
@@ -2462,12 +2472,17 @@
         : filtered.length
     );
     els.refBoard.innerHTML = "";
-    els.refBoard.classList.toggle("is-expanded", Boolean(expandedGroup));
+    els.refBoard.classList.toggle("is-expanded", isExpanded);
+
+    if (els.showAllRefs) els.showAllRefs.hidden = showingAll;
+    if (els.showRefBoard) els.showRefBoard.hidden = !showingAll && !expandedGroup;
 
     if (els.refBoardHint) {
-      els.refBoardHint.textContent = expandedGroup
-        ? "Expanded group — open any card, or go back to see all groups."
-        : "Each group has an Open group button — tap it to browse that group full-width.";
+      els.refBoardHint.textContent = showingAll
+        ? "Showing every reference — tap a card to open it, or By group to organize."
+        : expandedGroup
+          ? "Expanded group — open any card, or go back to all groups / show all."
+          : "Use Show all for every card, or Open group on a column.";
     }
 
     els.refsEmpty.hidden = filtered.length > 0 || all.length === 0;
@@ -2493,42 +2508,100 @@
     renderRefFilters(all);
     updateRefTagSuggestions();
 
-    if (expandedGroup) {
+    if (showingAll || expandedGroup) {
       const back = document.createElement("div");
       back.className = "ref-board-back";
 
-      const backBtn = document.createElement("button");
-      backBtn.type = "button";
-      backBtn.className = "ghost-btn";
-      backBtn.textContent = "← All groups";
-      backBtn.addEventListener("click", () => setExpandedGroup(null));
+      if (expandedGroup) {
+        const backBtn = document.createElement("button");
+        backBtn.type = "button";
+        backBtn.className = "ghost-btn";
+        backBtn.textContent = "← By group";
+        backBtn.addEventListener("click", () => setExpandedGroup(null));
 
+        const allBtn = document.createElement("button");
+        allBtn.type = "button";
+        allBtn.className = "ghost-btn";
+        allBtn.textContent = "Show all";
+        allBtn.addEventListener("click", () => setExpandedGroup(ALL_GROUPS_VIEW));
+
+        const title = document.createElement("h3");
+        title.className = "ref-board-back-title";
+        title.textContent = expandedGroup.title;
+
+        const count = document.createElement("span");
+        count.className = "ref-column-count";
+        const groupRefs = refsInGroup(expandedGroup.id, filtered);
+        count.textContent = String(groupRefs.length);
+
+        back.append(backBtn, allBtn, title, count);
+        els.refBoard.appendChild(back);
+
+        const column = document.createElement("section");
+        column.className = "ref-column is-expanded-view";
+        column.dataset.groupId = expandedGroup.id;
+
+        const list = document.createElement("div");
+        list.className = "ref-column-list is-expanded-grid";
+
+        if (!groupRefs.length) {
+          const empty = document.createElement("p");
+          empty.className = "ref-column-empty";
+          empty.textContent = "No references in this group yet";
+          list.appendChild(empty);
+        } else {
+          groupRefs.forEach((ref) =>
+            list.appendChild(createRefCard(ref, { showGroup: false }))
+          );
+        }
+
+        column.appendChild(list);
+        els.refBoard.appendChild(column);
+        return;
+      }
+
+      // Show all references
       const title = document.createElement("h3");
       title.className = "ref-board-back-title";
-      title.textContent = expandedGroup.title;
+      title.textContent = "All references";
 
       const count = document.createElement("span");
       count.className = "ref-column-count";
-      const groupRefs = refsInGroup(expandedGroup.id, filtered);
-      count.textContent = String(groupRefs.length);
+      count.textContent = String(filtered.length);
 
-      back.append(backBtn, title, count);
+      const boardBtn = document.createElement("button");
+      boardBtn.type = "button";
+      boardBtn.className = "ghost-btn";
+      boardBtn.textContent = "By group";
+      boardBtn.addEventListener("click", () => setExpandedGroup(null));
+
+      back.append(title, count, boardBtn);
       els.refBoard.appendChild(back);
 
       const column = document.createElement("section");
       column.className = "ref-column is-expanded-view";
-      column.dataset.groupId = expandedGroup.id;
 
       const list = document.createElement("div");
       list.className = "ref-column-list is-expanded-grid";
 
-      if (!groupRefs.length) {
+      if (!filtered.length) {
         const empty = document.createElement("p");
         empty.className = "ref-column-empty";
-        empty.textContent = "No references in this group yet";
+        empty.textContent = "No references to show";
         list.appendChild(empty);
       } else {
-        groupRefs.forEach((ref) => list.appendChild(createRefCard(ref)));
+        // Keep a stable-ish order: by group order, then card order
+        const ordered = [];
+        groups.forEach((group) => {
+          refsInGroup(group.id, filtered).forEach((ref) => ordered.push(ref));
+        });
+        // Orphans / missing group
+        filtered.forEach((ref) => {
+          if (!ordered.some((r) => r.id === ref.id)) ordered.push(ref);
+        });
+        ordered.forEach((ref) =>
+          list.appendChild(createRefCard(ref, { showGroup: true }))
+        );
       }
 
       column.appendChild(list);
