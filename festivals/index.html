@@ -15,7 +15,7 @@
       href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Figtree:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles.css?v=6" />
+    <link rel="stylesheet" href="styles.css?v=7" />
   </head>
   <body>
     <div class="bg" aria-hidden="true">
@@ -118,17 +118,24 @@
               ›
             </button>
             <button type="button" class="ghost-btn" id="todayBtn">Today</button>
-            <label class="size-control">
-              <span>Size</span>
-              <input
-                id="calSize"
-                type="range"
-                min="1"
-                max="5"
-                value="3"
-                aria-label="Calendar size"
-              />
-            </label>
+          </div>
+          <div class="size-control">
+            <span>Size</span>
+            <button type="button" class="icon-btn" id="calSizeDown" aria-label="Smaller calendar">
+              −
+            </button>
+            <input
+              id="calSize"
+              type="range"
+              min="1"
+              max="5"
+              step="1"
+              value="3"
+              aria-label="Calendar size"
+            />
+            <button type="button" class="icon-btn" id="calSizeUp" aria-label="Larger calendar">
+              +
+            </button>
           </div>
           <div class="weekday-row" aria-hidden="true">
             <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span>
@@ -155,6 +162,6 @@
       <div class="dialog-inner" id="dialogInner"></div>
     </dialog>
 
-    <script type="module" src="app.js?v=6"></script>
+    <script type="module" src="app.js?v=7"></script>
   </body>
 </html>

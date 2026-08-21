@@ -9,7 +9,7 @@ import {
   countryByCode,
   fromISODate,
   toISODate,
-} from "./data.js?v=6";
+} from "./data.js?v=7";
 
 const STORAGE_KEY = "lantern-festival-calendar-v1";
 
@@ -51,6 +51,8 @@ const els = {
   dialog: document.getElementById("detailDialog"),
   dialogInner: document.getElementById("dialogInner"),
   calSize: document.getElementById("calSize"),
+  calSizeDown: document.getElementById("calSizeDown"),
+  calSizeUp: document.getElementById("calSizeUp"),
 };
 
 function loadState() {
@@ -145,14 +147,26 @@ function setCountries(codes) {
   saveState();
 }
 
-function applyCalSize() {
+function applyCalSize(options = {}) {
   const size = state.calSize;
   const scale = CAL_SCALES[size] || CAL_SCALES[3];
   document.body.dataset.calSize = String(size);
   document.documentElement.style.setProperty("--day-min-h", scale.height);
-  document.documentElement.style.setProperty("--fest-lines", String(scale.lines));
   document.documentElement.style.setProperty("--fest-size", scale.font);
-  if (els.calSize) els.calSize.value = String(size);
+  if (options.syncInput !== false && els.calSize && document.activeElement !== els.calSize) {
+    els.calSize.value = String(size);
+  }
+}
+
+function setCalSize(next) {
+  const size = Math.min(5, Math.max(1, Math.round(Number(next) || 3)));
+  if (size === state.calSize) {
+    applyCalSize();
+    return;
+  }
+  state.calSize = size;
+  saveState();
+  applyCalSize();
 }
 
 function viewingText() {
@@ -375,7 +389,7 @@ function renderCalendar() {
       const named = occs.filter(
         (occ) => occ.days <= 5 || occ.startISO === iso || occ.endISO === iso,
       );
-      const nameLimit = CAL_SCALES[state.calSize]?.names ?? 4;
+      const nameLimit = 8;
       const names = named
         .slice(0, nameLimit)
         .map((occ) => `<span class="day-fest">${occ.festival.name}</span>`)
@@ -579,10 +593,21 @@ function bind() {
   });
 
   els.calSize.addEventListener("input", () => {
-    state.calSize = Number(els.calSize.value);
+    state.calSize = Math.min(5, Math.max(1, Number(els.calSize.value) || 3));
+    applyCalSize({ syncInput: false });
     saveState();
-    applyCalSize();
-    renderCalendar();
+  });
+
+  els.calSize.addEventListener("change", () => {
+    setCalSize(els.calSize.value);
+  });
+
+  els.calSizeDown.addEventListener("click", () => {
+    setCalSize(state.calSize - 1);
+  });
+
+  els.calSizeUp.addEventListener("click", () => {
+    setCalSize(state.calSize + 1);
   });
 
   els.presets.addEventListener("click", (event) => {
