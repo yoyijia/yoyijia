@@ -15,6 +15,9 @@
   --radius: 22px;
   --font-display: "Fraunces", Georgia, serif;
   --font-body: "Figtree", "Segoe UI", sans-serif;
+  --day-min-h: 8.6rem;
+  --fest-lines: 3;
+  --fest-size: 0.76rem;
 }
 
 *,
@@ -30,6 +33,7 @@ html {
 body {
   margin: 0;
   min-height: 100vh;
+  overflow-x: hidden;
   color: var(--ink);
   font-family: var(--font-body);
   background:
@@ -198,7 +202,7 @@ label,
   gap: 0.6rem;
 }
 
-input,
+input:not([type="range"]),
 select {
   width: 100%;
   border: 1px solid var(--line);
@@ -208,7 +212,7 @@ select {
   outline: none;
 }
 
-input:focus,
+input:not([type="range"]):focus,
 select:focus {
   border-color: var(--lantern-deep);
   box-shadow: 0 0 0 3px rgba(196, 107, 58, 0.15);
@@ -220,6 +224,18 @@ select:focus {
   display: flex;
   flex-wrap: wrap;
   gap: 0.4rem;
+}
+
+.viewing {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.hint {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 0.82rem;
 }
 
 .chip,
@@ -381,19 +397,87 @@ select:focus {
 
 .calendar-panel {
   padding: 1rem 1.05rem 1.15rem;
+  overflow-x: clip;
+  isolation: isolate;
 }
 
 .month-nav {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  margin-bottom: 0.85rem;
+  margin-bottom: 0.55rem;
 }
 
 .month-nav h1 {
   flex: 1;
   text-align: center;
   font-size: 1.45rem;
+  min-width: 0;
+}
+
+.size-control {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.45rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.size-control input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 8.5rem;
+  height: 1.35rem;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  box-shadow: none;
+  accent-color: var(--lantern-deep);
+  cursor: pointer;
+}
+
+.size-control input[type="range"]::-webkit-slider-runnable-track {
+  height: 0.38rem;
+  border-radius: 999px;
+  background: rgba(42, 36, 28, 0.16);
+}
+
+.size-control input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 1.05rem;
+  height: 1.05rem;
+  margin-top: -0.34rem;
+  border-radius: 50%;
+  border: 0;
+  background: var(--lantern-deep);
+}
+
+.size-control input[type="range"]::-moz-range-track {
+  height: 0.38rem;
+  border-radius: 999px;
+  background: rgba(42, 36, 28, 0.16);
+}
+
+.size-control input[type="range"]::-moz-range-thumb {
+  width: 1.05rem;
+  height: 1.05rem;
+  border: 0;
+  border-radius: 50%;
+  background: var(--lantern-deep);
+}
+
+.size-control .icon-btn {
+  width: 1.85rem;
+  height: 1.85rem;
+  font-size: 1.15rem;
 }
 
 .icon-btn {
@@ -417,8 +501,9 @@ select:focus {
 .weekday-row,
 .month-grid {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
+  grid-template-columns: repeat(7, minmax(0, 1fr));
   gap: 0.28rem;
+  width: 100%;
 }
 
 .weekday-row {
@@ -431,7 +516,8 @@ select:focus {
 }
 
 .day {
-  min-height: 5.4rem;
+  min-width: 0;
+  min-height: var(--day-min-h);
   border: 1px solid transparent;
   border-radius: 14px;
   padding: 0.35rem 0.4rem;
@@ -440,10 +526,13 @@ select:focus {
   display: flex;
   flex-direction: column;
   gap: 0.15rem;
+  transition: min-height 0.12s ease;
 }
 
 .day.out {
-  opacity: 0.38;
+  background: transparent;
+  pointer-events: none;
+  visibility: hidden;
 }
 
 .day.today {
@@ -461,12 +550,39 @@ select:focus {
 }
 
 .day-fest {
-  font-size: 0.68rem;
-  line-height: 1.25;
+  font-size: var(--fest-size);
+  line-height: 1.3;
   color: var(--ink-soft);
-  white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+}
+
+body[data-cal-size="1"] .day-fest {
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
+}
+
+body[data-cal-size="2"] .day-fest {
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
+
+body[data-cal-size="3"] .day-fest {
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+}
+
+body[data-cal-size="4"] .day-fest {
+  -webkit-line-clamp: 5;
+  line-clamp: 5;
+}
+
+body[data-cal-size="5"] .day-fest {
+  -webkit-line-clamp: 8;
+  line-clamp: 8;
 }
 
 .dots {
@@ -609,10 +725,6 @@ select:focus {
   .layout {
     grid-template-columns: 1fr;
   }
-
-  .day {
-    min-height: 4.4rem;
-  }
 }
 
 @media (max-width: 560px) {
@@ -621,11 +733,14 @@ select:focus {
   }
 
   .day {
-    min-height: 3.6rem;
     padding: 0.25rem;
   }
 
-  .day-fest {
-    display: none;
+  .size-control {
+    justify-content: center;
+  }
+
+  .size-control input[type="range"] {
+    width: 6.5rem;
   }
 }

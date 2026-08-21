@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="Lantern is a festival calendar for content planning. Filter by country, see what is coming, and grab hooks for dates like Mid-Autumn."
+      content="Calendar is a festival calendar for content planning. Filter by country, see what is coming, and grab hooks for dates like Mid-Autumn."
     />
-    <title>Lantern — Festival calendar for content</title>
+    <title>Calendar — festivals for content planning</title>
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -15,7 +15,7 @@
       href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Figtree:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="styles.css?v=7" />
   </head>
   <body>
     <div class="bg" aria-hidden="true">
@@ -49,13 +49,14 @@
           </svg>
         </span>
         <span class="brand-text">
-          <span class="brand-name">Lantern</span>
-          <span class="brand-tag">festival calendar for content</span>
+          <span class="brand-name">Calendar</span>
+          <span class="brand-tag">festivals for content planning</span>
         </span>
       </a>
       <p class="lede">
-        See what is coming globally, then narrow to a country — Singapore is
-        the default — so you can plan posts around dates like Mid-Autumn.
+        See what is coming globally, then pick one or more countries —
+        Singapore is selected to start — so you can plan posts around dates
+        like Mid-Autumn.
       </p>
     </header>
 
@@ -84,12 +85,18 @@
               Reset to Singapore
             </button>
           </div>
+          <p class="viewing" id="viewingLabel" aria-live="polite"></p>
           <div class="presets" id="presets"></div>
+          <input
+            id="countrySearch"
+            type="search"
+            placeholder="Find a country…"
+            autocomplete="off"
+          />
           <div class="country-pills" id="countryPills"></div>
-          <details class="country-more">
-            <summary>Add or remove countries</summary>
-            <div class="country-grid" id="countryGrid"></div>
-          </details>
+          <p class="hint">
+            Tap countries to add or remove them. Use a preset for a whole region.
+          </p>
         </div>
 
         <div class="field">
@@ -111,6 +118,24 @@
               ›
             </button>
             <button type="button" class="ghost-btn" id="todayBtn">Today</button>
+          </div>
+          <div class="size-control">
+            <span>Size</span>
+            <button type="button" class="icon-btn" id="calSizeDown" aria-label="Smaller calendar">
+              −
+            </button>
+            <input
+              id="calSize"
+              type="range"
+              min="1"
+              max="5"
+              step="1"
+              value="3"
+              aria-label="Calendar size"
+            />
+            <button type="button" class="icon-btn" id="calSizeUp" aria-label="Larger calendar">
+              +
+            </button>
           </div>
           <div class="weekday-row" aria-hidden="true">
             <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span>
@@ -137,6 +162,6 @@
       <div class="dialog-inner" id="dialogInner"></div>
     </dialog>
 
-    <script type="module" src="app.js"></script>
+    <script type="module" src="app.js?v=7"></script>
   </body>
 </html>

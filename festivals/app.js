@@ -9,9 +9,17 @@ import {
   countryByCode,
   fromISODate,
   toISODate,
-} from "./data.js";
+} from "./data.js?v=7";
 
 const STORAGE_KEY = "lantern-festival-calendar-v1";
+
+const CAL_SCALES = {
+  1: { height: "4.4rem", lines: 1, font: "0.64rem", names: 1 },
+  2: { height: "6.4rem", lines: 2, font: "0.7rem", names: 2 },
+  3: { height: "8.6rem", lines: 3, font: "0.76rem", names: 4 },
+  4: { height: "11.2rem", lines: 5, font: "0.82rem", names: 6 },
+  5: { height: "14rem", lines: 8, font: "0.88rem", names: 12 },
+};
 
 const state = {
   year: new Date().getFullYear(),
@@ -20,6 +28,7 @@ const state = {
   countries: ["SG"],
   categories: CATEGORIES.map((category) => category.id),
   query: "",
+  calSize: 3,
 };
 
 const els = {
@@ -27,7 +36,8 @@ const els = {
   search: document.getElementById("search"),
   presets: document.getElementById("presets"),
   countryPills: document.getElementById("countryPills"),
-  countryGrid: document.getElementById("countryGrid"),
+  countrySearch: document.getElementById("countrySearch"),
+  viewingLabel: document.getElementById("viewingLabel"),
   categoryPills: document.getElementById("categoryPills"),
   clearCountries: document.getElementById("clearCountries"),
   pipeline: document.getElementById("pipeline"),
@@ -40,6 +50,9 @@ const els = {
   upcomingCard: document.getElementById("upcomingCard"),
   dialog: document.getElementById("detailDialog"),
   dialogInner: document.getElementById("dialogInner"),
+  calSize: document.getElementById("calSize"),
+  calSizeDown: document.getElementById("calSizeDown"),
+  calSizeUp: document.getElementById("calSizeUp"),
 };
 
 function loadState() {
@@ -52,6 +65,9 @@ function loadState() {
     if (Array.isArray(saved.categories) && saved.categories.length) {
       state.categories = saved.categories;
     }
+    if (Number.isFinite(saved.calSize)) {
+      state.calSize = Math.min(5, Math.max(1, Math.round(saved.calSize)));
+    }
   } catch {
     /* ignore broken localStorage */
   }
@@ -63,6 +79,7 @@ function saveState() {
     JSON.stringify({
       countries: state.countries,
       categories: state.categories,
+      calSize: state.calSize,
     }),
   );
 }
@@ -118,6 +135,52 @@ function formatRange(occ) {
     year: "numeric",
   });
   return `${startLabel} – ${endLabel}`;
+}
+
+function sameCountries(a, b) {
+  return a.length === b.length && a.every((code) => b.includes(code));
+}
+
+function setCountries(codes) {
+  const next = [...new Set(codes)].filter((code) => countryByCode(code));
+  state.countries = next.length ? next : ["SG"];
+  saveState();
+}
+
+function applyCalSize(options = {}) {
+  const size = state.calSize;
+  const scale = CAL_SCALES[size] || CAL_SCALES[3];
+  document.body.dataset.calSize = String(size);
+  document.documentElement.style.setProperty("--day-min-h", scale.height);
+  document.documentElement.style.setProperty("--fest-size", scale.font);
+  if (options.syncInput !== false && els.calSize && document.activeElement !== els.calSize) {
+    els.calSize.value = String(size);
+  }
+}
+
+function setCalSize(next) {
+  const size = Math.min(5, Math.max(1, Math.round(Number(next) || 3)));
+  if (size === state.calSize) {
+    applyCalSize();
+    return;
+  }
+  state.calSize = size;
+  saveState();
+  applyCalSize();
+}
+
+function viewingText() {
+  if (sameCountries(state.countries, COUNTRIES.map((country) => country.code))) {
+    return "Now showing: all countries";
+  }
+  if (state.countries.length === 1) {
+    const country = countryByCode(state.countries[0]);
+    return `Now showing: ${country?.flag || ""} ${country?.name || state.countries[0]} only`;
+  }
+  return `Now showing: ${state.countries
+    .map((code) => countryByCode(code)?.name)
+    .filter(Boolean)
+    .join(", ")}`;
 }
 
 function matchesCountry(festival) {
@@ -212,27 +275,28 @@ function renderPresets() {
 }
 
 function renderCountryPills() {
-  if (!state.countries.length) {
-    els.countryPills.innerHTML =
-      '<span class="muted">No country selected — add one below.</span>';
+  if (els.viewingLabel) {
+    const count = uniqueByFestival(filteredOccurrences()).length;
+    els.viewingLabel.textContent = `${viewingText()} · ${count} festivals in ${state.year}`;
+  }
+  const q = (els.countrySearch?.value || "").trim().toLowerCase();
+  const visible = COUNTRIES.filter((country) => {
+    if (!q) return true;
+    return (
+      country.name.toLowerCase().includes(q) ||
+      country.code.toLowerCase().includes(q)
+    );
+  });
+  if (!visible.length) {
+    els.countryPills.innerHTML = '<span class="muted">No countries match that search.</span>';
     return;
   }
-  els.countryPills.innerHTML = state.countries
-    .map((code) => {
-      const country = countryByCode(code);
-      return `<span class="chip">${country.flag} ${country.name}</span>`;
+  els.countryPills.innerHTML = visible
+    .map((country) => {
+      const active = state.countries.includes(country.code);
+      return `<button type="button" class="chip" data-country="${country.code}" aria-pressed="${active}">${country.flag} ${country.name}</button>`;
     })
     .join("");
-}
-
-function renderCountryGrid() {
-  els.countryGrid.innerHTML = COUNTRIES.map((country) => {
-    const checked = state.countries.includes(country.code) ? "checked" : "";
-    return `<label class="country-option">
-      <input type="checkbox" value="${country.code}" ${checked} />
-      <span>${country.flag} ${country.name}</span>
-    </label>`;
-  }).join("");
 }
 
 function renderCategories() {
@@ -266,10 +330,7 @@ function renderPipeline() {
   }
   els.pipeline.innerHTML = `
     <h2>Plan these next</h2>
-    <p class="muted">Festivals in the next 60 days for ${state.countries
-      .map((code) => countryByCode(code)?.name)
-      .filter(Boolean)
-      .join(", ")}.</p>
+    <p class="muted">${viewingText()}. Festivals in the next 60 days.</p>
     <div class="pipeline-list">
       ${items
         .map(({ occ, daysUntil, label }) => {
@@ -295,9 +356,11 @@ function renderPipeline() {
 function monthCells() {
   const first = new Date(state.year, state.month, 1);
   const startOffset = first.getDay();
+  const daysInMonth = new Date(state.year, state.month + 1, 0).getDate();
+  const weeks = Math.ceil((startOffset + daysInMonth) / 7);
   const cells = [];
   const cursor = new Date(state.year, state.month, 1 - startOffset);
-  for (let i = 0; i < 42; i += 1) {
+  for (let i = 0; i < weeks * 7; i += 1) {
     cells.push(new Date(cursor));
     cursor.setDate(cursor.getDate() + 1);
   }
@@ -319,16 +382,22 @@ function renderCalendar() {
     .map((date) => {
       const iso = toISODate(date);
       const inMonth = date.getMonth() === state.month;
+      if (!inMonth) {
+        return `<div class="day out" aria-hidden="true"></div>`;
+      }
       const occs = uniqueByFestival(occsOnDay(iso));
       const named = occs.filter(
         (occ) => occ.days <= 5 || occ.startISO === iso || occ.endISO === iso,
       );
+      const nameLimit = 8;
       const names = named
-        .slice(0, 2)
+        .slice(0, nameLimit)
         .map((occ) => `<span class="day-fest">${occ.festival.name}</span>`)
         .join("");
       const extra =
-        named.length > 2 ? `<span class="day-fest">+${named.length - 2} more</span>` : "";
+        named.length > nameLimit
+          ? `<span class="day-fest">+${named.length - nameLimit} more</span>`
+          : "";
       const dots = occs
         .slice(0, 5)
         .map((occ) => {
@@ -499,9 +568,9 @@ function jumpTo(iso) {
 }
 
 function render() {
+  applyCalSize();
   renderPresets();
   renderCountryPills();
-  renderCountryGrid();
   renderCategories();
   renderPipeline();
   renderCalendar();
@@ -523,31 +592,52 @@ function bind() {
     render();
   });
 
+  els.calSize.addEventListener("input", () => {
+    state.calSize = Math.min(5, Math.max(1, Number(els.calSize.value) || 3));
+    applyCalSize({ syncInput: false });
+    saveState();
+  });
+
+  els.calSize.addEventListener("change", () => {
+    setCalSize(els.calSize.value);
+  });
+
+  els.calSizeDown.addEventListener("click", () => {
+    setCalSize(state.calSize - 1);
+  });
+
+  els.calSizeUp.addEventListener("click", () => {
+    setCalSize(state.calSize + 1);
+  });
+
   els.presets.addEventListener("click", (event) => {
     const button = event.target.closest("[data-preset]");
     if (!button) return;
     const preset = PRESETS.find((item) => item.id === button.dataset.preset);
     if (!preset) return;
-    state.countries = [...preset.countries];
-    saveState();
+    setCountries(preset.countries);
     render();
   });
 
-  els.countryGrid.addEventListener("change", (event) => {
-    const input = event.target;
-    if (!(input instanceof HTMLInputElement)) return;
-    if (input.checked) {
-      if (!state.countries.includes(input.value)) state.countries.push(input.value);
+  els.countryPills.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-country]");
+    if (!button) return;
+    const code = button.dataset.country;
+    if (state.countries.includes(code)) {
+      setCountries(state.countries.filter((item) => item !== code));
     } else {
-      state.countries = state.countries.filter((code) => code !== input.value);
+      setCountries([...state.countries, code]);
     }
-    saveState();
     render();
+  });
+
+  els.countrySearch.addEventListener("input", () => {
+    renderCountryPills();
   });
 
   els.clearCountries.addEventListener("click", () => {
-    state.countries = ["SG"];
-    saveState();
+    setCountries(["SG"]);
+    if (els.countrySearch) els.countrySearch.value = "";
     render();
   });
 

@@ -45,13 +45,15 @@ for (const festival of FESTIVALS) {
   if (rule.kind === "map") {
     for (const year of YEARS) {
       const value = rule.byYear[year];
-      if (!value || !ISO.test(value)) fail(`${festival.id} bad map date ${year}: ${value}`);
+      if (value === undefined) continue;
+      if (!ISO.test(value)) fail(`${festival.id} bad map date ${year}: ${value}`);
     }
   }
   if (rule.kind === "span-map") {
     for (const year of YEARS) {
       const span = rule.byYear[year];
-      if (!span || !ISO.test(span.start) || !span.days) {
+      if (span === undefined) continue;
+      if (!ISO.test(span.start) || !span.days) {
         fail(`${festival.id} bad span ${year}`);
       }
     }
@@ -89,6 +91,34 @@ for (const [id, iso] of Object.entries(needed)) {
   const match = sg2026.find((occ) => occ.festival.id === id);
   if (!match) fail(`Missing SG 2026 festival ${id}`);
   else if (match.startISO !== iso) fail(`${id} expected ${iso} got ${match.startISO}`);
+}
+
+function countMatching(codes) {
+  return allOccurrences(2026).filter((occ) =>
+    occ.festival.countries.some((code) => codes.includes(code)),
+  ).length;
+}
+
+const sgCount = countMatching(["SG"]);
+const jpCount = countMatching(["JP"]);
+const unionCount = countMatching(["SG", "JP"]);
+const sgIds = new Set(
+  allOccurrences(2026)
+    .filter((occ) => occ.festival.countries.includes("SG"))
+    .map((occ) => occ.festival.id),
+);
+const jpIds = new Set(
+  allOccurrences(2026)
+    .filter((occ) => occ.festival.countries.includes("JP"))
+    .map((occ) => occ.festival.id),
+);
+
+if (sgIds.has("obon")) fail("Obon should not appear in Singapore-only data");
+if (jpIds.has("national-day-sg")) fail("Singapore National Day should not appear in Japan-only data");
+if (!jpIds.has("obon")) fail("Japan should include Obon");
+if (sgCount === jpCount) fail("Singapore and Japan should not have the same festival count");
+if (unionCount <= sgCount || unionCount <= jpCount) {
+  fail("SG+JP should be a larger set than either country alone");
 }
 
 if (errors.length) {
