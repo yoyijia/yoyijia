@@ -9,7 +9,7 @@ import {
   countryByCode,
   fromISODate,
   toISODate,
-} from "./data.js?v=2";
+} from "./data.js?v=3";
 
 const STORAGE_KEY = "lantern-festival-calendar-v1";
 
@@ -318,9 +318,11 @@ function renderPipeline() {
 function monthCells() {
   const first = new Date(state.year, state.month, 1);
   const startOffset = first.getDay();
+  const daysInMonth = new Date(state.year, state.month + 1, 0).getDate();
+  const weeks = Math.ceil((startOffset + daysInMonth) / 7);
   const cells = [];
   const cursor = new Date(state.year, state.month, 1 - startOffset);
-  for (let i = 0; i < 42; i += 1) {
+  for (let i = 0; i < weeks * 7; i += 1) {
     cells.push(new Date(cursor));
     cursor.setDate(cursor.getDate() + 1);
   }
@@ -342,6 +344,9 @@ function renderCalendar() {
     .map((date) => {
       const iso = toISODate(date);
       const inMonth = date.getMonth() === state.month;
+      if (!inMonth) {
+        return `<div class="day out" aria-hidden="true"></div>`;
+      }
       const occs = uniqueByFestival(occsOnDay(iso));
       const named = occs.filter(
         (occ) => occ.days <= 5 || occ.startISO === iso || occ.endISO === iso,

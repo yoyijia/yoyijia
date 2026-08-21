@@ -30,6 +30,7 @@ html {
 body {
   margin: 0;
   min-height: 100vh;
+  overflow-x: hidden;
   color: var(--ink);
   font-family: var(--font-body);
   background:
@@ -393,6 +394,8 @@ select:focus {
 
 .calendar-panel {
   padding: 1rem 1.05rem 1.15rem;
+  overflow: hidden;
+  isolation: isolate;
 }
 
 .month-nav {
@@ -429,8 +432,9 @@ select:focus {
 .weekday-row,
 .month-grid {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
+  grid-template-columns: repeat(7, minmax(0, 1fr));
   gap: 0.28rem;
+  width: 100%;
 }
 
 .weekday-row {
@@ -443,6 +447,7 @@ select:focus {
 }
 
 .day {
+  min-width: 0;
   min-height: 5.4rem;
   border: 1px solid transparent;
   border-radius: 14px;
@@ -455,7 +460,9 @@ select:focus {
 }
 
 .day.out {
-  opacity: 0.38;
+  background: transparent;
+  pointer-events: none;
+  visibility: hidden;
 }
 
 .day.today {
