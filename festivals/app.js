@@ -9,7 +9,7 @@ import {
   countryByCode,
   fromISODate,
   toISODate,
-} from "./data.js?v=5";
+} from "./data.js?v=6";
 
 const STORAGE_KEY = "lantern-festival-calendar-v1";
 
@@ -598,15 +598,10 @@ function bind() {
     const button = event.target.closest("[data-country]");
     if (!button) return;
     const code = button.dataset.country;
-    const additive = event.metaKey || event.ctrlKey || event.shiftKey;
-    if (additive) {
-      if (state.countries.includes(code)) {
-        setCountries(state.countries.filter((item) => item !== code));
-      } else {
-        setCountries([...state.countries, code]);
-      }
+    if (state.countries.includes(code)) {
+      setCountries(state.countries.filter((item) => item !== code));
     } else {
-      setCountries([code]);
+      setCountries([...state.countries, code]);
     }
     render();
   });
