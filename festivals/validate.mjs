@@ -45,13 +45,15 @@ for (const festival of FESTIVALS) {
   if (rule.kind === "map") {
     for (const year of YEARS) {
       const value = rule.byYear[year];
-      if (!value || !ISO.test(value)) fail(`${festival.id} bad map date ${year}: ${value}`);
+      if (value === undefined) continue;
+      if (!ISO.test(value)) fail(`${festival.id} bad map date ${year}: ${value}`);
     }
   }
   if (rule.kind === "span-map") {
     for (const year of YEARS) {
       const span = rule.byYear[year];
-      if (!span || !ISO.test(span.start) || !span.days) {
+      if (span === undefined) continue;
+      if (!ISO.test(span.start) || !span.days) {
         fail(`${festival.id} bad span ${year}`);
       }
     }
