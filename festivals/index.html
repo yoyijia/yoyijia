@@ -15,7 +15,7 @@
       href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Figtree:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="styles.css?v=2" />
   </head>
   <body>
     <div class="bg" aria-hidden="true">
@@ -84,12 +84,18 @@
               Reset to Singapore
             </button>
           </div>
+          <p class="viewing" id="viewingLabel" aria-live="polite"></p>
           <div class="presets" id="presets"></div>
+          <input
+            id="countrySearch"
+            type="search"
+            placeholder="Find a country…"
+            autocomplete="off"
+          />
           <div class="country-pills" id="countryPills"></div>
-          <details class="country-more">
-            <summary>Add or remove countries</summary>
-            <div class="country-grid" id="countryGrid"></div>
-          </details>
+          <p class="hint">
+            Tap a country to view only that place. Ctrl/⌘-click to add another.
+          </p>
         </div>
 
         <div class="field">
@@ -137,6 +143,6 @@
       <div class="dialog-inner" id="dialogInner"></div>
     </dialog>
 
-    <script type="module" src="app.js"></script>
+    <script type="module" src="app.js?v=2"></script>
   </body>
 </html>

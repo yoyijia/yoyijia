@@ -47,6 +47,11 @@ export const PRESETS = [
     label: "Global commercial",
     countries: ["SG", "US", "GB", "AU", "CN", "GLOBAL"],
   },
+  {
+    id: "all",
+    label: "All countries",
+    countries: COUNTRIES.map((country) => country.code),
+  },
 ];
 
 export const CATEGORIES = [
