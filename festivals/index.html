@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Lantern is a festival calendar for content planning. Filter by country, see what is coming, and grab hooks for dates like Mid-Autumn."
+    />
+    <title>Lantern — Festival calendar for content</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Figtree:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="bg" aria-hidden="true">
+      <div class="blob blob-a"></div>
+      <div class="blob blob-b"></div>
+      <div class="blob blob-c"></div>
+    </div>
+
+    <header class="top">
+      <a class="brand" href="./">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 40 40" width="36" height="36">
+            <rect width="40" height="40" rx="12" fill="#f4e6c8" />
+            <path
+              d="M20 6c-.7 2.8-1.2 5-1.2 7.4 0 1.4.3 2.6.8 3.7"
+              stroke="#c46b3a"
+              stroke-width="1.6"
+              stroke-linecap="round"
+            />
+            <path
+              d="M12.5 19c0-5.2 3.4-9 7.5-9s7.5 3.8 7.5 9c0 7-3.2 10.2-7.5 12.8-4.3-2.6-7.5-5.8-7.5-12.8Z"
+              fill="#e07a5f"
+            />
+            <path
+              d="M15.2 20.2c1 5 2.7 8 4.8 10.2 2.1-2.2 3.8-5.2 4.8-10.2"
+              stroke="#f4d48b"
+              stroke-width="1.2"
+              stroke-linecap="round"
+            />
+            <circle cx="20" cy="23" r="1.8" fill="#f4d48b" />
+          </svg>
+        </span>
+        <span class="brand-text">
+          <span class="brand-name">Lantern</span>
+          <span class="brand-tag">festival calendar for content</span>
+        </span>
+      </a>
+      <p class="lede">
+        See what is coming globally, then narrow to a country — Singapore is
+        the default — so you can plan posts around dates like Mid-Autumn.
+      </p>
+    </header>
+
+    <main class="page">
+      <section class="filters" aria-label="Calendar filters">
+        <div class="filter-row">
+          <div class="field grow">
+            <label for="search">Search festivals</label>
+            <input
+              id="search"
+              type="search"
+              placeholder="Mid-Autumn, Deepavali, National Day…"
+              autocomplete="off"
+            />
+          </div>
+          <div class="field year-field">
+            <label for="year">Year</label>
+            <select id="year"></select>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="label-row">
+            <span>Countries</span>
+            <button type="button" class="text-btn" id="clearCountries">
+              Reset to Singapore
+            </button>
+          </div>
+          <div class="presets" id="presets"></div>
+          <div class="country-pills" id="countryPills"></div>
+          <details class="country-more">
+            <summary>Add or remove countries</summary>
+            <div class="country-grid" id="countryGrid"></div>
+          </details>
+        </div>
+
+        <div class="field">
+          <span class="sr-only">Categories</span>
+          <div class="category-pills" id="categoryPills"></div>
+        </div>
+      </section>
+
+      <section class="pipeline" id="pipeline" aria-label="Content pipeline"></section>
+
+      <div class="layout">
+        <section class="calendar-panel" aria-labelledby="monthTitle">
+          <div class="month-nav">
+            <button type="button" class="icon-btn" id="prevMonth" aria-label="Previous month">
+              ‹
+            </button>
+            <h1 id="monthTitle"></h1>
+            <button type="button" class="icon-btn" id="nextMonth" aria-label="Next month">
+              ›
+            </button>
+            <button type="button" class="ghost-btn" id="todayBtn">Today</button>
+          </div>
+          <div class="weekday-row" aria-hidden="true">
+            <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span>
+            <span>Thu</span><span>Fri</span><span>Sat</span>
+          </div>
+          <div class="month-grid" id="monthGrid"></div>
+        </section>
+
+        <aside class="side" aria-label="Upcoming and details">
+          <section class="card" id="dayCard"></section>
+          <section class="card" id="upcomingCard"></section>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="foot">
+      <p>
+        Dates for 2025–2027. Lunar and Islamic festivals can shift by a day
+        with moon sighting. Singapore public holidays follow MOM gazettes.
+      </p>
+    </footer>
+
+    <dialog id="detailDialog" class="dialog">
+      <div class="dialog-inner" id="dialogInner"></div>
+    </dialog>
+
+    <script type="module" src="app.js"></script>
+  </body>
+</html>
