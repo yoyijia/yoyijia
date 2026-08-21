@@ -9,7 +9,7 @@ import {
   countryByCode,
   fromISODate,
   toISODate,
-} from "./data.js?v=3";
+} from "./data.js?v=4";
 
 const STORAGE_KEY = "lantern-festival-calendar-v1";
 
