@@ -15,6 +15,9 @@
   --radius: 22px;
   --font-display: "Fraunces", Georgia, serif;
   --font-body: "Figtree", "Segoe UI", sans-serif;
+  --day-min-h: 8.6rem;
+  --fest-lines: 3;
+  --fest-size: 0.76rem;
 }
 
 *,
@@ -394,7 +397,7 @@ select:focus {
 
 .calendar-panel {
   padding: 1rem 1.05rem 1.15rem;
-  overflow: hidden;
+  overflow-x: clip;
   isolation: isolate;
 }
 
@@ -403,12 +406,34 @@ select:focus {
   align-items: center;
   gap: 0.5rem;
   margin-bottom: 0.85rem;
+  flex-wrap: wrap;
 }
 
 .month-nav h1 {
   flex: 1;
   text-align: center;
   font-size: 1.45rem;
+  min-width: 10rem;
+}
+
+.size-control {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.size-control input[type="range"] {
+  width: 7.5rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  accent-color: var(--lantern-deep);
+  box-shadow: none;
 }
 
 .icon-btn {
@@ -448,7 +473,7 @@ select:focus {
 
 .day {
   min-width: 0;
-  min-height: 5.4rem;
+  min-height: var(--day-min-h);
   border: 1px solid transparent;
   border-radius: 14px;
   padding: 0.35rem 0.4rem;
@@ -480,12 +505,14 @@ select:focus {
 }
 
 .day-fest {
-  font-size: 0.68rem;
-  line-height: 1.25;
+  font-size: var(--fest-size);
+  line-height: 1.3;
   color: var(--ink-soft);
-  white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: var(--fest-lines);
+  line-clamp: var(--fest-lines);
 }
 
 .dots {
@@ -624,13 +651,26 @@ select:focus {
   margin: 0;
 }
 
+body[data-cal-size="4"] .layout,
+body[data-cal-size="5"] .layout {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+body[data-cal-size="4"] .side,
+body[data-cal-size="5"] .side {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
 @media (max-width: 860px) {
-  .layout {
+  .layout,
+  body[data-cal-size="4"] .layout,
+  body[data-cal-size="5"] .layout {
     grid-template-columns: 1fr;
   }
 
-  .day {
-    min-height: 4.4rem;
+  body[data-cal-size="4"] .side,
+  body[data-cal-size="5"] .side {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -640,11 +680,10 @@ select:focus {
   }
 
   .day {
-    min-height: 3.6rem;
     padding: 0.25rem;
   }
 
-  .day-fest {
-    display: none;
+  .size-control input[type="range"] {
+    width: 5.5rem;
   }
 }

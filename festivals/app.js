@@ -9,9 +9,17 @@ import {
   countryByCode,
   fromISODate,
   toISODate,
-} from "./data.js?v=4";
+} from "./data.js?v=5";
 
 const STORAGE_KEY = "lantern-festival-calendar-v1";
+
+const CAL_SCALES = {
+  1: { height: "4.4rem", lines: 1, font: "0.64rem", names: 1 },
+  2: { height: "6.4rem", lines: 2, font: "0.7rem", names: 2 },
+  3: { height: "8.6rem", lines: 3, font: "0.76rem", names: 4 },
+  4: { height: "11.2rem", lines: 5, font: "0.82rem", names: 6 },
+  5: { height: "14rem", lines: 8, font: "0.88rem", names: 12 },
+};
 
 const state = {
   year: new Date().getFullYear(),
@@ -20,6 +28,7 @@ const state = {
   countries: ["SG"],
   categories: CATEGORIES.map((category) => category.id),
   query: "",
+  calSize: 3,
 };
 
 const els = {
@@ -41,6 +50,7 @@ const els = {
   upcomingCard: document.getElementById("upcomingCard"),
   dialog: document.getElementById("detailDialog"),
   dialogInner: document.getElementById("dialogInner"),
+  calSize: document.getElementById("calSize"),
 };
 
 function loadState() {
@@ -53,6 +63,9 @@ function loadState() {
     if (Array.isArray(saved.categories) && saved.categories.length) {
       state.categories = saved.categories;
     }
+    if (Number.isFinite(saved.calSize)) {
+      state.calSize = Math.min(5, Math.max(1, Math.round(saved.calSize)));
+    }
   } catch {
     /* ignore broken localStorage */
   }
@@ -64,6 +77,7 @@ function saveState() {
     JSON.stringify({
       countries: state.countries,
       categories: state.categories,
+      calSize: state.calSize,
     }),
   );
 }
@@ -129,6 +143,16 @@ function setCountries(codes) {
   const next = [...new Set(codes)].filter((code) => countryByCode(code));
   state.countries = next.length ? next : ["SG"];
   saveState();
+}
+
+function applyCalSize() {
+  const size = state.calSize;
+  const scale = CAL_SCALES[size] || CAL_SCALES[3];
+  document.body.dataset.calSize = String(size);
+  document.documentElement.style.setProperty("--day-min-h", scale.height);
+  document.documentElement.style.setProperty("--fest-lines", String(scale.lines));
+  document.documentElement.style.setProperty("--fest-size", scale.font);
+  if (els.calSize) els.calSize.value = String(size);
 }
 
 function viewingText() {
@@ -351,15 +375,15 @@ function renderCalendar() {
       const named = occs.filter(
         (occ) => occ.days <= 5 || occ.startISO === iso || occ.endISO === iso,
       );
+      const nameLimit = CAL_SCALES[state.calSize]?.names ?? 4;
       const names = named
-        .slice(0, 2)
-        .map(
-          (occ) =>
-            `<span class="day-fest">${flagList(visibleCountriesFor(occ.festival))} ${occ.festival.name}</span>`,
-        )
+        .slice(0, nameLimit)
+        .map((occ) => `<span class="day-fest">${occ.festival.name}</span>`)
         .join("");
       const extra =
-        named.length > 2 ? `<span class="day-fest">+${named.length - 2} more</span>` : "";
+        named.length > nameLimit
+          ? `<span class="day-fest">+${named.length - nameLimit} more</span>`
+          : "";
       const dots = occs
         .slice(0, 5)
         .map((occ) => {
@@ -530,6 +554,7 @@ function jumpTo(iso) {
 }
 
 function render() {
+  applyCalSize();
   renderPresets();
   renderCountryPills();
   renderCategories();
@@ -551,6 +576,13 @@ function bind() {
   els.search.addEventListener("input", () => {
     state.query = els.search.value;
     render();
+  });
+
+  els.calSize.addEventListener("input", () => {
+    state.calSize = Number(els.calSize.value);
+    saveState();
+    applyCalSize();
+    renderCalendar();
   });
 
   els.presets.addEventListener("click", (event) => {
