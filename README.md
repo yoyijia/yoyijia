@@ -1,6 +1,5 @@
 # yoyijia
 
-<<<<<<< HEAD
 Personal projects for [Yijia](https://github.com/yoyijia).
 
 ## Sprig — intern daily log
@@ -21,13 +20,6 @@ python3 -m http.server 5173
 
 Then open http://localhost:5173
 
-## PIXFORGE
-
-Pixel art generator (previous site) now lives at:
-https://yoyijia.github.io/yoyijia/pixforge/
-=======
-Personal tools.
-
 ## Lantern — festival calendar
 
 Open [`festivals/index.html`](festivals/index.html) (or serve the `festivals` folder) for a content-planning calendar of global festivals.
@@ -37,4 +29,8 @@ Open [`festivals/index.html`](festivals/index.html) (or serve the `festivals` fo
 - Covers 2025–2027, including moving dates such as Mid-Autumn, Chinese New Year, Hari Raya, and Deepavali.
 
 Lunar and Islamic dates can shift by a day with moon sighting. Singapore public holidays follow MOM gazettes.
->>>>>>> origin/main
+
+## PIXFORGE
+
+Pixel art generator (previous site) now lives at:
+https://yoyijia.github.io/yoyijia/pixforge/
