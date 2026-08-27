@@ -2,177 +2,18 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="description"
-      content="Specimen is a personal font moodboard — save font images, tag by type, and filter your library."
-    />
-    <title>Specimen — font image library</title>
-    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Source+Sans+3:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="styles.css" />
+    <meta http-equiv="refresh" content="0;url=../?view=fonts" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Fonts → Sprig</title>
+    <script>
+      location.replace("../?view=fonts");
+    </script>
   </head>
   <body>
-    <div class="bg" aria-hidden="true">
-      <div class="grid-lines"></div>
-      <div class="blob blob-a"></div>
-      <div class="blob blob-b"></div>
-    </div>
-
-    <header class="top">
-      <div class="brand">
-        <span class="brand-mark" aria-hidden="true">Aa</span>
-        <div>
-          <p class="eyebrow">type library</p>
-          <h1 class="brand-name">Specimen</h1>
-        </div>
-      </div>
-      <p class="lede">
-        Save screenshots of fonts you love, tag the type, and filter when you
-        need a match.
-      </p>
-    </header>
-
-    <main class="page">
-      <section class="composer panel" aria-labelledby="addTitle">
-        <div class="panel-head">
-          <div>
-            <p class="panel-kicker">add specimen</p>
-            <h2 id="addTitle">Save a font image</h2>
-          </div>
-          <span class="count" id="fontCount">0</span>
-        </div>
-
-        <form class="add-form" id="fontForm" autocomplete="off">
-          <label class="upload">
-            <input
-              type="file"
-              id="fontImage"
-              accept="image/*"
-              multiple
-              hidden
-            />
-            <span class="upload-card" id="uploadCard">
-              <strong>Drop image(s) here</strong>
-              <span>or click to choose — JPG, PNG, WEBP</span>
-            </span>
-            <div class="upload-preview" id="uploadPreview" hidden></div>
-          </label>
-
-          <div class="fields">
-            <input
-              type="text"
-              id="fontName"
-              maxlength="120"
-              placeholder="Font name or nickname…"
-              aria-label="Font name"
-            />
-            <input
-              type="text"
-              id="fontNote"
-              maxlength="240"
-              placeholder="Where you’d use it (optional)…"
-              aria-label="Note"
-            />
-          </div>
-
-          <div class="type-pick" role="group" aria-label="Font type">
-            <p class="field-label">Type</p>
-            <div class="type-chips" id="typeChips"></div>
-          </div>
-
-          <div class="tag-pick">
-            <p class="field-label">Extra tags</p>
-            <div class="tag-draft" id="tagDraft"></div>
-            <div class="tag-row">
-              <input
-                type="text"
-                id="tagInput"
-                maxlength="40"
-                placeholder="Add a tag… elegant, bold, logo…"
-                aria-label="Add a custom tag"
-                list="tagSuggestions"
-              />
-              <button type="button" class="ghost-btn" id="tagAdd">Add tag</button>
-            </div>
-            <datalist id="tagSuggestions"></datalist>
-            <div class="tag-suggestions" id="tagQuick"></div>
-          </div>
-
-          <div class="form-actions">
-            <button type="submit" class="primary-btn" id="saveBtn">
-              Save specimen
-            </button>
-            <button type="button" class="ghost-btn" id="cancelEdit" hidden>
-              Cancel
-            </button>
-          </div>
-          <p class="edit-hint" id="editHint" hidden>
-            Editing a specimen — update and hit Save specimen.
-          </p>
-        </form>
-      </section>
-
-      <section class="library" aria-labelledby="libraryTitle">
-        <div class="library-head">
-          <div>
-            <p class="panel-kicker">your shelf</p>
-            <h2 id="libraryTitle">Font specimens</h2>
-          </div>
-          <input
-            type="search"
-            id="search"
-            class="search"
-            placeholder="Search name, note, tag…"
-            aria-label="Search specimens"
-          />
-        </div>
-
-        <div
-          class="filters"
-          id="filters"
-          role="group"
-          aria-label="Filter by type or tag"
-        ></div>
-
-        <div class="grid" id="fontGrid"></div>
-        <p class="empty" id="fontEmpty">
-          No specimens yet. Upload a font image and tag its type.
-        </p>
-      </section>
-    </main>
-
-    <div class="viewer" id="viewer" hidden>
-      <div
-        class="viewer-panel"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="viewerTitle"
-      >
-        <div class="viewer-head">
-          <div>
-            <p class="panel-kicker" id="viewerType">specimen</p>
-            <h2 id="viewerTitle">Font</h2>
-          </div>
-          <div class="viewer-actions">
-            <button type="button" class="ghost-btn" id="viewerEdit">Edit</button>
-            <button type="button" class="ghost-btn" id="viewerClose">Close</button>
-          </div>
-        </div>
-        <div class="viewer-meta" id="viewerMeta"></div>
-        <div class="viewer-image-wrap">
-          <img id="viewerImage" alt="" />
-        </div>
-        <p class="viewer-note" id="viewerNote" hidden></p>
-      </div>
-    </div>
-
-    <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
-    <script src="app.js"></script>
+    <p>
+      Fonts now lives inside
+      <a href="../?view=fonts">Sprig</a>
+      (Fonts tab).
+    </p>
   </body>
 </html>

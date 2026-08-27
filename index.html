@@ -90,6 +90,17 @@
         >
           Notes
         </button>
+        <button
+          type="button"
+          class="view-tab"
+          role="tab"
+          id="tabFonts"
+          aria-controls="viewFonts"
+          aria-selected="false"
+          data-view="fonts"
+        >
+          Fonts
+        </button>
       </nav>
     </header>
 
@@ -714,6 +725,128 @@
           </p>
         </section>
       </section>
+
+      <!-- FONTS / SPECIMEN -->
+      <section
+        class="view view-fonts"
+        id="viewFonts"
+        role="tabpanel"
+        aria-labelledby="tabFonts"
+        hidden
+      >
+        <section class="hero-line" aria-labelledby="fontsTitle">
+          <p class="eyebrow">type shelf</p>
+          <h1 id="fontsTitle">Font specimens</h1>
+          <p class="lede">
+            Save screenshots of fonts you love, tag the type, and filter when you
+            need a match.
+          </p>
+        </section>
+
+        <section class="panel" aria-labelledby="fontAddTitle">
+          <div class="panel-head">
+            <div>
+              <p class="panel-kicker">add specimen</p>
+              <h2 id="fontAddTitle">Save a font image</h2>
+            </div>
+            <span class="count" id="fontCount">0</span>
+          </div>
+
+          <form class="add-stack font-form" id="fontForm" autocomplete="off">
+            <label class="font-upload">
+              <input
+                type="file"
+                id="fontImage"
+                accept="image/*"
+                multiple
+                hidden
+              />
+              <span class="font-upload-card" id="fontUploadCard">
+                <strong>Drop image(s) here</strong>
+                <span>or click to choose — JPG, PNG, WEBP</span>
+              </span>
+              <div class="font-upload-preview" id="fontUploadPreview" hidden></div>
+            </label>
+
+            <div class="add-row">
+              <input
+                type="text"
+                id="fontName"
+                maxlength="120"
+                placeholder="Font name or nickname…"
+                aria-label="Font name"
+              />
+            </div>
+            <input
+              type="text"
+              id="fontNote"
+              class="ref-note-input"
+              maxlength="240"
+              placeholder="Where you’d use it (optional)…"
+              aria-label="Note"
+            />
+
+            <div class="font-type-pick" role="group" aria-label="Font type">
+              <p class="font-field-label">Type</p>
+              <div class="font-type-chips" id="fontTypeChips"></div>
+            </div>
+
+            <div class="font-tag-pick">
+              <p class="font-field-label">Extra tags</p>
+              <div class="ref-tag-draft" id="fontTagDraft"></div>
+              <div class="ref-tag-input-row">
+                <input
+                  type="text"
+                  id="fontTagInput"
+                  maxlength="40"
+                  placeholder="Add a tag… elegant, bold, logo…"
+                  aria-label="Add a custom tag"
+                  list="fontTagSuggestions"
+                />
+                <button type="button" class="ghost-btn" id="fontTagAdd">Add tag</button>
+              </div>
+              <datalist id="fontTagSuggestions"></datalist>
+              <div class="ref-tag-suggestions" id="fontTagQuick"></div>
+            </div>
+
+            <div class="font-form-actions">
+              <button type="submit" class="add-btn" id="fontSaveBtn">Save specimen</button>
+              <button type="button" class="ghost-btn" id="fontCancelEdit" hidden>
+                Cancel
+              </button>
+            </div>
+            <p class="link-edit-hint" id="fontEditHint" hidden>
+              Editing a specimen — update and hit Save specimen.
+            </p>
+          </form>
+        </section>
+
+        <section class="panel" aria-labelledby="fontLibraryTitle">
+          <div class="panel-head">
+            <div>
+              <p class="panel-kicker">your shelf</p>
+              <h2 id="fontLibraryTitle">Library</h2>
+            </div>
+            <input
+              type="search"
+              id="fontSearch"
+              class="font-search"
+              placeholder="Search name, note, tag…"
+              aria-label="Search specimens"
+            />
+          </div>
+          <div
+            class="ref-filters"
+            id="fontFilters"
+            role="group"
+            aria-label="Filter by type or tag"
+          ></div>
+          <div class="font-grid" id="fontGrid"></div>
+          <p class="empty" id="fontEmpty">
+            No specimens yet. Upload a font image and tag its type.
+          </p>
+        </section>
+      </section>
     </main>
 
     <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
@@ -764,6 +897,31 @@
         </div>
         <div class="ref-view-meta" id="refViewMeta"></div>
         <div class="ref-view-body" id="refViewBody"></div>
+      </div>
+    </div>
+
+    <div class="draw-modal" id="fontViewer" hidden>
+      <div
+        class="draw-modal-panel ref-view-panel"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="fontViewerTitle"
+      >
+        <div class="draw-modal-head">
+          <div>
+            <p class="panel-kicker" id="fontViewerType">specimen</p>
+            <h2 id="fontViewerTitle">Font</h2>
+          </div>
+          <div class="ref-view-head-actions">
+            <button type="button" class="ghost-btn" id="fontViewerEdit">Edit</button>
+            <button type="button" class="ghost-btn" id="fontViewerClose">Close</button>
+          </div>
+        </div>
+        <div class="ref-view-meta" id="fontViewerMeta"></div>
+        <div class="font-viewer-image">
+          <img id="fontViewerImage" alt="" />
+        </div>
+        <p class="ref-view-note" id="fontViewerNote" hidden></p>
       </div>
     </div>
 

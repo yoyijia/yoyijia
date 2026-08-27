@@ -52,6 +52,33 @@
   ];
   const MEDIA_DB_NAME = "sprig-media-v1";
   const MEDIA_STORE = "images";
+  const FONT_META_KEY = "sprig-fonts-meta-v1";
+  const FONT_FILTER_KEY = "sprig-fonts-filter-v1";
+  const SPECIMEN_META_KEY = "specimen-fonts-meta-v1";
+  const SPECIMEN_DB_NAME = "specimen-fonts-media-v1";
+  const FONT_TYPES = [
+    ["serif", "Serif"],
+    ["sans", "Sans"],
+    ["display", "Display"],
+    ["script", "Script"],
+    ["mono", "Mono"],
+    ["hand", "Handwritten"],
+    ["decorative", "Decorative"],
+    ["variable", "Variable"],
+    ["other", "Other"],
+  ];
+  const FONT_TYPE_LABELS = Object.fromEntries(FONT_TYPES);
+  const FONT_TAG_SUGGESTIONS = [
+    "logo",
+    "editorial",
+    "poster",
+    "elegant",
+    "bold",
+    "modern",
+    "vintage",
+    "rounded",
+    "condensed",
+  ];
 
   const RICH_COLORS = [
     { name: "Ink", value: "#243328" },
@@ -244,9 +271,11 @@
     tabDashboard: document.getElementById("tabDashboard"),
     tabDay: document.getElementById("tabDay"),
     tabNotes: document.getElementById("tabNotes"),
+    tabFonts: document.getElementById("tabFonts"),
     viewDashboard: document.getElementById("viewDashboard"),
     viewDay: document.getElementById("viewDay"),
     viewNotes: document.getElementById("viewNotes"),
+    viewFonts: document.getElementById("viewFonts"),
     openToday: document.getElementById("openToday"),
     copyWeek: document.getElementById("copyWeek"),
     backDashboard: document.getElementById("backDashboard"),
@@ -367,11 +396,41 @@
     saveStatus: document.getElementById("saveStatus"),
     toast: document.getElementById("toast"),
     moods: [...document.querySelectorAll(".mood")],
+    fontForm: document.getElementById("fontForm"),
+    fontImage: document.getElementById("fontImage"),
+    fontUploadCard: document.getElementById("fontUploadCard"),
+    fontUploadPreview: document.getElementById("fontUploadPreview"),
+    fontName: document.getElementById("fontName"),
+    fontNote: document.getElementById("fontNote"),
+    fontTypeChips: document.getElementById("fontTypeChips"),
+    fontTagDraft: document.getElementById("fontTagDraft"),
+    fontTagInput: document.getElementById("fontTagInput"),
+    fontTagAdd: document.getElementById("fontTagAdd"),
+    fontTagSuggestions: document.getElementById("fontTagSuggestions"),
+    fontTagQuick: document.getElementById("fontTagQuick"),
+    fontSaveBtn: document.getElementById("fontSaveBtn"),
+    fontCancelEdit: document.getElementById("fontCancelEdit"),
+    fontEditHint: document.getElementById("fontEditHint"),
+    fontCount: document.getElementById("fontCount"),
+    fontSearch: document.getElementById("fontSearch"),
+    fontFilters: document.getElementById("fontFilters"),
+    fontGrid: document.getElementById("fontGrid"),
+    fontEmpty: document.getElementById("fontEmpty"),
+    fontViewer: document.getElementById("fontViewer"),
+    fontViewerTitle: document.getElementById("fontViewerTitle"),
+    fontViewerType: document.getElementById("fontViewerType"),
+    fontViewerMeta: document.getElementById("fontViewerMeta"),
+    fontViewerImage: document.getElementById("fontViewerImage"),
+    fontViewerNote: document.getElementById("fontViewerNote"),
+    fontViewerEdit: document.getElementById("fontViewerEdit"),
+    fontViewerClose: document.getElementById("fontViewerClose"),
   };
 
   let selectedDate = todayKey();
   const savedView = localStorage.getItem(VIEW_KEY);
-  let currentView = ["dashboard", "day", "notes"].includes(savedView) ? savedView : "dashboard";
+  let currentView = ["dashboard", "day", "notes", "fonts"].includes(savedView)
+    ? savedView
+    : "dashboard";
   let notesTab = localStorage.getItem(NOTES_TAB_KEY) || "links";
   let store = loadStore();
   let toastTimer = null;
@@ -390,6 +449,15 @@
   let mediaDbPromise = null;
   const objectUrlCache = new Map();
   const openEditors = new Set();
+  let fontStore = loadFontMeta();
+  let draftFontTypes = new Set();
+  let draftFontTags = [];
+  let draftFontFiles = [];
+  let editingFontId = null;
+  let viewingFontId = null;
+  let fontFilter = parseFontFilter(localStorage.getItem(FONT_FILTER_KEY) || "all");
+  let fontSearchQuery = "";
+  let fontsMigrated = false;
 
   const rich = {
     todoDetail: mountRichEditor(els.todoDetail),
@@ -842,20 +910,724 @@
     return mood || "no mood";
   }
 
+
+  function loadFontMeta() {
+    try {
+      const raw = localStorage.getItem(FONT_META_KEY);
+      if (!raw) return { items: [] };
+      const parsed = JSON.parse(raw);
+      return { items: Array.isArray(parsed?.items) ? parsed.items : [] };
+    } catch {
+      return { items: [] };
+    }
+  }
+
+  function saveFontMeta() {
+    localStorage.setItem(FONT_META_KEY, JSON.stringify(fontStore));
+  }
+
+  function normalizeFontTag(value) {
+    return String(value || "")
+      .trim()
+      .replace(/\s+/g, " ")
+      .slice(0, 40);
+  }
+
+  function normalizeFontTags(tags) {
+    if (!Array.isArray(tags)) return [];
+    const seen = new Set();
+    const out = [];
+    tags.forEach((tag) => {
+      const next = normalizeFontTag(tag);
+      if (!next) return;
+      const key = next.toLowerCase();
+      if (seen.has(key)) return;
+      seen.add(key);
+      out.push(next);
+    });
+    return out;
+  }
+
+  function normalizeFontTypes(types) {
+    if (!Array.isArray(types)) return [];
+    return [...new Set(types.filter((t) => FONT_TYPE_LABELS[t]))];
+  }
+
+  function parseFontFilter(raw) {
+    const value = String(raw || "all");
+    if (!value || value === "all") return { kind: "all", value: "all" };
+    if (value.startsWith("tag:")) {
+      const tag = normalizeFontTag(value.slice(4));
+      return tag ? { kind: "tag", value: tag } : { kind: "all", value: "all" };
+    }
+    if (value.startsWith("type:")) {
+      const type = value.slice(5);
+      return FONT_TYPE_LABELS[type]
+        ? { kind: "type", value: type }
+        : { kind: "all", value: "all" };
+    }
+    if (FONT_TYPE_LABELS[value]) return { kind: "type", value };
+    return { kind: "all", value: "all" };
+  }
+
+  function serializeFontFilter(f) {
+    if (f?.kind === "tag" && f.value) return `tag:${f.value}`;
+    if (f?.kind === "type" && f.value) return `type:${f.value}`;
+    return "all";
+  }
+
+  async function migrateSpecimenFontsIfNeeded() {
+    if (fontsMigrated) return;
+    fontsMigrated = true;
+    try {
+      if (localStorage.getItem(FONT_META_KEY)) return;
+      const oldMeta = localStorage.getItem(SPECIMEN_META_KEY);
+      if (!oldMeta) return;
+      localStorage.setItem(FONT_META_KEY, oldMeta);
+      fontStore = loadFontMeta();
+      const items = fontStore.items || [];
+      if (!items.length) return;
+
+      const oldDb = await new Promise((resolve, reject) => {
+        const req = indexedDB.open(SPECIMEN_DB_NAME, 1);
+        req.onerror = () => reject(req.error);
+        req.onsuccess = () => resolve(req.result);
+        req.onupgradeneeded = () => {
+          const db = req.result;
+          if (!db.objectStoreNames.contains("images")) db.createObjectStore("images");
+        };
+      });
+
+      for (const item of items) {
+        if (!item.imageId) continue;
+        const existing = await getMediaBlob(item.imageId);
+        if (existing) continue;
+        const blob = await new Promise((resolve, reject) => {
+          const tx = oldDb.transaction("images", "readonly");
+          const getReq = tx.objectStore("images").get(item.imageId);
+          getReq.onsuccess = () => resolve(getReq.result || null);
+          getReq.onerror = () => reject(getReq.error);
+        });
+        if (blob) await putMediaBlob(item.imageId, blob);
+      }
+      oldDb.close();
+    } catch (err) {
+      console.warn("Could not migrate Specimen fonts", err);
+    }
+  }
+
+  function collectKnownFontTags() {
+    const map = new Map();
+    fontStore.items.forEach((item) => {
+      (item.tags || []).forEach((tag) => {
+        const key = tag.toLowerCase();
+        if (!map.has(key)) map.set(key, tag);
+      });
+    });
+    return [...map.values()].sort((a, b) =>
+      a.localeCompare(b, undefined, { sensitivity: "base" })
+    );
+  }
+
+  function matchesFontItem(item) {
+    if (fontFilter.kind === "type" && !(item.types || []).includes(fontFilter.value)) {
+      return false;
+    }
+    if (
+      fontFilter.kind === "tag" &&
+      !(item.tags || []).some(
+        (t) => t.toLowerCase() === fontFilter.value.toLowerCase()
+      )
+    ) {
+      return false;
+    }
+    if (!fontSearchQuery) return true;
+    const hay = [
+      item.name,
+      item.note,
+      ...(item.tags || []),
+      ...(item.types || []).map((t) => FONT_TYPE_LABELS[t] || t),
+    ]
+      .join(" ")
+      .toLowerCase();
+    return hay.includes(fontSearchQuery);
+  }
+
+  function renderFontTypeChips() {
+    if (!els.fontTypeChips) return;
+    els.fontTypeChips.innerHTML = "";
+    FONT_TYPES.forEach(([value, label]) => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = `font-type-chip${draftFontTypes.has(value) ? " is-active" : ""}`;
+      btn.textContent = label;
+      btn.setAttribute("aria-pressed", draftFontTypes.has(value) ? "true" : "false");
+      btn.addEventListener("click", () => {
+        if (draftFontTypes.has(value)) draftFontTypes.delete(value);
+        else draftFontTypes.add(value);
+        renderFontTypeChips();
+      });
+      els.fontTypeChips.appendChild(btn);
+    });
+  }
+
+  function renderDraftFontTags() {
+    if (!els.fontTagDraft) return;
+    els.fontTagDraft.innerHTML = "";
+    draftFontTags.forEach((tag) => {
+      const chip = document.createElement("span");
+      chip.className = "ref-tag-chip";
+      chip.appendChild(document.createTextNode(tag));
+      const remove = document.createElement("button");
+      remove.type = "button";
+      remove.setAttribute("aria-label", `Remove ${tag}`);
+      remove.textContent = "×";
+      remove.addEventListener("click", () => {
+        draftFontTags = draftFontTags.filter(
+          (t) => t.toLowerCase() !== tag.toLowerCase()
+        );
+        renderDraftFontTags();
+      });
+      chip.appendChild(remove);
+      els.fontTagDraft.appendChild(chip);
+    });
+    updateFontTagSuggestions();
+  }
+
+  function updateFontTagSuggestions() {
+    if (!els.fontTagSuggestions || !els.fontTagQuick) return;
+    const known = collectKnownFontTags();
+    const draftKeys = new Set(draftFontTags.map((t) => t.toLowerCase()));
+    els.fontTagSuggestions.innerHTML = known
+      .filter((tag) => !draftKeys.has(tag.toLowerCase()))
+      .map((tag) => `<option value="${tag.replace(/"/g, "&quot;")}"></option>`)
+      .join("");
+
+    const pool = [];
+    const seen = new Set();
+    [...FONT_TAG_SUGGESTIONS, ...known].forEach((tag) => {
+      const key = tag.toLowerCase();
+      if (seen.has(key) || draftKeys.has(key)) return;
+      seen.add(key);
+      pool.push(tag);
+    });
+    els.fontTagQuick.innerHTML = "";
+    pool.slice(0, 8).forEach((tag) => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "ref-tag-suggest";
+      btn.textContent = `+ ${tag}`;
+      btn.addEventListener("click", () => {
+        addDraftFontTag(tag);
+        els.fontTagInput?.focus();
+      });
+      els.fontTagQuick.appendChild(btn);
+    });
+  }
+
+  function addDraftFontTag(raw) {
+    const parts = String(raw || "")
+      .split(/[,;]+/)
+      .map(normalizeFontTag)
+      .filter(Boolean);
+    if (!parts.length) return false;
+    let added = false;
+    parts.forEach((tag) => {
+      if (draftFontTags.some((t) => t.toLowerCase() === tag.toLowerCase())) return;
+      draftFontTags.push(tag);
+      added = true;
+    });
+    if (added) {
+      if (els.fontTagInput) els.fontTagInput.value = "";
+      renderDraftFontTags();
+    }
+    return added;
+  }
+
+  function clearFontDraft({ keepEditing = false } = {}) {
+    draftFontFiles.forEach((f) => {
+      if (f.url) URL.revokeObjectURL(f.url);
+    });
+    draftFontFiles = [];
+    draftFontTypes = new Set();
+    draftFontTags = [];
+    if (els.fontName) els.fontName.value = "";
+    if (els.fontNote) els.fontNote.value = "";
+    if (els.fontTagInput) els.fontTagInput.value = "";
+    if (els.fontImage) els.fontImage.value = "";
+    if (els.fontUploadPreview) {
+      els.fontUploadPreview.hidden = true;
+      els.fontUploadPreview.innerHTML = "";
+    }
+    if (els.fontUploadCard) els.fontUploadCard.hidden = false;
+    if (!keepEditing) {
+      editingFontId = null;
+      if (els.fontSaveBtn) els.fontSaveBtn.textContent = "Save specimen";
+      if (els.fontCancelEdit) els.fontCancelEdit.hidden = true;
+      if (els.fontEditHint) els.fontEditHint.hidden = true;
+    }
+    renderFontTypeChips();
+    renderDraftFontTags();
+  }
+
+  function renderFontUploadPreview() {
+    if (!els.fontUploadPreview || !els.fontUploadCard) return;
+    els.fontUploadPreview.innerHTML = "";
+    if (!draftFontFiles.length) {
+      els.fontUploadPreview.hidden = true;
+      els.fontUploadCard.hidden = false;
+      return;
+    }
+    els.fontUploadPreview.hidden = false;
+    els.fontUploadCard.hidden = editingFontId ? true : false;
+    draftFontFiles.forEach((file) => {
+      const img = document.createElement("img");
+      img.src = file.url;
+      img.alt = file.name || "Preview";
+      els.fontUploadPreview.appendChild(img);
+    });
+  }
+
+  async function addFontFiles(fileList) {
+    const files = [...(fileList || [])].filter((f) => f.type.startsWith("image/"));
+    if (!files.length) {
+      showToast("Choose an image");
+      return;
+    }
+    for (const file of files.slice(0, 12)) {
+      try {
+        const blob = await compressImageFile(file);
+        const url = URL.createObjectURL(blob);
+        draftFontFiles.push({ blob, url, name: file.name || "" });
+      } catch {
+        showToast("Could not read one image");
+      }
+    }
+    renderFontUploadPreview();
+    if (els.fontName && !els.fontName.value.trim() && files[0]?.name) {
+      els.fontName.value = files[0].name.replace(/\.[^.]+$/, "");
+    }
+  }
+
+  function setFontFilter(next) {
+    fontFilter = parseFontFilter(
+      typeof next === "string" ? next : serializeFontFilter(next)
+    );
+    localStorage.setItem(FONT_FILTER_KEY, serializeFontFilter(fontFilter));
+    renderFontsLibrary();
+  }
+
+  function renderFontFilters(items) {
+    if (!els.fontFilters) return;
+    const typeCounts = {};
+    FONT_TYPES.forEach(([value]) => {
+      typeCounts[value] = items.filter((i) =>
+        (i.types || []).includes(value)
+      ).length;
+    });
+    const tagCounts = {};
+    collectKnownFontTags().forEach((tag) => {
+      tagCounts[tag] = items.filter((i) =>
+        (i.tags || []).some((t) => t.toLowerCase() === tag.toLowerCase())
+      ).length;
+    });
+
+    els.fontFilters.innerHTML = "";
+    const add = (label, count, active, onClick, extra = "") => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = `ref-filter${extra}${active ? " is-active" : ""}`;
+      btn.textContent = `${label} (${count})`;
+      btn.setAttribute("aria-pressed", active ? "true" : "false");
+      btn.addEventListener("click", onClick);
+      els.fontFilters.appendChild(btn);
+    };
+
+    add("All", items.length, fontFilter.kind === "all", () => setFontFilter("all"));
+    FONT_TYPES.forEach(([value, label]) => {
+      const count = typeCounts[value] || 0;
+      if (count === 0 && !(fontFilter.kind === "type" && fontFilter.value === value)) {
+        return;
+      }
+      add(
+        label,
+        count,
+        fontFilter.kind === "type" && fontFilter.value === value,
+        () => setFontFilter({ kind: "type", value })
+      );
+    });
+    Object.keys(tagCounts)
+      .sort((a, b) => a.localeCompare(b, undefined, { sensitivity: "base" }))
+      .forEach((tag) => {
+        add(
+          tag,
+          tagCounts[tag],
+          fontFilter.kind === "tag" &&
+            fontFilter.value.toLowerCase() === tag.toLowerCase(),
+          () => setFontFilter({ kind: "tag", value: tag }),
+          " is-tag"
+        );
+      });
+  }
+
+  async function renderFontsLibrary() {
+    await migrateSpecimenFontsIfNeeded();
+    fontStore.items = (fontStore.items || []).map((item) => ({
+      ...item,
+      types: normalizeFontTypes(item.types),
+      tags: normalizeFontTags(item.tags),
+    }));
+
+    const visible = fontStore.items
+      .filter(matchesFontItem)
+      .sort(
+        (a, b) =>
+          (b.updatedAt || b.createdAt || 0) - (a.updatedAt || a.createdAt || 0)
+      );
+
+    if (els.fontCount) els.fontCount.textContent = String(visible.length);
+    if (els.fontGrid) els.fontGrid.innerHTML = "";
+    if (els.fontEmpty) {
+      els.fontEmpty.hidden = visible.length > 0;
+      if (!fontStore.items.length) {
+        els.fontEmpty.hidden = false;
+        els.fontEmpty.textContent =
+          "No specimens yet. Upload a font image and tag its type.";
+      } else if (!visible.length) {
+        els.fontEmpty.hidden = false;
+        els.fontEmpty.textContent = "No specimens match this filter.";
+      }
+    }
+
+    renderFontFilters(fontStore.items);
+    if (!els.fontGrid) return;
+
+    for (const item of visible) {
+      const card = document.createElement("article");
+      card.className = "font-card";
+
+      const media = document.createElement("button");
+      media.type = "button";
+      media.className = "font-card-media";
+      media.setAttribute("aria-label", `Open ${item.name || "specimen"}`);
+      const img = document.createElement("img");
+      img.alt = item.name || "Font specimen";
+      try {
+        const url = await getMediaUrl(item.imageId);
+        if (url) img.src = url;
+      } catch {
+        /* ignore */
+      }
+      media.appendChild(img);
+      media.addEventListener("click", () => openFontViewer(item.id));
+
+      const body = document.createElement("div");
+      body.className = "font-card-body";
+
+      const title = document.createElement("h3");
+      title.className = "font-card-title";
+      title.textContent = item.name || "Untitled font";
+
+      const tags = document.createElement("div");
+      tags.className = "font-card-tags";
+      (item.types || []).forEach((type) => {
+        const chip = document.createElement("span");
+        chip.className = "ref-tag-chip";
+        chip.textContent = FONT_TYPE_LABELS[type] || type;
+        tags.appendChild(chip);
+      });
+      (item.tags || []).slice(0, 4).forEach((tag) => {
+        const chip = document.createElement("span");
+        chip.className = "ref-tag-chip";
+        chip.textContent = tag;
+        tags.appendChild(chip);
+      });
+
+      if (item.note) {
+        const note = document.createElement("p");
+        note.className = "font-card-note";
+        note.textContent = item.note;
+        body.append(title, tags, note);
+      } else {
+        body.append(title, tags);
+      }
+
+      const actions = document.createElement("div");
+      actions.className = "font-card-actions";
+      const open = document.createElement("button");
+      open.type = "button";
+      open.className = "ghost-btn";
+      open.textContent = "Open";
+      open.addEventListener("click", () => openFontViewer(item.id));
+      const edit = document.createElement("button");
+      edit.type = "button";
+      edit.className = "ghost-btn";
+      edit.textContent = "Edit";
+      edit.addEventListener("click", () => startFontEdit(item.id));
+      const del = document.createElement("button");
+      del.type = "button";
+      del.className = "delete";
+      del.setAttribute("aria-label", "Delete specimen");
+      del.textContent = "×";
+      del.addEventListener("click", () => deleteFontItem(item.id));
+      actions.append(open, edit, del);
+      body.appendChild(actions);
+
+      card.append(media, body);
+      els.fontGrid.appendChild(card);
+    }
+  }
+
+  async function openFontViewer(id) {
+    const item = fontStore.items.find((i) => i.id === id);
+    if (!item || !els.fontViewer) return;
+    viewingFontId = id;
+    els.fontViewerTitle.textContent = item.name || "Untitled font";
+    els.fontViewerType.textContent =
+      (item.types || []).map((t) => FONT_TYPE_LABELS[t] || t).join(" · ") ||
+      "specimen";
+    els.fontViewerMeta.innerHTML = "";
+    (item.types || []).forEach((type) => {
+      const chip = document.createElement("span");
+      chip.className = "ref-tag-chip";
+      chip.textContent = FONT_TYPE_LABELS[type] || type;
+      els.fontViewerMeta.appendChild(chip);
+    });
+    (item.tags || []).forEach((tag) => {
+      const chip = document.createElement("span");
+      chip.className = "ref-tag-chip";
+      chip.textContent = tag;
+      els.fontViewerMeta.appendChild(chip);
+    });
+    try {
+      els.fontViewerImage.src = (await getMediaUrl(item.imageId)) || "";
+    } catch {
+      els.fontViewerImage.src = "";
+    }
+    els.fontViewerImage.alt = item.name || "Font specimen";
+    if (item.note) {
+      els.fontViewerNote.hidden = false;
+      els.fontViewerNote.textContent = item.note;
+    } else {
+      els.fontViewerNote.hidden = true;
+      els.fontViewerNote.textContent = "";
+    }
+    els.fontViewer.hidden = false;
+  }
+
+  function closeFontViewer() {
+    viewingFontId = null;
+    if (!els.fontViewer) return;
+    els.fontViewer.hidden = true;
+    if (els.fontViewerImage) els.fontViewerImage.src = "";
+  }
+
+  async function startFontEdit(id) {
+    const item = fontStore.items.find((i) => i.id === id);
+    if (!item) return;
+    closeFontViewer();
+    clearFontDraft({ keepEditing: true });
+    editingFontId = id;
+    els.fontName.value = item.name || "";
+    els.fontNote.value = item.note || "";
+    draftFontTypes = new Set(normalizeFontTypes(item.types));
+    draftFontTags = normalizeFontTags(item.tags);
+    try {
+      const blob = await getMediaBlob(item.imageId);
+      if (blob) {
+        const url = URL.createObjectURL(blob);
+        draftFontFiles = [{ id: item.imageId, blob, url, name: item.name || "" }];
+      }
+    } catch {
+      draftFontFiles = [];
+    }
+    els.fontSaveBtn.textContent = "Update specimen";
+    els.fontCancelEdit.hidden = false;
+    els.fontEditHint.hidden = false;
+    renderFontTypeChips();
+    renderDraftFontTags();
+    renderFontUploadPreview();
+    els.fontName.focus();
+    showToast("Editing specimen");
+  }
+
+  async function deleteFontItem(id) {
+    const item = fontStore.items.find((i) => i.id === id);
+    if (!item) return;
+    if (editingFontId === id) clearFontDraft();
+    if (viewingFontId === id) closeFontViewer();
+    fontStore.items = fontStore.items.filter((i) => i.id !== id);
+    saveFontMeta();
+    revokeCachedUrl(item.imageId);
+    try {
+      await deleteMediaBlob(item.imageId);
+    } catch {
+      /* ignore */
+    }
+    renderFontsLibrary();
+    showToast("Specimen removed");
+  }
+
+  function initFonts() {
+    if (!els.fontForm) return;
+    renderFontTypeChips();
+    renderDraftFontTags();
+
+    els.fontForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (els.fontTagInput.value.trim()) addDraftFontTag(els.fontTagInput.value);
+      const name = els.fontName.value.trim() || "Untitled font";
+      const note = els.fontNote.value.trim();
+      const types = normalizeFontTypes([...draftFontTypes]);
+      const tags = normalizeFontTags(draftFontTags);
+
+      if (!types.length) {
+        showToast("Pick at least one type");
+        return;
+      }
+
+      if (editingFontId) {
+        const existing = fontStore.items.find((i) => i.id === editingFontId);
+        if (!existing) {
+          clearFontDraft();
+          showToast("Specimen not found");
+          return;
+        }
+        if (draftFontFiles[0]?.blob && !draftFontFiles[0]?.id) {
+          await putMediaBlob(existing.imageId, draftFontFiles[0].blob);
+          revokeCachedUrl(existing.imageId);
+        }
+        existing.name = name;
+        existing.note = note;
+        existing.types = types;
+        existing.tags = tags;
+        existing.updatedAt = Date.now();
+        saveFontMeta();
+        clearFontDraft();
+        renderFontsLibrary();
+        showToast("Specimen updated");
+        return;
+      }
+
+      if (!draftFontFiles.length) {
+        showToast("Add at least one image");
+        return;
+      }
+
+      const fileCount = draftFontFiles.length;
+      for (const file of draftFontFiles) {
+        const imageId = uid();
+        await putMediaBlob(imageId, file.blob);
+        fontStore.items.unshift({
+          id: uid(),
+          imageId,
+          name:
+            fileCount === 1
+              ? name
+              : file.name.replace(/\.[^.]+$/, "") || name,
+          note,
+          types,
+          tags,
+          createdAt: Date.now(),
+          updatedAt: Date.now(),
+        });
+      }
+      saveFontMeta();
+      clearFontDraft();
+      renderFontsLibrary();
+      showToast(fileCount > 1 ? "Specimens saved" : "Specimen saved");
+    });
+
+    els.fontCancelEdit.addEventListener("click", () => {
+      clearFontDraft();
+      showToast("Edit cancelled");
+    });
+
+    els.fontTagAdd.addEventListener("click", () => {
+      if (!addDraftFontTag(els.fontTagInput.value)) showToast("Type a tag first");
+      else els.fontTagInput.focus();
+    });
+
+    els.fontTagInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === ",") {
+        e.preventDefault();
+        addDraftFontTag(els.fontTagInput.value);
+      } else if (
+        e.key === "Backspace" &&
+        !els.fontTagInput.value &&
+        draftFontTags.length
+      ) {
+        draftFontTags.pop();
+        renderDraftFontTags();
+      }
+    });
+
+    els.fontImage.addEventListener("change", async () => {
+      await addFontFiles(els.fontImage.files);
+      els.fontImage.value = "";
+    });
+
+    const upload = els.fontImage.closest(".font-upload");
+    if (upload) {
+      ["dragenter", "dragover"].forEach((evt) => {
+        upload.addEventListener(evt, (e) => {
+          e.preventDefault();
+          upload.classList.add("is-dragging");
+        });
+      });
+      ["dragleave", "drop"].forEach((evt) => {
+        upload.addEventListener(evt, (e) => {
+          e.preventDefault();
+          upload.classList.remove("is-dragging");
+        });
+      });
+      upload.addEventListener("drop", async (e) => {
+        await addFontFiles(e.dataTransfer?.files);
+      });
+    }
+
+    els.fontSearch.addEventListener("input", () => {
+      fontSearchQuery = els.fontSearch.value.trim().toLowerCase();
+      renderFontsLibrary();
+    });
+
+    els.fontViewerClose.addEventListener("click", closeFontViewer);
+    els.fontViewerEdit.addEventListener("click", () => {
+      if (viewingFontId) startFontEdit(viewingFontId);
+    });
+    els.fontViewer.addEventListener("click", (e) => {
+      if (e.target === els.fontViewer) closeFontViewer();
+    });
+  }
+
   function setView(view) {
-    currentView = ["dashboard", "day", "notes"].includes(view) ? view : "dashboard";
+    currentView = ["dashboard", "day", "notes", "fonts"].includes(view)
+      ? view
+      : "dashboard";
     localStorage.setItem(VIEW_KEY, currentView);
 
     els.viewDashboard.hidden = currentView !== "dashboard";
     els.viewDay.hidden = currentView !== "day";
     els.viewNotes.hidden = currentView !== "notes";
-    els.tabDashboard.setAttribute("aria-selected", currentView === "dashboard" ? "true" : "false");
+    els.viewFonts.hidden = currentView !== "fonts";
+    els.tabDashboard.setAttribute(
+      "aria-selected",
+      currentView === "dashboard" ? "true" : "false"
+    );
     els.tabDay.setAttribute("aria-selected", currentView === "day" ? "true" : "false");
-    els.tabNotes.setAttribute("aria-selected", currentView === "notes" ? "true" : "false");
+    els.tabNotes.setAttribute(
+      "aria-selected",
+      currentView === "notes" ? "true" : "false"
+    );
+    els.tabFonts.setAttribute(
+      "aria-selected",
+      currentView === "fonts" ? "true" : "false"
+    );
 
     if (currentView === "dashboard") renderDashboard();
     else if (currentView === "day") renderDay();
-    else renderNotes();
+    else if (currentView === "notes") renderNotes();
+    else renderFontsLibrary();
   }
 
   function setNotesTab(tab) {
@@ -1365,7 +2137,8 @@
   function refresh() {
     if (currentView === "dashboard") renderDashboard();
     else if (currentView === "day") renderDay();
-    else renderNotes();
+    else if (currentView === "notes") renderNotes();
+    else if (currentView === "fonts") renderFontsLibrary();
   }
 
   function collectTaskFiles() {
@@ -3053,6 +3826,7 @@
   els.tabDashboard.addEventListener("click", () => setView("dashboard"));
   els.tabDay.addEventListener("click", () => setView("day"));
   els.tabNotes.addEventListener("click", () => setView("notes"));
+  els.tabFonts.addEventListener("click", () => setView("fonts"));
   els.openToday.addEventListener("click", () => openDay(todayKey()));
   els.backDashboard.addEventListener("click", () => setView("dashboard"));
   els.copyWeek.addEventListener("click", () =>
@@ -3281,6 +4055,10 @@
     if (e.key !== "Escape") return;
     if (!els.drawModal.hidden) {
       closeDrawModal();
+      return;
+    }
+    if (!els.fontViewer.hidden) {
+      closeFontViewer();
       return;
     }
     if (!els.refViewModal.hidden) closeRefViewer();
@@ -3529,5 +4307,10 @@
   renderDraftKeyPoints();
   renderDraftRefTags();
   renderDraftImages();
+  const viewParam = new URLSearchParams(location.search).get("view");
+  if (["dashboard", "day", "notes", "fonts"].includes(viewParam)) {
+    currentView = viewParam;
+  }
+  initFonts();
   setView(currentView);
 })();
