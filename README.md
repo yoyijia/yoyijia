@@ -30,6 +30,23 @@ Open [`festivals/index.html`](festivals/index.html) (or serve the `festivals` fo
 
 Lunar and Islamic dates can shift by a day with moon sighting. Singapore public holidays follow MOM gazettes.
 
+## Specimen — font image library
+
+Save screenshots of fonts, tag them by type (serif, sans, display, script…), and filter your shelf.
+
+- Source: [`fonts/`](./fonts/)
+- Preview: serve the `fonts` folder, or after Pages deploy: **https://yoyijia.github.io/yoyijia/fonts/**
+- Images stay on this device (IndexedDB); tags/metadata in `localStorage`.
+
+### Local preview
+
+```bash
+cd fonts
+python3 -m http.server 5174
+```
+
+Then open http://localhost:5174
+
 ## PIXFORGE
 
 Pixel art generator (previous site) now lives at:
